@@ -1,0 +1,22 @@
+{
+ "id": "./",
+ "name": "واصل - اطلب توصيل",
+ "short_name": "واصل",
+ "description": "خدمة توصيل الطلبات في عنيزة",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "dir": "rtl",
+ "lang": "ar",
+ "background_color": "#0f766e",
+ "theme_color": "#0f766e",
+ "icons": [
+  {
+   "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADABAMAAACg8nE0AAAAGFBMVEX////1+fnf7ey31tOTwb5ZoJogf3gPdm7xJZAmAAAE/0lEQVR42u2bPXPbNhjHH4AauhWS2J1ynJ1W1E4dJCbXvbl+gV6un6HfpZd+gZydbB2aOMpcy7XWXGKXUy93lm1m6mIJHagXAiSBBy+6ywBNMkHyh//zhgfQmfwK+/1QCIAACIAACIAACIAACIAACIAACIAvBdAxuvu24J8ZGewJcHt1mZeqhwcD7wB+dXmx+b6azfrDA4Z7MPoed9/lyafqn/9d0YFPAD/7Q7707/uDr7xFET+b1i8uTgpfAP7ntOny4nnhB8DP5s0DyxM/gI/TtpHFSx8A1Vs+vHMH8FPV6FnhDPiQq0ZXL10By1fq8eu5I+CNboanboCFboJwP3UCnOvj8NwFsJzrAZp71IAZptq8tQes5hjAfW4NWKDqJb+wBkxxa8rHwhKg1o60pApwiV3Y/7YEzLGApV1XsWyw0IPu13f1+a7yxAZwU7ty+CgBgMfntcif/mwD+Ee+8MNRadVvD57LPZmND7jsgu+ONt/6z2RrFhaAlfTQw8nue/xUmkxuAZBcEGWCN1Jx9MICcCf++UToRckT5c0ogKj6G2nK0Y+iPc0Bko+HtYxAerkVIM4p2gjgswvpSpNeTB7w5vkuTmm3TNuhINFcgZg7mxTgb2G1zuO+Oiu1ACEuoqQS8OtliKaoMGoFCJojwXjrbi5ttygGIHhtm8QEAGCR1220clOwTTIyBgA+rT9qrIBXAWRX7h8BAFwXAACUtd2PArTc1EkBgJcdcYKJU1MAPN5JSLztMgk0SmAYBfijhOVxJbCu8wT5GMpEXQCAN9XA5dPNZVsfgBylUnW9kSzn5gNWD3TuFVDU30ZUyWUMAAAgrPYc96oAJsKlDAvoIEK/rMUPfyp2+8IobS1XNnnAAQBIuarx3wAARspVDGMi0pYU1wUARGPAKkD5oFLsyyIxUi/0xgoqXWRFgNgvmioQozIXSsRawEoRxQgTtQDyrQAJYJwHSftubdSwM6PgpGDbGZKdALH6ETfA1p9kvBUg7h/MAb3mjeoIOuMmsw2Me1MqHSqsFUW/0Go8NbsMpUDUvHtdjzWeYzBjAGXqXb+4WybmCiTR8uGgdBhIwRUgHW/Kx5k2gK5Uso8rRuevC+XNKEBP7ot+376U/yVv0gcWgNrI/fF6G3P7+p3GnqgVjTJ5xbp5MRp04e6mfgpIrE5b0to8YdZyDBlZdRXY7lP9FsVQDw84sgJEeEBiJw5tI2oHwDuBWo6hf7DsWQL6HnysVseQjXdiCSApDhAx2/Z9iAP0rfcHyEwYWwNwmaC+S91do5wQOWyhHmAAQwcAaveQuAAQNopcAMocxeU7dXoaMQfqpB9hReqSRJh9sA4Q6wATR4AumbXJrgPoKmrEHAG6ZNYWXOqWR/pM1ALUNtJaCFFtDlWDGbgDlE1P4gGgslHMPABUNkLUQgQgSs1HzJaUI5fODAOIbesQFtCWTfpajl11hw4tAQrQHI1k4g1AGpedDvMGaE6FDPwBmtyJaWnQgKbZxuAT0Gd2LkYDaM3NncQroO7mDPwC5LoWpZ4B5S+Au88IfAPESKWpd4AYNTHzDhDeiY1RI0A1UrExagSoRmoG+wBEWwmddC+A8ud24YtnwCZS6XhPAJIhmkkXAMQJAACd7A1QSjhkewNAnJgKMASQzFSA6b9oxImhAFMAyQwFGP+TSWwowBhA2J4Bxp8ACIAACIAACIAA+DIA/wPGSCYC0rMB5AAAAABJRU5ErkJggg==",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any maskable"
+  }
+ ]
+}
