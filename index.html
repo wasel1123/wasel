@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>واصل - اطلب توصيل</title>
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" id="ati" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="واصل">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+html,body{margin:0;height:100%;background:#0f766e;overflow:hidden}
+iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
+#ib{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:9;display:none;align-items:center;gap:10px;background:#0f766e;color:#fff;border-radius:14px;padding:10px 14px;font:700 14px Tahoma,Arial,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.3)}
+#ib span{flex:1}#ib button{border:0;border-radius:10px;padding:8px 14px;font:inherit;cursor:pointer}
+#ib .go{background:#fff;color:#0f766e}#ib .no{background:transparent;color:#fff;padding:8px}
+</style></head><body>
+<iframe id="f" title="واصل" allow="geolocation; camera; microphone; clipboard-write; fullscreen"></iframe>
+<div id="ib"><span id="it"></span><button class="go" id="ig">تثبيت</button><button class="no" id="ix">✕</button></div>
+<script>
+/* ===== غيّر هذا الرابط فقط لو غيّرت رابط التطبيق ===== */
+var APP = "https://script.google.com/macros/s/AKfycbwmS0DX-pqH17-cKKftKNqjVzD3lMuskpL8MvFKJpfSGt3uyVk5bli1dWeGOq782YbnLg/exec";
+/* ======================================================== */
+function $(i){return document.getElementById(i)}
+$("f").src = APP + location.search;
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
+}
+
+/* أيقونة آيفون (PNG) تُولَّد من الشعار */
+try {
+  var im = new Image();
+  im.onload = function () {
+    try {
+      var c = document.createElement("canvas"); c.width = c.height = 180;
+      c.getContext("2d").drawImage(im, 0, 0, 180, 180);
+      $("ati").href = c.toDataURL("image/png");
+    } catch (e) {}
+  };
+  im.src = "icon.svg";
+} catch (e) {}
+
+/* زر التثبيت */
+var dp = null, KEY = "pwa_hide";
+function hidden() { try { return localStorage.getItem(KEY) === "1"; } catch (e) { return false; } }
+function standalone() { return (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true; }
+function showBar(t, withBtn) {
+  if (standalone() || hidden()) return;
+  $("it").textContent = t; $("ig").style.display = withBtn ? "" : "none"; $("ib").style.display = "flex";
+}
+$("ix").onclick = function () { $("ib").style.display = "none"; try { localStorage.setItem(KEY, "1"); } catch (e) {} };
+window.addEventListener("beforeinstallprompt", function (e) {
+  e.preventDefault(); dp = e; showBar("ثبّت تطبيق واصل على شاشتك الرئيسية", true);
+});
+$("ig").onclick = function () {
+  if (!dp) return; dp.prompt();
+  dp.userChoice.then(function () { dp = null; $("ib").style.display = "none"; });
+};
+window.addEventListener("appinstalled", function () { $("ib").style.display = "none"; });
+if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !standalone()) {
+  setTimeout(function () { showBar("لتثبيت التطبيق: اضغط زر المشاركة ثم «إضافة إلى الشاشة الرئيسية»", false); }, 2500);
+}
+</script></body></html>
