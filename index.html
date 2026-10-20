@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>واصل</title>
+<title>واصل | Wasel</title>
 <meta name="theme-color" content="#0f766e" id="tc">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" id="ati" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="واصل">
+<meta name="apple-mobile-web-app-title" content="واصل Wasel">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
 html,body{margin:0;height:100%;background:#0f766e;overflow:hidden;font-family:Tahoma,Arial,sans-serif}
 iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
 .hide{display:none!important}
 #pick{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;box-sizing:border-box;background:linear-gradient(160deg,#0b5e57,#0f766e 55%,#14a79a);color:#fff;text-align:center;overflow:auto}
-#pick svg{width:84px;height:84px}
-#pick h1{margin:0;font-size:32px}#pick p{margin:0 0 8px;opacity:.9;font-size:15px}
+#pick .logo{width:104px;height:104px;border-radius:26px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+#pick h1{margin:4px 0 0;font-size:32px;line-height:1.2}#pick h1 small{display:block;font-size:17px;font-weight:400;letter-spacing:3px;opacity:.85}
+#pick p{margin:0 0 8px;opacity:.9;font-size:15px}
+#lg{position:absolute;top:calc(14px + env(safe-area-inset-top));inset-inline-end:16px;border:1.5px solid rgba(255,255,255,.7);background:rgba(255,255,255,.14);color:#fff;border-radius:99px;padding:8px 18px;font:700 15px Tahoma,Arial,sans-serif;cursor:pointer}
 .cards{display:flex;flex-direction:column;gap:12px;width:100%;max-width:360px}
 .cards button{display:flex;align-items:center;gap:14px;width:100%;padding:16px 18px;border:0;border-radius:18px;background:#fff;color:#0b3d3a;font:inherit;text-align:start;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.22)}
 .cards button:active{transform:scale(.98)}
@@ -27,71 +29,90 @@ iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
 #ib span{flex:1}#ib button{border:0;border-radius:10px;padding:8px 14px;font:inherit;cursor:pointer}
 #ib .go{background:#fff;color:#0f766e}#ib .no{background:transparent;color:#fff;padding:8px}
 </style></head><body>
-<iframe id="f" class="hide" title="واصل" allow="geolocation; camera; microphone; clipboard-write; fullscreen"></iframe>
+<iframe id="f" class="hide" title="Wasel" allow="geolocation; camera; microphone; clipboard-write; fullscreen"></iframe>
 
 <div id="pick" class="hide">
-<svg viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#fff"/><path d="M32 9c-9 0-16.2 7-16.2 15.7C15.8 37.4 32 53 32 53s16.2-15.6 16.2-28.3C48.2 16 41 9 32 9z" fill="#0f766e"/><circle cx="32" cy="24.5" r="7.5" fill="#fff"/><path d="M28.5 24.5h7m-3-3.5 3.5 3.5-3.5 3.5" fill="none" stroke="#0f766e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-<h1>واصل</h1><p>أهلًا بك، واصل، خليك واصل</p>
+<button id="lg">English</button>
+<img class="logo" src="icon.svg" alt="Wasel">
+<h1>واصل<small>WASEL</small></h1><p id="tg"></p>
 <div class="cards">
-<button id="bu"><span class="em">🛍️</span><span><b>اطلب توصيل</b><small>اطلب من أي مطعم أو متجر في عنيزة</small></span></button>
-<button id="bc"><span class="em">🏍️</span><span><b>أنا مندوب</b><small>الدخول برمز المندوب الخاص بك</small></span></button>
+<button id="bu"><span class="em">🛍️</span><span><b id="t1"></b><small id="s1"></small></span></button>
+<button id="bc"><span class="em">🏍️</span><span><b id="t2"></b><small id="s2"></small></span></button>
 </div>
-<div class="nt">سنتذكر اختيارك في المرة القادمة، ويمكنك تغييره من الزر ⇄</div>
+<div class="nt" id="nt"></div>
 </div>
 
-<button id="sw" class="hide" title="تغيير: عميل / مندوب" aria-label="تغيير">⇄</button>
-<div id="ib"><span id="it"></span><button class="go" id="ig">تثبيت</button><button class="no" id="ix">✕</button></div>
+<button id="sw" class="hide" aria-label="Switch">⇄</button>
+<div id="ib"><span id="it"></span><button class="go" id="ig"></button><button class="no" id="ix">✕</button></div>
 
 <script>
 /* ===== غيّر هذا الرابط فقط لو غيّرت رابط التطبيق ===== */
 var APP = "https://script.google.com/macros/s/AKfycbwmS0DX-pqH17-cKKftKNqjVzD3lMuskpL8MvFKJpfSGt3uyVk5bli1dWeGOq782YbnLg/exec";
 /* ======================================================== */
 function $(i){return document.getElementById(i)}
-var RK = "wasel_role";   // u = عميل ، c = مندوب
-function getRole(){try{var r=localStorage.getItem(RK);return r==="u"||r==="c"?r:""}catch(e){return ""}}
-function setRole(r){try{if(r)localStorage.setItem(RK,r);else localStorage.removeItem(RK)}catch(e){}}
+var RK = "wasel_role", LK = "wasel_lang";   // الدور: u عميل ، c مندوب  |  اللغة: ar أو en
+function lsGet(k){try{return localStorage.getItem(k)||""}catch(e){return ""}}
+function lsSet(k,v){try{if(v)localStorage.setItem(k,v);else localStorage.removeItem(k)}catch(e){}}
+function getRole(){var r=lsGet(RK);return r==="u"||r==="c"?r:""}
+var WL = lsGet(LK) === "en" ? "en" : "ar";
 
-function params(){
-  try{return new URLSearchParams(location.search)}catch(e){return null}
+var TX = {
+  ar:{lg:"English",tg:"واصل، خليك واصل",t1:"اطلب توصيل",s1:"اطلب من أي مطعم أو متجر في عنيزة",t2:"أنا مندوب",s2:"الدخول برمز المندوب الخاص بك",nt:"سنتذكر اختيارك في المرة القادمة، ويمكنك تغييره من الزر ⇄",inst:"ثبّت تطبيق واصل على شاشتك الرئيسية",ib:"تثبيت",ios:"لتثبيت التطبيق: اضغط زر المشاركة ثم «إضافة إلى الشاشة الرئيسية»",sw:"تغيير: عميل / مندوب"},
+  en:{lg:"عربي",tg:"Wasel, always on the way",t1:"Order delivery",s1:"From any restaurant or store in Unayzah",t2:"I'm a courier",s2:"Sign in with your courier code",nt:"We'll remember your choice. You can change it with the ⇄ button",inst:"Install the Wasel app on your home screen",ib:"Install",ios:"To install: tap Share, then \"Add to Home Screen\"",sw:"Switch: customer / courier"}
+};
+function applyWL(){
+  var t = TX[WL];
+  document.documentElement.lang = WL; document.documentElement.dir = WL === "en" ? "ltr" : "rtl";
+  $("lg").textContent = t.lg; $("tg").textContent = t.tg;
+  $("t1").textContent = t.t1; $("s1").textContent = t.s1; $("t2").textContent = t.t2; $("s2").textContent = t.s2; $("nt").textContent = t.nt;
+  $("sw").title = t.sw; $("ig").textContent = t.ib;
 }
-function without(p,k){var q=new URLSearchParams(p.toString());q.delete(k);var s=q.toString();return s?"?"+s:""}
+$("lg").onclick = function(){ WL = WL === "en" ? "ar" : "en"; lsSet(LK, WL); applyWL(); };
+applyWL();
 
-function openApp(role, extra){
+function params(){ try{return new URLSearchParams(location.search)}catch(e){return null} }
+function without(p,k){var q=new URLSearchParams(p.toString());q.delete(k);var s=q.toString();return s?"?"+s:""}
+function buildUrl(role, extra, lang){
+  var qs = [];
+  if (role === "c") qs.push("page=courier");
+  if (extra) qs.push(String(extra).replace(/^[?&]/, ""));
+  if (lang) qs.push("lang=" + lang);
+  return APP + (qs.length ? "?" + qs.join("&") : "");
+}
+function openApp(role, extra, lang){
   $("pick").classList.add("hide");
-  var url = APP + (role === "c" ? "?page=courier" : "") + (extra || "");
-  if (role === "c" && extra) url = APP + "?page=courier&" + extra.replace(/^[?&]/, "");
-  else if (role !== "c" && extra) url = APP + extra;
-  $("f").src = url; $("f").classList.remove("hide");
+  $("f").src = buildUrl(role, extra, lang); $("f").classList.remove("hide");
   $("sw").classList.remove("hide");
   var c = role === "c" ? "#0b3d3a" : "#0f766e";
   $("tc").setAttribute("content", c); document.body.style.background = c;
-  document.title = role === "c" ? "واصل - المندوب" : "واصل";
+  document.title = role === "c" ? "واصل | Wasel - Courier" : "واصل | Wasel";
 }
 function showPick(){
   $("f").classList.add("hide"); $("f").src = "about:blank";
   $("sw").classList.add("hide"); $("ib").style.display = "none";
   $("pick").classList.remove("hide");
-  $("tc").setAttribute("content", "#0f766e"); document.body.style.background = "#0f766e"; document.title = "واصل";
+  $("tc").setAttribute("content", "#0f766e"); document.body.style.background = "#0f766e"; document.title = "واصل | Wasel";
 }
-$("bu").onclick = function(){ setRole("u"); openApp("u"); };
-$("bc").onclick = function(){ setRole("c"); openApp("c"); };
-$("sw").onclick = function(){ setRole(""); showPick(); };
+// عند اختيار الدور من الشاشة الأولى نمرّر اللغة المختارة للصفحة (مرة واحدة)
+$("bu").onclick = function(){ lsSet(RK, "u"); openApp("u", "", WL); };
+$("bc").onclick = function(){ lsSet(RK, "c"); openApp("c", "", WL); };
+$("sw").onclick = function(){ lsSet(RK, ""); showPick(); };
 
 /* ===== تحديد ما يُفتح عند التشغيل ===== */
 (function(){
   var p = params(), page = p && p.get("page"), r = p && p.get("r");
   if (page === "admin") { location.replace(APP + location.search); return; }
   if (r === "c" || r === "u") {                     // رابط مباشر لاختيار الدور (?r=c أو ?r=u)
-    setRole(r); openApp(r, p ? without(p, "r") : ""); return;
+    lsSet(RK, r); openApp(r, p ? without(p, "r").replace(/^\?/, "") : "", ""); return;
   }
   if (page === "courier") {                           // رابط صفحة المندوب القديم
-    setRole("c"); openApp("c", p ? without(p, "page") : ""); return;
+    lsSet(RK, "c"); openApp("c", p ? without(p, "page").replace(/^\?/, "") : "", ""); return;
   }
   if (page) {                                         // تتبّع الطلب، التسجيل... تُفتح كما هي
     $("f").src = APP + location.search; $("f").classList.remove("hide"); $("sw").classList.remove("hide"); return;
   }
   var saved = getRole();
-  if (saved) openApp(saved); else showPick();
+  if (saved) openApp(saved, "", ""); else showPick();
 })();
 
 if ("serviceWorker" in navigator) {
@@ -113,15 +134,15 @@ try {
 
 /* زر التثبيت */
 var dp = null, KEY = "pwa_hide";
-function hidden() { try { return localStorage.getItem(KEY) === "1"; } catch (e) { return false; } }
+function hidden() { return lsGet(KEY) === "1"; }
 function standalone() { return (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true; }
 function showBar(t, withBtn) {
   if (standalone() || hidden()) return;
   $("it").textContent = t; $("ig").style.display = withBtn ? "" : "none"; $("ib").style.display = "flex";
 }
-$("ix").onclick = function () { $("ib").style.display = "none"; try { localStorage.setItem(KEY, "1"); } catch (e) {} };
+$("ix").onclick = function () { $("ib").style.display = "none"; lsSet(KEY, "1"); };
 window.addEventListener("beforeinstallprompt", function (e) {
-  e.preventDefault(); dp = e; showBar("ثبّت تطبيق واصل على شاشتك الرئيسية", true);
+  e.preventDefault(); dp = e; showBar(TX[WL].inst, true);
 });
 $("ig").onclick = function () {
   if (!dp) return; dp.prompt();
@@ -129,6 +150,6 @@ $("ig").onclick = function () {
 };
 window.addEventListener("appinstalled", function () { $("ib").style.display = "none"; });
 if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !standalone()) {
-  setTimeout(function () { showBar("لتثبيت التطبيق: اضغط زر المشاركة ثم «إضافة إلى الشاشة الرئيسية»", false); }, 2500);
+  setTimeout(function () { showBar(TX[WL].ios, false); }, 2500);
 }
 </script></body></html>
