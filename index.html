@@ -24,7 +24,7 @@ iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
 .cards button:active{transform:scale(.98)}
 .cards .em{font-size:34px;line-height:1}.cards b{display:block;font-size:19px}.cards small{display:block;color:#4b6663;font-size:13px;margin-top:2px}
 #pick .nt{font-size:12.5px;opacity:.8;margin-top:6px}
-#sw{position:fixed;left:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:8;width:38px;height:38px;border:0;border-radius:50%;background:rgba(15,118,110,.88);color:#fff;font-size:18px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.3);padding:0}
+#sw{position:fixed;left:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:8;height:38px;border:0;border-radius:99px;background:rgba(15,118,110,.92);color:#fff;font:700 13px Tahoma,Arial,sans-serif;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.3);padding:0 14px}
 #ib{position:fixed;left:12px;right:12px;bottom:calc(60px + env(safe-area-inset-bottom));z-index:9;display:none;align-items:center;gap:10px;background:#0f766e;color:#fff;border-radius:14px;padding:10px 14px;font:700 14px Tahoma,Arial,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.3)}
 #ib span{flex:1}#ib button{border:0;border-radius:10px;padding:8px 14px;font:inherit;cursor:pointer}
 #ib .go{background:#fff;color:#0f766e}#ib .no{background:transparent;color:#fff;padding:8px}
@@ -57,15 +57,15 @@ function getRole(){var r=lsGet(RK);return r==="u"||r==="c"?r:""}
 var WL = lsGet(LK) === "en" ? "en" : "ar";
 
 var TX = {
-  ar:{lg:"English",tg:"واصل، خليك واصل",t1:"اطلب توصيل",s1:"اطلب من أي مطعم أو متجر في عنيزة",t2:"أنا مندوب",s2:"الدخول برمز المندوب الخاص بك",nt:"سنتذكر اختيارك في المرة القادمة، ويمكنك تغييره من الزر ⇄",inst:"ثبّت تطبيق واصل على شاشتك الرئيسية",ib:"تثبيت",ios:"لتثبيت التطبيق: اضغط زر المشاركة ثم «إضافة إلى الشاشة الرئيسية»",sw:"تغيير: عميل / مندوب"},
-  en:{lg:"عربي",tg:"Wasel, always on the way",t1:"Order delivery",s1:"From any restaurant or store in Unayzah",t2:"I'm a courier",s2:"Sign in with your courier code",nt:"We'll remember your choice. You can change it with the ⇄ button",inst:"Install the Wasel app on your home screen",ib:"Install",ios:"To install: tap Share, then \"Add to Home Screen\"",sw:"Switch: customer / courier"}
+  ar:{lg:"English",tg:"واصل، خليك واصل",t1:"اطلب توصيل",s1:"اطلب من أي مطعم أو متجر في عنيزة",t2:"أنا مندوب",s2:"الدخول برمز المندوب الخاص بك",nt:"سنتذكر اختيارك في المرة القادمة، ويمكنك تغييره من الزر ⇄",inst:"ثبّت تطبيق واصل على شاشتك الرئيسية",ib:"تثبيت",ios:"لتثبيت التطبيق: اضغط زر المشاركة ثم «إضافة إلى الشاشة الرئيسية»",sw:"تغيير: عميل / مندوب",swl:"عميل / مندوب"},
+  en:{lg:"عربي",tg:"Wasel, always on the way",t1:"Order delivery",s1:"From any restaurant or store in Unayzah",t2:"I'm a courier",s2:"Sign in with your courier code",nt:"We'll remember your choice. You can change it with the ⇄ button",inst:"Install the Wasel app on your home screen",ib:"Install",ios:"To install: tap Share, then \"Add to Home Screen\"",sw:"Switch: customer / courier",swl:"Customer / Courier"}
 };
 function applyWL(){
   var t = TX[WL];
   document.documentElement.lang = WL; document.documentElement.dir = WL === "en" ? "ltr" : "rtl";
   $("lg").textContent = t.lg; $("tg").textContent = t.tg;
   $("t1").textContent = t.t1; $("s1").textContent = t.s1; $("t2").textContent = t.t2; $("s2").textContent = t.s2; $("nt").textContent = t.nt;
-  $("sw").title = t.sw; $("ig").textContent = t.ib;
+  $("sw").title = t.sw; $("sw").textContent = "⇄ " + t.swl; $("ig").textContent = t.ib;
 }
 $("lg").onclick = function(){ WL = WL === "en" ? "ar" : "en"; lsSet(LK, WL); applyWL(); };
 applyWL();
@@ -111,8 +111,10 @@ $("sw").onclick = function(){ lsSet(RK, ""); showPick(); };
   if (page) {                                         // تتبّع الطلب، التسجيل... تُفتح كما هي
     $("f").src = APP + location.search; $("f").classList.remove("hide"); $("sw").classList.remove("hide"); return;
   }
+  if (p && p.get("pick")) { showPick(); return; }      // ?pick=1 يفتح شاشة الاختيار دائمًا
   var saved = getRole();
-  if (saved) openApp(saved, "", ""); else showPick();
+  // الدور المحفوظ يُستخدم داخل التطبيق المثبّت فقط. من المتصفح تظهر شاشة الاختيار دائمًا
+  if (saved && standalone()) openApp(saved, "", ""); else showPick();
 })();
 
 if ("serviceWorker" in navigator) {
