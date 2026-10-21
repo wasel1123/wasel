@@ -4,6 +4,8 @@
 <title>واصل | Wasel</title>
 <meta name="theme-color" content="#0f766e" id="tc">
 <link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://script.google.com" crossorigin>
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" id="ati" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,6 +16,10 @@
 html,body{margin:0;height:100%;background:#0f766e;overflow:hidden;font-family:Tahoma,Arial,sans-serif}
 iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
 .hide{display:none!important}
+#ld{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:linear-gradient(160deg,#0b5e57,#0f766e 55%,#14a79a);color:#fff;font-weight:700;font-size:16px}
+#ld img{width:88px;height:88px;border-radius:22px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+#ld i{width:34px;height:34px;border:4px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
 #pick{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;box-sizing:border-box;background:linear-gradient(160deg,#0b5e57,#0f766e 55%,#14a79a);color:#fff;text-align:center;overflow:auto}
 #pick .logo{width:104px;height:104px;border-radius:26px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
 #pick h1{margin:4px 0 0;font-size:32px;line-height:1.2}#pick h1 small{display:block;font-size:17px;font-weight:400;letter-spacing:3px;opacity:.85}
@@ -30,6 +36,8 @@ iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
 #ib .go{background:#fff;color:#0f766e}#ib .no{background:transparent;color:#fff;padding:8px}
 </style></head><body>
 <iframe id="f" class="hide" title="Wasel" allow="geolocation; camera; microphone; clipboard-write; fullscreen"></iframe>
+
+<div id="ld" class="hide"><img src="icon.svg" alt="Wasel"><i></i><span id="ldt"></span></div>
 
 <div id="pick" class="hide">
 <button id="lg">English</button>
@@ -57,15 +65,15 @@ function getRole(){var r=lsGet(RK);return r==="u"||r==="c"?r:""}
 var WL = lsGet(LK) === "en" ? "en" : "ar";
 
 var TX = {
-  ar:{lg:"English",tg:"واصل، خليك واصل",t1:"اطلب توصيل",s1:"اطلب من أي مطعم أو متجر في عنيزة",t2:"أنا مندوب",s2:"الدخول برمز المندوب الخاص بك",nt:"سنتذكر اختيارك في المرة القادمة، ولتغييره اضغط زر «خروج»",inst:"ثبّت تطبيق واصل على شاشتك الرئيسية",ib:"تثبيت",ios:"لتثبيت التطبيق: اضغط زر المشاركة ثم «إضافة إلى الشاشة الرئيسية»",sw:"خروج للاختيار من جديد: عميل / مندوب",swl:"خروج"},
-  en:{lg:"عربي",tg:"Wasel, always on the way",t1:"Order delivery",s1:"From any restaurant or store in Unayzah",t2:"I'm a courier",s2:"Sign in with your courier code",nt:"We'll remember your choice. To change it, tap the Exit button",inst:"Install the Wasel app on your home screen",ib:"Install",ios:"To install: tap Share, then \"Add to Home Screen\"",sw:"Exit and choose again: customer / courier",swl:"Exit"}
+  ar:{lg:"English",tg:"واصل، خليك واصل",t1:"اطلب توصيل",s1:"اطلب من أي مطعم أو متجر في عنيزة",t2:"أنا مندوب",s2:"الدخول برمز المندوب الخاص بك",nt:"سنتذكر اختيارك في المرة القادمة، ولتغييره اضغط زر «خروج»",ld:"جارٍ التحميل...",inst:"ثبّت تطبيق واصل على شاشتك الرئيسية",ib:"تثبيت",ios:"لتثبيت التطبيق: اضغط زر المشاركة ثم «إضافة إلى الشاشة الرئيسية»",sw:"خروج للاختيار من جديد: عميل / مندوب",swl:"خروج"},
+  en:{lg:"عربي",tg:"Wasel, always on the way",t1:"Order delivery",s1:"From any restaurant or store in Unayzah",t2:"I'm a courier",s2:"Sign in with your courier code",nt:"We'll remember your choice. To change it, tap the Exit button",ld:"Loading...",inst:"Install the Wasel app on your home screen",ib:"Install",ios:"To install: tap Share, then \"Add to Home Screen\"",sw:"Exit and choose again: customer / courier",swl:"Exit"}
 };
 function applyWL(){
   var t = TX[WL];
   document.documentElement.lang = WL; document.documentElement.dir = WL === "en" ? "ltr" : "rtl";
   $("lg").textContent = t.lg; $("tg").textContent = t.tg;
   $("t1").textContent = t.t1; $("s1").textContent = t.s1; $("t2").textContent = t.t2; $("s2").textContent = t.s2; $("nt").textContent = t.nt;
-  $("sw").title = t.sw; $("sw").textContent = "↩ " + t.swl; $("ig").textContent = t.ib;
+  $("ldt").textContent = t.ld; $("sw").title = t.sw; $("sw").textContent = "↩ " + t.swl; $("ig").textContent = t.ib;
 }
 $("lg").onclick = function(){ WL = WL === "en" ? "ar" : "en"; lsSet(LK, WL); applyWL(); };
 applyWL();
@@ -79,8 +87,17 @@ function buildUrl(role, extra, lang){
   if (lang) qs.push("lang=" + lang);
   return APP + (qs.length ? "?" + qs.join("&") : "");
 }
+var LT = 0;
+// شاشة تحميل فوق الصفحة لحين وصول التطبيق (بدل الشاشة البيضاء)
+function loading(on){
+  clearTimeout(LT);
+  $("ld").classList.toggle("hide", !on);
+  if (on) LT = setTimeout(function(){ $("ld").classList.add("hide"); }, 15000);
+}
+$("f").onload = function(){ loading(false); };
 function openApp(role, extra, lang){
   $("pick").classList.add("hide");
+  loading(true);
   $("f").src = buildUrl(role, extra, lang); $("f").classList.remove("hide");
   $("sw").classList.remove("hide");
   var c = role === "c" ? "#0b3d3a" : "#0f766e";
@@ -88,6 +105,7 @@ function openApp(role, extra, lang){
   document.title = role === "c" ? "واصل | Wasel - Courier" : "واصل | Wasel";
 }
 function showPick(){
+  loading(false);
   $("f").classList.add("hide"); $("f").src = "about:blank";
   $("sw").classList.add("hide"); $("ib").style.display = "none";
   $("pick").classList.remove("hide");
@@ -109,13 +127,16 @@ $("sw").onclick = function(){ lsSet(RK, ""); showPick(); };
     lsSet(RK, "c"); openApp("c", p ? without(p, "page").replace(/^\?/, "") : "", ""); return;
   }
   if (page) {                                         // تتبّع الطلب، التسجيل... تُفتح كما هي
-    $("f").src = APP + location.search; $("f").classList.remove("hide"); $("sw").classList.remove("hide"); return;
+    loading(true); $("f").src = APP + location.search; $("f").classList.remove("hide"); $("sw").classList.remove("hide"); return;
   }
   if (p && p.get("pick")) { showPick(); return; }      // ?pick=1 يفتح شاشة الاختيار دائمًا
   var saved = getRole();
   // الدور المحفوظ يُستخدم داخل التطبيق المثبّت فقط. من المتصفح تظهر شاشة الاختيار دائمًا
   if (saved && standalone()) openApp(saved, "", ""); else showPick();
 })();
+
+/* تسخين خادم التطبيق وقت ظهور شاشة الاختيار ليفتح أسرع بعد الضغط */
+try { if (!$("pick").classList.contains("hide")) fetch(APP, { mode: "no-cors", cache: "no-store" }).catch(function(){}); } catch (e) {}
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
