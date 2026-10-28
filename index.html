@@ -2,10 +2,12 @@
 <html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>واصل | Wasel</title>
-<meta name="theme-color" content="#0f766e" id="tc">
+<meta name="theme-color" content="#0e4f4c" id="tc">
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://script.google.com" crossorigin>
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" id="ati" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,28 +15,28 @@
 <meta name="apple-mobile-web-app-title" content="واصل Wasel">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
-html,body{margin:0;height:100%;background:#0f766e;overflow:hidden;font-family:Tahoma,Arial,sans-serif}
+html,body{margin:0;height:100%;background:#0e4f4c;overflow:hidden;font-family:'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif}
 iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
 .hide{display:none!important}
-#ld{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:linear-gradient(160deg,#0b5e57,#0f766e 55%,#14a79a);color:#fff;font-weight:700;font-size:16px}
+#ld{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#0e4f4c;color:#fff;font-weight:700;font-size:16px}
 #ld img{width:88px;height:88px;border-radius:22px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
-#ld i{width:34px;height:34px;border:4px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .8s linear infinite}
+#ld i{width:34px;height:34px;border:4px solid rgba(255,255,255,.3);border-top-color:#f2b544;border-radius:50%;animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-#ldr{border:0;border-radius:12px;padding:12px 26px;background:#fff;color:#0f766e;font:700 16px Tahoma,Arial,sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
-#pick{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;box-sizing:border-box;background:linear-gradient(160deg,#0b5e57,#0f766e 55%,#14a79a);color:#fff;text-align:center;overflow:auto}
+#ldr{border:0;border-radius:14px;padding:12px 26px;background:#fff;color:#0e4f4c;font:700 16px 'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#pick{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;box-sizing:border-box;background:#0e4f4c;color:#fff;text-align:center;overflow:auto}
 #pick .logo{width:104px;height:104px;border-radius:26px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
-#pick h1{margin:4px 0 0;font-size:32px;line-height:1.2}#pick h1 small{display:block;font-size:17px;font-weight:400;letter-spacing:3px;opacity:.85}
-#pick p{margin:0 0 8px;opacity:.9;font-size:15px}
-#lg{position:absolute;top:calc(14px + env(safe-area-inset-top));inset-inline-end:16px;border:1.5px solid rgba(255,255,255,.7);background:rgba(255,255,255,.14);color:#fff;border-radius:99px;padding:8px 18px;font:700 15px Tahoma,Arial,sans-serif;cursor:pointer}
+#pick h1{margin:4px 0 0;font-size:32px;line-height:1.2}#pick h1 small{display:block;font-size:17px;font-weight:400;letter-spacing:3px;color:#a9d3cf}
+#pick p{margin:0 0 8px;color:#d5ebe8;font-size:15px}
+#lg{position:absolute;top:calc(14px + env(safe-area-inset-top));inset-inline-end:16px;border:1.5px solid rgba(255,255,255,.6);background:rgba(255,255,255,.12);color:#fff;border-radius:99px;padding:8px 18px;font:700 15px 'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;cursor:pointer}
 .cards{display:flex;flex-direction:column;gap:12px;width:100%;max-width:360px}
-.cards button{display:flex;align-items:center;gap:14px;width:100%;padding:16px 18px;border:0;border-radius:18px;background:#fff;color:#0b3d3a;font:inherit;text-align:start;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.22)}
+.cards button{display:flex;align-items:center;gap:14px;width:100%;padding:16px 18px;border:0;border-radius:20px;background:#fff;color:#12211f;font:inherit;text-align:start;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.22)}
 .cards button:active{transform:scale(.98)}
-.cards .em{font-size:34px;line-height:1}.cards b{display:block;font-size:19px}.cards small{display:block;color:#4b6663;font-size:13px;margin-top:2px}
-#pick .nt{font-size:12.5px;opacity:.8;margin-top:6px}
-#sw{position:fixed;left:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:8;height:40px;border:0;border-radius:99px;background:rgba(185,28,28,.95);color:#fff;font:700 14px Tahoma,Arial,sans-serif;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.3);padding:0 18px}
-#ib{position:fixed;left:12px;right:12px;bottom:calc(60px + env(safe-area-inset-bottom));z-index:9;display:none;align-items:center;gap:10px;background:#0f766e;color:#fff;border-radius:14px;padding:10px 14px;font:700 14px Tahoma,Arial,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.3)}
-#ib span{flex:1}#ib button{border:0;border-radius:10px;padding:8px 14px;font:inherit;cursor:pointer}
-#ib .go{background:#fff;color:#0f766e}#ib .no{background:transparent;color:#fff;padding:8px}
+.cards .em{font-size:34px;line-height:1}.cards b{display:block;font-size:19px;color:#0e4f4c}.cards small{display:block;color:#4f6260;font-size:13px;margin-top:2px}
+#pick .nt{font-size:12.5px;color:#a9d3cf;margin-top:6px}
+#sw{position:fixed;left:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:8;height:40px;border:0;border-radius:99px;background:rgba(185,28,28,.95);color:#fff;font:700 14px 'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.3);padding:0 18px}
+#ib{position:fixed;left:12px;right:12px;bottom:calc(60px + env(safe-area-inset-bottom));z-index:9;display:none;align-items:center;gap:10px;background:#0e4f4c;color:#fff;border-radius:16px;padding:10px 14px;font:700 14px 'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.3)}
+#ib span{flex:1}#ib button{border:0;border-radius:12px;padding:8px 14px;font:inherit;cursor:pointer}
+#ib .go{background:#fff;color:#0e4f4c}#ib .no{background:transparent;color:#fff;padding:8px}
 </style></head><body>
 <iframe id="f" class="hide" title="Wasel" allow="geolocation; camera; microphone; clipboard-write; fullscreen"></iframe>
 
@@ -109,7 +111,7 @@ function openApp(role, extra, lang){
   loading(true);
   $("f").src = buildUrl(role, extra, lang); $("f").classList.remove("hide");
   $("sw").classList.remove("hide");
-  var c = role === "c" ? "#0b3d3a" : "#0f766e";
+  var c = role === "c" ? "#0b3d3a" : "#0e4f4c";
   $("tc").setAttribute("content", c); document.body.style.background = c;
   document.title = role === "c" ? "واصل | Wasel - Courier" : "واصل | Wasel";
 }
@@ -118,7 +120,7 @@ function showPick(){
   $("f").classList.add("hide"); $("f").src = "about:blank";
   $("sw").classList.add("hide"); $("ib").style.display = "none";
   $("pick").classList.remove("hide");
-  $("tc").setAttribute("content", "#0f766e"); document.body.style.background = "#0f766e"; document.title = "واصل | Wasel";
+  $("tc").setAttribute("content", "#0e4f4c"); document.body.style.background = "#0e4f4c"; document.title = "واصل | Wasel";
 }
 // عند اختيار الدور من الشاشة الأولى نمرّر اللغة المختارة للصفحة (مرة واحدة)
 $("bu").onclick = function(){ lsSet(RK, "u"); openApp("u", "", WL); };
@@ -144,8 +146,17 @@ $("sw").onclick = function(){ lsSet(RK, ""); showPick(); };
   if (saved && standalone()) openApp(saved, "", ""); else showPick();
 })();
 
-/* تسخين خادم التطبيق وقت ظهور شاشة الاختيار ليفتح أسرع بعد الضغط */
-try { if (!$("pick").classList.contains("hide")) fetch(APP, { mode: "no-cors", cache: "no-store" }).catch(function(){}); } catch (e) {}
+/* تسخين خادم التطبيق: مرة وقت ظهور شاشة الاختيار، وبعدها كل 4 دقائق فقط والتطبيق ظاهر على الشاشة
+   (أسرع من كده بيستهلك حصة Google والنت والبطارية بدون فايدة؛ UptimeRobot بيسخّن كل 5 دقائق كمان) */
+var WARM_MS = 240000, WARM_AT = 0;
+function warm(){
+  if (document.hidden) return;
+  WARM_AT = Date.now();
+  try { fetch(APP, { mode: "no-cors", cache: "no-store" }).catch(function(){}); } catch (e) {}
+}
+if (!$("pick").classList.contains("hide")) warm();
+setInterval(function(){ if (Date.now() - WARM_AT >= WARM_MS) warm(); }, 30000);
+document.addEventListener("visibilitychange", function(){ if (!document.hidden && Date.now() - WARM_AT >= WARM_MS) warm(); });
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
