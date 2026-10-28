@@ -127,7 +127,7 @@ $("sw").onclick = function(){ lsSet(RK, ""); showPick(); };
     lsSet(RK, "c"); openApp("c", p ? without(p, "page").replace(/^\?/, "") : "", ""); return;
   }
   if (page) {                                         // تتبّع الطلب، التسجيل... تُفتح كما هي
-    loading(true); $("f").src = APP + location.search; $("f").classList.remove("hide"); $("sw").classList.remove("hide"); return;
+    loading(true); $("f").src = APP + location.search; $("f").classList.remove("hide"); if (page !== "restaurant" && page !== "restaurant-register") $("sw").classList.remove("hide"); return;
   }
   if (p && p.get("pick")) { showPick(); return; }      // ?pick=1 يفتح شاشة الاختيار دائمًا
   var saved = getRole();
