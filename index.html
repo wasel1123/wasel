@@ -158,6 +158,15 @@ if (!$("pick").classList.contains("hide")) warm();
 setInterval(function(){ if (Date.now() - WARM_AT >= WARM_MS) warm(); }, 30000);
 document.addEventListener("visibilitychange", function(){ if (!document.hidden && Date.now() - WARM_AT >= WARM_MS) warm(); });
 
+/* رمز دخول المندوب: يتحفظ هنا كمان عشان آيفون بيمسح تخزين صفحة التطبيق الداخلية، فالمندوب ما يكتبش الرمز كل مرة */
+window.addEventListener("message", function (e) {
+  var d = e.data, host = "";
+  try { host = new URL(e.origin).hostname; } catch (x) { return; }
+  if (!d || typeof d !== "object" || !/\.googleusercontent\.com$/.test(host)) return;
+  if (d.wasel === "setwc") lsSet("wasel_wc", typeof d.v === "string" ? d.v.slice(0, 40) : "");
+  else if (d.wasel === "getwc" && e.source) { try { e.source.postMessage({ wasel: "wc", v: lsGet("wasel_wc") }, e.origin); } catch (x) {} }
+});
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
 }
