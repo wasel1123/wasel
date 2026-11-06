@@ -376,6 +376,7 @@ html.pk .cdh{background:#9d174d}
 <button type="button" data-c="hist"><span data-cm="hist"></span></button>
 <button type="button" data-c="again"><span data-cm="again"></span></button>
 <button type="button" data-c="of"><span data-cm="of"></span><span id="cofn" class="cnw hide"></span></button>
+<button type="button" data-c="uo" id="uob"><span id="uobt">🔥 عروض عنيزة</span><span id="uon" class="cnw hide"></span></button>
 <button type="button" data-c="wa"><span data-cm="wa"></span></button>
 <button type="button" data-c="thm"><span id="cthm"></span></button>
 <button type="button" data-c="gnd"><span id="cgnd"></span></button>
@@ -1222,6 +1223,84 @@ function apply(){
   else{if(pk.value==="x"&&!pko.value.trim()&&pk.options.length>1){pk.selectedIndex=0;pk.dispatchEvent(new Event("change"))}}
   try{feeUpd()}catch(e){}}
 document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&e.target.closest(".wtile");if(b)setTimeout(apply,0)});
+})();
+</script>
+<div id="uosh" class="hide" role="dialog" aria-modal="true"><div class="uow">
+<div class="uoh"><b id="uott">🔥 عروض عنيزة</b><button id="uox" type="button">✕</button></div>
+<div id="uol"></div>
+<p class="uonote" id="uonote"></p></div></div>
+<style>
+#uosh{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+#uosh.hide{display:none!important}
+.uow{background:var(--bg);color:var(--tx);width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:18px 18px 0 0;padding:0 14px 18px}
+.uoh{position:sticky;top:0;background:var(--bg);display:flex;justify-content:space-between;align-items:center;padding:14px 2px 10px;font-size:18px;z-index:1}
+.uoh button{background:transparent!important;border:0!important;color:var(--tx)!important;font-size:20px;width:auto!important;padding:4px 8px!important;margin:0!important;box-shadow:none!important}
+.uoc{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:12px;margin-bottom:10px}
+.uot{display:flex;gap:10px;align-items:center}
+.uolg{width:46px;height:46px;border-radius:50%;flex:none;overflow:hidden;background:var(--br2);display:grid;place-items:center;font-weight:800;color:var(--br);font-size:18px}
+.uolg img{width:100%;height:100%;object-fit:cover}
+.uos{font-weight:800}.uoti{font-weight:700;margin-top:6px}.uod{color:var(--mu);font-size:13px;margin-top:2px}
+.uorow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.uoleft{color:#d9480f;font-size:13px;font-weight:700}
+.uogo{background:var(--br)!important;color:#fff!important;border:0!important;border-radius:10px!important;padding:8px 14px!important;font-weight:700;width:auto!important;margin:0!important}
+.uorp{background:transparent!important;border:0!important;color:var(--mu)!important;font-size:12px;text-decoration:underline;width:auto!important;padding:2px!important;margin:6px 0 0!important;box-shadow:none!important}
+.uomsg{color:var(--mu);text-align:center;padding:30px 10px}
+.uonote{color:var(--mu);font-size:12px;text-align:center;margin:6px 0 0}
+</style>
+<script>
+/* ===== «عروض عنيزة 🔥» (ملف Offers.gs): إضافة فقط، مش بتغيّر أي حاجة في الطلب ===== */
+(function(){
+var UT={t:["🔥 عروض عنيزة","🔥 Unayzah offers"],go:["اطلبه مع واصل","Order with Wasel"],rp:["العرض مش متاح؟","Offer not available?"],rpd:["شكرًا، اتشال العرض ✅","Thanks, offer removed ✅"],
+ left0:["⏳ آخر يوم","⏳ Last day"],left:["⏳ باقي ","⏳ "],d:[" يوم"," days left"],none:["مفيش عروض دلوقتي، ارجع بعدين 🙏","No offers right now, check back later 🙏"],
+ ld:["جارٍ التحميل...","Loading..."],note:["حسب إعلان المطعم، ويؤكَّد عند الطلب. لو العرض مش موجود هنبلّغك قبل ما تدفع أي حاجة.","As announced by the restaurant, confirmed when ordering. If it's not available we'll tell you before you pay anything."],
+ ofn:["🔥 عرض: ","🔥 Offer: "],nw:["جديد","New"]};
+function ut(k){return UT[k][LANG==="en"?1:0]}
+var L=null,sh=$("uosh"),box=$("uol");
+function lbl(){$("uobt").textContent=ut("t");$("uott").textContent=ut("t");$("uonote").textContent=ut("note");
+  var n=L&&L.length;$("uon").textContent=ut("nw");$("uon").classList.toggle("hide",!n)}
+function load(cb){try{google.script.run.withSuccessHandler(function(r){L=(r&&r.ok&&r.list)||[];lbl();cb&&cb()}).withFailureHandler(function(){L=L||[];cb&&cb()}).offersList()}catch(e){L=[];cb&&cb()}}
+function pick(o){
+  close();
+  var ty=$("type"),pk=$("pk"),done=false;
+  function has(){for(var i=0;i<pk.options.length;i++)if(pk.options[i].value===o.pick)return true;return false}
+  if(o.pick){
+    if(!has()){ty.selectedIndex=0;ty.dispatchEvent(new Event("change"))}
+    if(!has()){ty.selectedIndex=3;ty.dispatchEvent(new Event("change"))}
+    if(has()){pk.value=o.pick;done=true}}
+  if(!done){for(var j=0;j<pk.options.length;j++)if(pk.options[j].value==="x"){pk.value="x";$("pko").value=o.store;break}}
+  pk.dispatchEvent(new Event("change"));
+  var it=$("items"),tag=ut("ofn")+o.title;
+  if(it.value.indexOf(tag)<0)it.value=(it.value?it.value+"\n":"")+tag;
+  setTimeout(function(){pk.scrollIntoView({behavior:"smooth",block:"center"})},150)}
+function draw(){
+  box.textContent="";
+  if(L===null){box.appendChild(Object.assign(document.createElement("div"),{className:"uomsg",textContent:ut("ld")}));return}
+  if(!L.length){box.appendChild(Object.assign(document.createElement("div"),{className:"uomsg",textContent:ut("none")}));return}
+  L.forEach(function(o){
+    var c=document.createElement("div");c.className="uoc";
+    var t=document.createElement("div");t.className="uot";
+    var lg=document.createElement("div");lg.className="uolg";
+    if(o.logo){var im=document.createElement("img");im.src=o.logo;im.alt="";im.onerror=function(){lg.textContent=(o.store||"؟").replace(/^(مطعم|كافيه|مقهى)\s+/,"").charAt(0)};lg.appendChild(im)}
+    else lg.textContent=(o.store||"؟").replace(/^(مطعم|كافيه|مقهى)\s+/,"").charAt(0);
+    var nm=document.createElement("div");nm.className="uos";nm.textContent=o.store;
+    t.appendChild(lg);t.appendChild(nm);c.appendChild(t);
+    var ti=document.createElement("div");ti.className="uoti";ti.textContent=o.title;c.appendChild(ti);
+    if(o.details){var d=document.createElement("div");d.className="uod";d.textContent=o.details;c.appendChild(d)}
+    var row=document.createElement("div");row.className="uorow";
+    var lf=document.createElement("span");lf.className="uoleft";lf.textContent=o.left<=0?ut("left0"):(ut("left")+o.left+ut("d"));
+    var go=document.createElement("button");go.type="button";go.className="uogo";go.textContent=ut("go");go.onclick=function(){pick(o)};
+    row.appendChild(lf);row.appendChild(go);c.appendChild(row);
+    var rp=document.createElement("button");rp.type="button";rp.className="uorp";rp.textContent=ut("rp");
+    rp.onclick=function(){rp.disabled=true;try{google.script.run.offerReport(o.id,"customer")}catch(e){}rp.textContent=ut("rpd");
+      L=L.filter(function(x){return x.id!==o.id});setTimeout(function(){draw();lbl()},1200)};
+    c.appendChild(rp);box.appendChild(c)})}
+function open(){var dw=$("cdw");if(dw&&dw.classList.contains("open")){dw.classList.remove("open");dw.setAttribute("aria-hidden","true");var dm=$("cdim");if(dm)dm.classList.add("hide")}
+  sh.classList.remove("hide");draw();load(draw)}
+function close(){sh.classList.add("hide")}
+$("uob").onclick=open;$("uox").onclick=close;sh.onclick=function(e){if(e.target===sh)close()};
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!sh.classList.contains("hide"))close()});
+var lb=$("lang");if(lb)lb.addEventListener("click",function(){setTimeout(function(){lbl();if(!sh.classList.contains("hide"))draw()},100)});
+lbl();setTimeout(function(){load()},2500);
 })();
 </script>
 </body></html>
