@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head>
+<!-- صفحة سريعة على GitHub: نفس ملف RestaurantRegister.html في Apps Script + bridge.js -->
+<script src="../bridge.js"></script>
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<title>واصل - سجّل مطعمك</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>/* وضع العرض: فاتح افتراضيًا، والعميل يختار الغامق بزر ☀️/🌙 ويُحفظ على جهازه، ومع كل تغيير زر «تراجع» */
+(function(){var d=document.documentElement;try{if(localStorage.getItem("wth")==="dark")d.classList.add("dk");if(localStorage.getItem("wgd")==="f")d.classList.add("pk")}catch(e){}
+var TT=0;function en(){return d.lang==="en"}
+window.waselToast=function(msg,undoTxt,undo){var t=document.getElementById("wtoast");if(!t){t=document.createElement("div");t.id="wtoast";t.setAttribute("role","status");document.body.appendChild(t)}
+t.textContent="";var s=document.createElement("span");s.textContent=msg;t.appendChild(s);
+if(undo){var u=document.createElement("button");u.type="button";u.textContent=undoTxt;u.onclick=function(){clearTimeout(TT);t.className="";undo()};t.appendChild(u)}
+t.className="on";clearTimeout(TT);TT=setTimeout(function(){t.className=""},6000)};
+document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
+var b=document.createElement("button");b.type="button";b.className="thm";
+function ui(){var k=d.classList.contains("dk");b.textContent=k?"☀️":"🌙";b.title=k?(en()?"Light mode":"الوضع الفاتح"):(en()?"Dark mode":"الوضع الداكن");b.setAttribute("aria-label",b.title)}
+function setDk(k){d.classList.toggle("dk",k);try{localStorage.setItem("wth",k?"dark":"light")}catch(e){}ui()}
+b.onclick=function(){var was=d.classList.contains("dk");setDk(!was);
+ waselToast(!was?(en()?"✓ Dark mode on":"✓ اتحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ اتحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
+var l=h.querySelector("#lang");if(l&&l.parentNode)l.parentNode.insertBefore(b,l);else h.appendChild(b)})})();
+</script>
+<script>/* زر «غيّر مودك / غيّري مودك»: يبدّل شكل التطبيق بين الأخضر والبينك، ويتحفظ على الجهاز بس (مش بيتبعت للسيرفر)، ومعاه «تراجع» */
+(function(){var d=document.documentElement;
+function en(){return d.lang==="en"}
+function get(){try{return localStorage.getItem("wgd")||""}catch(e){return ""}}
+function lbl(b){var f=get()==="f",t=en()?"🎨 Change your look":(f?"🎨 غيّري مودك":"🎨 غيّر مودك");b.textContent=t;b.title=t;b.setAttribute("aria-label",t)}
+window.waselGender=function(v,silent){var prev=get();try{if(v)localStorage.setItem("wgd",v);else localStorage.removeItem("wgd")}catch(e){}
+ d.classList.toggle("pk",v==="f");Array.prototype.forEach.call(document.querySelectorAll(".gnd"),lbl);
+ try{document.dispatchEvent(new CustomEvent("waselgender",{detail:{v:v,prev:prev}}))}catch(e){}
+ if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ اتحوّل للون البينك"):(en()?"✓ Wasel green look on":"✓ اتحوّل للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
+document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
+ var b=document.createElement("button");b.type="button";b.className="thm gnd";lbl(b);
+ b.onclick=function(){window.waselGender(get()==="f"?"m":"f")};
+ var t=h.querySelector(".thm");if(t&&t.parentNode)t.parentNode.insertBefore(b,t);else h.appendChild(b);
+ var l=document.getElementById("lang");if(l)l.addEventListener("click",function(){setTimeout(function(){lbl(b)},0)})})})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f6f6;--card:#fff;--tx:#12211f;--mu:#4f6260;--br:#0e4f4c;--br2:#e1eeec;--ln:#dde5e3;--ok:#16a34a;--bad:#dc2626}
+html.dk{--bg:#0d1413;--card:#16201f;--tx:#e8f0ee;--mu:#9bb0ab;--br:#5cc8bb;--br2:#1f3331;--ln:#273533;--ok:#4ade80;--bad:#f87171}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;line-height:1.6}
+header{background:#0e4f4c;color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px}header b{font-size:22px}header small{display:block;color:#a9d3cf}
+header svg{width:44px;height:44px;flex:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
+main{max-width:620px;margin:0 auto;padding:12px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:20px;padding:16px;margin-bottom:12px}
+h2{margin:0 0 6px;font-size:19px}label{display:block;font-size:14px;color:var(--mu);margin:14px 0 4px}
+input[type=text],input[type=tel],select{width:100%;padding:12px;border:1px solid var(--ln);border-radius:12px;background:var(--bg);color:var(--tx);font:inherit}
+button{width:100%;margin-top:16px;padding:13px;border:0;border-radius:14px;background:var(--br);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+button:disabled{opacity:.6}
+.hide{display:none!important}.mu{color:var(--mu);font-size:14px}.err{color:var(--bad);font-weight:700;margin-top:10px}
+.chk{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:14px}.chk input{width:20px;height:20px;margin-top:3px;flex:none}
+ul.req{margin:6px 0 0;padding-inline-start:20px;font-size:14px;color:var(--mu)}
+.btn{display:block;margin-top:10px;padding:13px;border-radius:14px;background:var(--br);color:#fff;font-weight:700;font-size:16px;text-align:center;text-decoration:none}
+.big{font-size:20px;font-weight:700;margin:4px 0}.okc{color:var(--ok);font-weight:700}
+:where(html.dk) button,:where(html.dk) .btn{color:#06201d}
+
+:root{color-scheme:light}html.dk{color-scheme:dark}
+header .thm{width:auto!important;flex:none;margin:0 6px!important;padding:6px 10px!important;border-radius:12px!important;background:rgba(255,255,255,.15)!important;color:#fff!important;border:1px solid rgba(255,255,255,.35)!important;font-size:16px!important;line-height:1.2!important;cursor:pointer;box-shadow:none!important}
+header>.thm:last-child{margin-inline-start:auto!important}
+#wtoast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:9500;display:flex;align-items:center;gap:12px;max-width:92vw;padding:10px 12px 10px 16px;border-radius:16px;background:#12211f;color:#fff;font-weight:700;font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.35);transition:opacity .2s,transform .2s}
+#wtoast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#wtoast button{width:auto!important;margin:0!important;padding:8px 14px!important;border:0!important;border-radius:12px!important;background:#f2b544!important;color:#3b2300!important;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+/* كلام أوضح: خط عريض في التطبيق كله، مع عمق خفيف للعناوين */
+body{font-weight:700}
+h1,h2,h3,h4,b,strong,.big,label,input,select,textarea,button,small{font-weight:700}
+input::placeholder,textarea::placeholder{font-weight:600}
+header b,.hero .big,.brand b{text-shadow:0 2px 4px rgba(0,0,0,.3)}
+h1,h2,h3,.big,.ch{text-shadow:0 1px 1px rgba(0,0,0,.1)}
+html.dk h1,html.dk h2,html.dk h3,html.dk .big,html.dk .ch{text-shadow:0 1px 2px rgba(0,0,0,.6)}
+/* الخانات متظللة: أخضر واصل افتراضيًا، ووردي لما العميل يختار 👩 */
+:root{--fld:#e7f2f0;--fldb:#b9d6d1}
+html.dk{--fld:#13302d;--fldb:#24524c}
+html.pk{--fld:#fdeef6;--fldb:#f5c2dc}
+html.pk.dk{--fld:#3a1729;--fldb:#6b2a4c}
+input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea{background-color:var(--fld)!important;border-color:var(--fldb)!important}
+input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,select:focus,textarea:focus{outline:2px solid var(--br);outline-offset:1px}
+
+#lang{width:auto!important;flex:none;margin:0!important;padding:8px 14px!important;background:#fff!important;color:#0e4f4c!important;font-size:14px!important;border-radius:12px!important;border:0!important;font-weight:700;cursor:pointer;box-shadow:none!important}
+header>.thm{margin-inline-start:auto!important}
+html[dir=ltr] .req{padding-inline-start:20px}
+
+/* ===== شكل واحد لكل صفحات واصل: خلفية ملوّنة، كروت بإطار، عناوين الخانات بالأخضر (وبالبينك للبنات) ===== */
+:root{--pg:#e4efed;--pg2:#cfe3df;--sh:rgba(14,79,76,.14);--br3:#14635f}
+html.dk{--pg:#0a1514;--pg2:#11302c;--sh:rgba(0,0,0,.45);--br3:#3fa99d}
+body{background:linear-gradient(180deg,var(--pg2) 0,var(--pg) 320px) var(--pg);background-attachment:fixed}
+header{box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.card{border:2px solid var(--fldb)!important;box-shadow:0 8px 22px var(--sh)}
+.card{overflow:hidden}
+.card>h2:first-child{margin:-16px -16px 12px;padding:14px 16px;background:linear-gradient(135deg,var(--br),var(--br3));color:#fff;font-size:21px;text-shadow:0 2px 4px rgba(0,0,0,.25)}
+html.dk .card>h2:first-child{color:#06201d;text-shadow:none}
+main label:not(.chk):not(.lr):not(.mu):not(:has(input)){display:inline-block;width:auto;margin:14px 0 6px;font-size:14.5px;padding:4px 14px;border-radius:10px;background:linear-gradient(135deg,var(--br),var(--br3));color:#fff!important;font-weight:700;box-shadow:0 3px 8px var(--sh);text-shadow:0 1px 2px rgba(0,0,0,.2)}
+html.dk main label:not(.chk):not(.lr):not(.mu):not(:has(input)){color:#06201d!important;text-shadow:none}
+button:active{transform:scale(.97)}
+@keyframes wrise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+main>*{animation:wrise .45s ease both}
+main>*:nth-child(2){animation-delay:.06s}main>*:nth-child(3){animation-delay:.12s}main>*:nth-child(n+4){animation-delay:.18s}
+@media(prefers-reduced-motion:reduce){main>*{animation:none}}
+
+/* زر «غيّر مودك» في الهيدر */
+header .gnd{font-size:13px!important;padding:6px 9px!important;white-space:nowrap}
+header>.gnd{margin-inline-start:auto!important}header>.gnd+.thm{margin-inline-start:6px!important}
+@media(max-width:380px){header .gnd{font-size:11.5px!important;padding:5px 7px!important}}
+html.pk #lang{color:#9d174d!important}
+html.pk .dwh,html.pk .cspl{background:#9d174d!important}
+@media(max-width:520px){
+header{gap:6px!important;padding-inline:10px!important}
+header>div:first-child,header .brand{min-width:0;flex:1 1 auto}
+header>svg+div{min-width:0;flex:1 1 auto}header .clock{font-size:13px}
+header b{font-size:17px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+header small{font-size:11.5px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header>svg,header .brand>svg{width:36px!important;height:36px!important}
+header .thm{padding:5px 8px!important;margin:0 3px!important}
+header .gnd{font-size:12px!important;padding:5px 7px!important}
+header #lang{padding:6px 10px!important;margin:0 3px!important}
+}
+
+/* ===== وضع البينك كامل في كل الصفحات (مش الخانات بس) ===== */
+html.pk{--br:#be185d;--br2:#fce7f3;--c1:#be185d;--fld:#fdeef6;--fldb:#f5c2dc;--pg:#fbe9f2;--pg2:#f6d0e3;--sh:rgba(157,23,77,.14);--br3:#9d174d}
+html.pk.dk{--br:#f472b6;--br2:#3b1427;--c1:#f472b6;--fld:#3a1729;--fldb:#6b2a4c;--pg:#1c0d15;--pg2:#331526;--sh:rgba(0,0,0,.45);--br3:#ec4899}
+html.pk header{background:#9d174d!important}
+html.pk header small{color:#fbcfe8!important}
+html.pk header svg [fill="#0e4f4c"]{fill:#9d174d}html.pk header svg [stroke="#0e4f4c"]{stroke:#9d174d}
+html.pk header button:not(.thm){color:#9d174d!important}
+</style></head><body>
+<header><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="18" fill="#fff"/><g transform="translate(2 -3.55) scale(.3)"><path fill="#0e4f4c" d="M13.26,54.00 L42.97,158.00 L85.58,158.00 L100.00,131.44 L114.42,158.00 L157.03,158.00 L186.74,54.00 L155.54,54.00 L133.66,130.57 L100.00,68.56 L66.34,130.57 L44.46,54.00 Z"/><path fill="#0e4f4c" d="M67.315185546875 188.0H64.409912109375L62.824462890625 181.23486328125Q62.533935546875 180.03955078125 62.334716796875 178.736328125Q62.135498046875 179.82373046875 62.010986328125 180.392333984375Q61.886474609375 180.9609375 60.242919921875 188.0H57.337646484375L54.324462890625 176.30419921875H56.806396484375L58.499755859375 183.85791015625L58.881591796875 185.68408203125Q59.114013671875 184.5302734375 59.333984375 183.480224609375Q59.553955078125 182.43017578125 60.989990234375 176.30419921875H63.729248046875L65.206787109375 182.52978515625Q65.381103515625 183.22705078125 65.796142578125 185.68408203125L66.003662109375 184.72119140625L66.443603515625 182.81201171875L67.854736328125 176.30419921875H70.336669921875Z M85.758056640625 188.0 84.720458984375 185.01171875H80.262939453125L79.225341796875 188.0H76.776611328125L81.043212890625 176.30419921875H83.931884765625L88.181884765625 188.0ZM82.487548828125 178.10546875 82.437744140625 178.2880859375Q82.354736328125 178.5869140625 82.238525390625 178.96875Q82.122314453125 179.3505859375 80.810791015625 183.1689453125H84.172607421875L83.018798828125 179.80712890625L82.661865234375 178.67822265625Z M105.304931640625 184.6298828125Q105.304931640625 186.34814453125 104.03076171875 187.257080078125Q102.756591796875 188.166015625 100.291259765625 188.166015625Q98.041748046875 188.166015625 96.763427734375 187.369140625Q95.485107421875 186.572265625 95.119873046875 184.95361328125L97.485595703125 184.5634765625Q97.726318359375 185.4931640625 98.423583984375 185.912353515625Q99.120849609375 186.33154296875 100.357666015625 186.33154296875Q102.922607421875 186.33154296875 102.922607421875 184.77099609375Q102.922607421875 184.27294921875 102.6279296875 183.94921875Q102.333251953125 183.62548828125 101.7978515625 183.40966796875Q101.262451171875 183.19384765625 99.743408203125 182.88671875Q98.431884765625 182.57958984375 97.917236328125 182.392822265625Q97.402587890625 182.2060546875 96.987548828125 181.952880859375Q96.572509765625 181.69970703125 96.281982421875 181.3427734375Q95.991455078125 180.98583984375 95.82958984375 180.50439453125Q95.667724609375 180.02294921875 95.667724609375 179.400390625Q95.667724609375 177.81494140625 96.85888671875 176.972412109375Q98.050048828125 176.1298828125 100.324462890625 176.1298828125Q102.499267578125 176.1298828125 103.5908203125 176.810546875Q104.682373046875 177.4912109375 104.997802734375 179.06005859375L102.623779296875 179.3837890625Q102.441162109375 178.62841796875 101.880859375 178.24658203125Q101.320556640625 177.86474609375 100.274658203125 177.86474609375Q98.050048828125 177.86474609375 98.050048828125 179.25927734375Q98.050048828125 179.7158203125 98.28662109375 180.00634765625Q98.523193359375 180.296875 98.988037109375 180.500244140625Q99.452880859375 180.70361328125 100.872314453125 181.0107421875Q102.557373046875 181.36767578125 103.28369140625 181.670654296875Q104.010009765625 181.9736328125 104.433349609375 182.376220703125Q104.856689453125 182.77880859375 105.080810546875 183.339111328125Q105.304931640625 183.8994140625 105.304931640625 184.6298828125Z M113.106201171875 188.0V176.30419921875H122.303466796875V178.19677734375H115.554931640625V181.13525390625H121.797119140625V183.02783203125H115.554931640625V186.107421875H122.643798828125V188.0Z M130.445068359375 188.0V176.30419921875H132.893798828125V186.107421875H139.169189453125V188.0Z"/><g transform="translate(62.8 42.25) scale(3.1)"><path fill="#fff" stroke="#fff" stroke-width="3" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><path fill="#f2b544" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><circle cx="12" cy="9.4" r="3.2" fill="#fff"/></g></g></svg><div><b>واصل WASEL</b><small data-i="sub">سجّل مطعمك معنا</small></div><button id="lang" type="button">EN</button></header>
+<main>
+<div id="vForm" class="card">
+<h2 data-i="title">سجّل مطعمك في واصل 🍽</h2>
+<div class="mu" data-i="intro">املأ البيانات التالية وتراجعها الإدارة، وبعد الموافقة يوصلك رمز الدخول لصفحة مطعمك، وتضيف منيوك وأسعارك وعروضك بنفسك.</div>
+<ul class="req"><li data-i="b1">تستقبل الطلبات على صفحتك وعلى تليجرام بتنبيه صوتي.</li><li data-i="b2">تضيف أصنافك بصورها وأسعارها وعروضك.</li><li data-i="b3">مطعمك يظهر للعملاء تلقائيًا في قائمة المطاعم.</li></ul>
+<label data-i="fName">اسم المطعم (كما يظهر للعملاء)</label><input id="name" type="text" maxlength="60" autocomplete="off">
+<label data-i="fOwner">اسم المسؤول</label><input id="owner" type="text" maxlength="60" autocomplete="off">
+<label data-i="fCat">تصنيف المطعم</label><select id="cat"><option value="مطاعم">مطاعم</option></select>
+<label data-i="fPhone">رقم الجوال (05xxxxxxxx)</label><input id="phone" type="tel" inputmode="tel" maxlength="14" placeholder="05xxxxxxxx" dir="ltr">
+<label data-i="fLoc">📍 موقع المطعم (إجباري)</label>
+<button type="button" id="locHere" class="sec" data-i="locBtn">📍 موقعي الحالي (وإنت في المطعم)</button>
+<input id="loc" dir="ltr" autocomplete="off" placeholder="https://maps.app.goo.gl/..." style="margin-top:8px"><div class="mu" id="locSt" data-i="locH">أو الصق لينك مطعمك من خرائط جوجل</div>
+<input id="website" type="text" tabindex="-1" autocomplete="off" class="hide">
+<label class="chk"><input id="agree" type="checkbox"><span data-i="agree">أقرّ أن البيانات صحيحة، وأن المطعم مرخّص ويلتزم بالاشتراطات الصحية، وأوافق على شروط المطاعم وسياسة الخصوصية.</span></label>
+<div class="mu" id="lg" style="margin-top:6px"></div>
+<button id="go" data-i="send">إرسال الطلب</button><div id="msg" class="err"></div>
+</div>
+<div id="vDone" class="card hide">
+<div class="big okc" id="dT">✅ تم استلام طلبك</div>
+<div class="mu" style="margin-top:6px" id="dX">راجعناه وسنتواصل معك على رقم الجوال الذي كتبته، وبعد الموافقة يصلك رمز الدخول. لا داعي لإرسال الطلب مرة ثانية.</div>
+<div id="dTg" class="hide" style="margin-top:14px">
+<div class="mu" id="dTx"></div>
+<a id="dTa" class="btn" target="_blank" rel="noopener noreferrer" data-i="tgBtn">✈️ اربط تليجرام لاستلام الرمز</a>
+<div class="mu" style="margin-top:8px" data-i="tgHow">اضغط الزر ثم «Start» في تليجرام. لو ما ربطتش هنتواصل معاك على الجوال.</div>
+</div>
+</div>
+</main>
+<script>
+function $(i){return document.getElementById(i)}
+/* ===== اللغتين: عربي / English (الاختيار يتحفظ على الجهاز ويتشارك مع باقي صفحات واصل) ===== */
+var LANG="ar";try{LANG=localStorage.getItem("wl")==="en"?"en":"ar"}catch(e){}
+var T={
+sub:["سجّل مطعمك معنا","Register your restaurant"],
+title:["سجّل مطعمك في واصل 🍽","Register your restaurant on Wasel 🍽"],
+intro:["املأ البيانات التالية وتراجعها الإدارة، وبعد الموافقة يوصلك رمز الدخول لصفحة مطعمك، وتضيف منيوك وأسعارك وعروضك بنفسك.","Fill in the details below for admin review. Once approved you get a login code for your restaurant page, where you add your own menu, prices and offers."],
+b1:["تستقبل الطلبات على صفحتك وعلى تليجرام بتنبيه صوتي.","Receive orders on your page and on Telegram with a sound alert."],
+b2:["تضيف أصنافك بصورها وأسعارها وعروضك.","Add your items with photos, prices and offers."],
+b3:["مطعمك يظهر للعملاء تلقائيًا في قائمة المطاعم.","Your restaurant appears to customers automatically in the restaurants list."],
+fName:["اسم المطعم (كما يظهر للعملاء)","Restaurant name (as customers will see it)"],
+fOwner:["اسم المسؤول","Manager name"],fLoc:["📍 موقع المطعم (إجباري)","📍 Restaurant location (required)"],locBtn:["📍 موقعي الحالي (وإنت في المطعم)","📍 My current location (while at the restaurant)"],locH:["أو الصق لينك مطعمك من خرائط جوجل","Or paste your restaurant's Google Maps link"],locOk:["✓ تم تحديد الموقع","✓ Location set"],locFail:["تعذر تحديد موقعك، فعّل الموقع أو الصق لينك خرائط جوجل","Could not get your location; enable location or paste a Google Maps link"],eLoc:["حدد موقع المطعم: دوس «موقعي الحالي» أو الصق لينك خرائط جوجل","Set the restaurant location: tap «My current location» or paste a Google Maps link"],fCat:["تصنيف المطعم","Restaurant category"],fPhone:["رقم الجوال (05xxxxxxxx)","Mobile number (05xxxxxxxx)"],
+agree:["أقرّ أن البيانات صحيحة، وأن المطعم مرخّص ويلتزم بالاشتراطات الصحية، وأوافق على شروط المطاعم وسياسة الخصوصية.","I confirm the details are correct, that the restaurant is licensed and follows health requirements, and I agree to the restaurant terms and privacy policy."],
+send:["إرسال الطلب","Submit request"],read:["اقرأ: ","Read: "],lgT:["شروط المطاعم","Restaurant terms"],lgP:["سياسة الخصوصية","Privacy policy"],
+eName:["اكتب اسم المطعم","Enter the restaurant name"],eOwner:["اكتب اسم المسؤول","Enter the manager name"],ePhone:["اكتب رقم جوال صحيح يبدأ بـ 05","Enter a valid mobile number starting with 05"],eAgree:["لازم توافق على الشروط","You must agree to the terms"],
+eSend:["تعذر الإرسال، حاول مرة أخرى","Could not submit, try again"],noConn:["تعذر الاتصال، حاول مرة أخرى","Connection failed, try again"],
+dT:["✅ تم استلام طلبك","✅ Request received"],dX:["راجعناه وسنتواصل معك على رقم الجوال الذي كتبته، وبعد الموافقة يصلك رمز الدخول. لا داعي لإرسال الطلب مرة ثانية.","We will review it and contact you on the mobile number you entered. After approval you will get your login code. No need to submit again."],
+dTa:["✅ تم تسجيل مطعمك","✅ Your restaurant is registered"],dXa:["رمز دخول مطعمك اتولّد تلقائيًا. اربط تليجرام من الزر تحت وهيوصلك الرمز فورًا. لا داعي لإرسال الطلب مرة ثانية.","Your login code was generated automatically. Link Telegram with the button below and you will get the code right away. No need to submit again."],
+tgA:["عشان يوصلك الرمز:","To receive your code:"],tgW:["عشان الرمز يوصلك تلقائيًا أول ما الإدارة تعتمد مطعمك:","To get your code automatically once admin approves your restaurant:"],
+tgBtn:["✈️ اربط تليجرام لاستلام الرمز","✈️ Link Telegram to get your code"],tgHow:["اضغط الزر ثم «Start» في تليجرام. لو ما ربطتش هنتواصل معاك على الجوال.","Tap the button, then «Start» in Telegram. If you don't link it, we will contact you by phone."]
+};
+/* أسماء التصنيفات بالإنجليزي للعرض فقط (القيمة اللي بتروح للسيرفر تفضل عربي زي ما هي) */
+var CATS={"مطاعم":"Restaurants","كافيهات":"Cafés","مقاهي":"Cafés","حلويات":"Sweets","مخابز":"Bakeries","عصائر":"Juices","مشروبات":"Drinks","بقالة":"Grocery","سوبرماركت":"Supermarket","صيدليات":"Pharmacies","وجبات سريعة":"Fast food","مشويات":"Grills","بيتزا":"Pizza","برجر":"Burgers"};
+function t(k){var d=T[k];return d?d[LANG==="en"?1:0]:k}
+var DONE=null;
+function catsUi(){Array.prototype.forEach.call($("cat").options,function(o){o.textContent=LANG==="en"&&CATS[o.value]?CATS[o.value]+" - "+o.value:o.value})}
+function applyLang(){
+  document.documentElement.lang=LANG;document.documentElement.dir=LANG==="en"?"ltr":"rtl";
+  document.querySelectorAll("[data-i]").forEach(function(e){e.textContent=t(e.getAttribute("data-i"))});
+  $("lang").textContent=LANG==="en"?"عربي":"EN";
+  try{document.title=LANG==="en"?"Wasel - Register your restaurant":"واصل - سجّل مطعمك"}catch(e){}
+  catsUi();legalUi();if(DONE)doneUi(DONE)}
+$("lang").onclick=function(){LANG=LANG==="en"?"ar":"en";try{localStorage.setItem("wl",LANG)}catch(e){}try{window.top.postMessage({wasel_lang:LANG},"*")}catch(e){}applyLang()};
+var LG=null;
+function legalUi(){
+  var b=$("lg");b.textContent="";
+  if(!LG||typeof LG.termsRestaurant!=="string"||typeof LG.privacyRestaurant!=="string"||!/^https:\/\//.test(LG.termsRestaurant)||!/^https:\/\//.test(LG.privacyRestaurant))return;
+  b.appendChild(document.createTextNode(t("read")));
+  [["lgT",LG.termsRestaurant],["lgP",LG.privacyRestaurant]].forEach(function(x,i){
+    if(i)b.appendChild(document.createTextNode(" · "));
+    var a=document.createElement("a");a.textContent=t(x[0]);a.href=x[1]+(LANG==="en"?(x[1].indexOf("?")<0?"?":"&")+"lang=en":"");a.target="_blank";a.rel="noopener noreferrer";a.style.color="var(--br)";a.style.fontWeight="700";b.appendChild(a)})}
+function doneUi(r){
+  $("dT").textContent=t(r.auto?"dTa":"dT");$("dX").textContent=t(r.auto?"dXa":"dX");
+  if(typeof r.tg==="string"&&/^https:\/\/t\.me\/[A-Za-z0-9_]+\?start=m[A-F0-9]{12}$/.test(r.tg)){$("dTa").href=r.tg;$("dTx").textContent=t(r.auto?"tgA":"tgW");$("dTg").classList.remove("hide")}}
+/* رسائل السيرفر عربي: في الإنجليزي نعرض رسالة عامة ومعاها النص الأصلي */
+function srvMsg(m){if(!m)return t("eSend");return LANG==="en"&&/[\u0600-\u06ff]/.test(m)?t("eSend")+" ("+m+")":m}
+try{google.script.run.withSuccessHandler(function(r){LG=r;legalUi()}).withFailureHandler(function(){}).legalLinks()}catch(e){}
+// قائمة التصنيفات المتاحة من السيرفر (لو فشلت يبقى «مطاعم» فقط)
+google.script.run.withSuccessHandler(function(r){
+  if(!r||!r.ok||!r.list||!r.list.length)return;
+  var s=$("cat");s.textContent="";
+  r.list.forEach(function(c){var o=document.createElement("option");o.value=c;o.textContent=c;s.appendChild(o)});
+  catsUi()
+}).withFailureHandler(function(){}).restaurantCats();
+$("go").onclick=function(){
+  var m=$("msg");m.textContent="";
+  var o={name:$("name").value,cat:$("cat").value,owner:$("owner").value,phone:$("phone").value,agree:$("agree").checked===true,website:$("website").value};
+  if(String(o.name).trim().length<3){m.textContent=t("eName");return}
+  if(String(o.owner).trim().length<3){m.textContent=t("eOwner");return}
+  if(!/^05\d{8}$/.test(String(o.phone).replace(/[\s\-]/g,""))){m.textContent=t("ePhone");return}
+  var lv=$("loc").value.trim();
+  if(!/^-?\d{1,2}\.\d{3,8},\s*-?\d{1,3}\.\d{3,8}$/.test(lv)&&!/^https:\/\/((www\.)?google\.[a-z.]+\/maps|maps\.google\.[a-z.]+\/|maps\.app\.goo\.gl\/|goo\.gl\/maps)/i.test(lv)){m.textContent=t("eLoc");return}
+  if(!o.agree){m.textContent=t("eAgree");return}
+  $("go").disabled=true;m.textContent="";
+  google.script.run.withSuccessHandler(function(r){
+    $("go").disabled=false;
+    if(r&&r.ok){try{google.script.run.withFailureHandler(function(){}).restaurantRegLoc({name:o.name,phone:o.phone,loc:lv})}catch(eL){}
+      DONE={auto:!!r.auto,tg:r.tg};$("vForm").classList.add("hide");$("vDone").classList.remove("hide");doneUi(DONE);
+      try{window.scrollTo(0,0)}catch(e){}}
+    else m.textContent=srvMsg(r&&r.msg);
+  }).withFailureHandler(function(){$("go").disabled=false;m.textContent=t("noConn")}).restaurantRegister(o);
+};
+applyLang();
+/* لغة التطبيق من الغلاف (?lang=en أو ar) */
+try{google.script.url.getLocation(function(l){var g=l&&l.parameter&&l.parameter.lang;if((g==="en"||g==="ar")&&g!==LANG){LANG=g;try{localStorage.setItem("wl",g)}catch(e){}applyLang()}})}catch(e){}
+</script><script>
+/* موقع المطعم في التسجيل: GPS أو لينك خرائط جوجل */
+$("locHere").onclick=function(){var st=$("locSt");if(!navigator.geolocation){st.textContent=t("locFail");return}st.textContent="...";
+  navigator.geolocation.getCurrentPosition(function(p){$("loc").value=p.coords.latitude.toFixed(6)+","+p.coords.longitude.toFixed(6);st.textContent=t("locOk")},function(){st.textContent=t("locFail")},{enableHighAccuracy:true,timeout:15000})};
+</script></body></html>
