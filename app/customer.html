@@ -1229,6 +1229,7 @@ document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&
 <div class="uoh"><b id="uott">🔥 عروض عنيزة</b><button id="uox" type="button">✕</button></div>
 <div id="uol"></div>
 <p class="uonote" id="uonote"></p></div></div>
+<div id="uodt" aria-hidden="true"><div class="uodh"><button id="uodb" type="button">›</button><b id="uodn"></b></div><div id="uodc"></div></div>
 <style>
 #uosh{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
 #uosh.hide{display:none!important}
@@ -1246,6 +1247,23 @@ document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&
 .uorp{background:transparent!important;border:0!important;color:var(--mu)!important;font-size:12px;text-decoration:underline;width:auto!important;padding:2px!important;margin:6px 0 0!important;box-shadow:none!important}
 .uomsg{color:var(--mu);text-align:center;padding:30px 10px}
 .uonote{color:var(--mu);font-size:12px;text-align:center;margin:6px 0 0}
+.uoc{cursor:pointer}
+#uodt{position:fixed;top:0;bottom:0;right:0;width:min(420px,100vw);background:var(--bg);color:var(--tx);z-index:71;transform:translateX(105%);transition:transform .25s,visibility 0s .25s;visibility:hidden;overflow-y:auto;box-shadow:-6px 0 20px rgba(0,0,0,.3)}
+[dir=ltr] #uodt{right:auto;left:0;transform:translateX(-105%)}
+#uodt.open{transform:none;visibility:visible;transition:transform .25s}
+.uodh{position:sticky;top:0;background:var(--br);color:#fff;display:flex;align-items:center;gap:8px;padding:12px 14px;font-size:17px;z-index:1}
+.uodh button{background:transparent!important;border:0!important;color:#fff!important;font-size:26px;line-height:1;width:auto!important;padding:0 6px!important;margin:0!important;box-shadow:none!important}
+[dir=ltr] .uodh button{transform:scaleX(-1)}
+#uodc{padding:18px 16px 30px;display:grid;gap:14px}
+.uodlg{width:96px;height:96px;border-radius:50%;margin:4px auto 0;overflow:hidden;background:var(--br2);display:grid;place-items:center;font-weight:800;color:var(--br);font-size:38px;border:3px solid var(--ln)}
+.uodlg img{width:100%;height:100%;object-fit:cover}
+.uods{text-align:center;font-weight:800;font-size:18px}
+.uodti{font-size:20px;font-weight:800;text-align:center;line-height:1.5}
+.uodbox{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:12px 14px;line-height:1.8}
+.uodk{color:var(--mu);font-size:13px}
+.uodend{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#uodc .uogo{width:100%!important;padding:14px!important;font-size:17px}
+#uodc .uorp{justify-self:center}
 </style>
 <script>
 /* ===== «عروض عنيزة 🔥» (ملف Offers.gs): إضافة فقط، مش بتغيّر أي حاجة في الطلب ===== */
@@ -1253,7 +1271,7 @@ document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&
 var UT={t:["🔥 عروض عنيزة","🔥 Unayzah offers"],go:["اطلبه مع واصل","Order with Wasel"],rp:["العرض مش متاح؟","Offer not available?"],rpd:["شكرًا، اتشال العرض ✅","Thanks, offer removed ✅"],
  left0:["⏳ آخر يوم","⏳ Last day"],left:["⏳ باقي ","⏳ "],d:[" يوم"," days left"],none:["مفيش عروض دلوقتي، ارجع بعدين 🙏","No offers right now, check back later 🙏"],
  ld:["جارٍ التحميل...","Loading..."],note:["حسب إعلان المطعم، ويؤكَّد عند الطلب. لو العرض مش موجود هنبلّغك قبل ما تدفع أي حاجة.","As announced by the restaurant, confirmed when ordering. If it's not available we'll tell you before you pay anything."],
- ofn:["🔥 عرض: ","🔥 Offer: "],nw:["جديد","New"]};
+ ofn:["🔥 عرض: ","🔥 Offer: "],nw:["جديد","New"],dt:["تفاصيل العرض","Offer details"],till:["لحد ","Until "]};
 function ut(k){return UT[k][LANG==="en"?1:0]}
 var L=null,sh=$("uosh"),box=$("uol");
 function lbl(){$("uobt").textContent=ut("t");$("uott").textContent=ut("t");$("uonote").textContent=ut("note");
@@ -1293,12 +1311,28 @@ function draw(){
     var rp=document.createElement("button");rp.type="button";rp.className="uorp";rp.textContent=ut("rp");
     rp.onclick=function(){rp.disabled=true;try{google.script.run.offerReport(o.id,"customer")}catch(e){}rp.textContent=ut("rpd");
       L=L.filter(function(x){return x.id!==o.id});setTimeout(function(){draw();lbl()},1200)};
-    c.appendChild(rp);box.appendChild(c)})}
+    c.appendChild(rp);c.onclick=function(ev){if(ev.target.closest("button"))return;dOpen(o)};box.appendChild(c)})}
+function logoEl(o,cls){var lg=document.createElement("div");lg.className=cls;var ch=(o.store||"؟").replace(/^(مطعم|كافيه|مقهى)\s+/,"").charAt(0);
+  if(o.logo){var im=document.createElement("img");im.src=o.logo;im.alt="";im.onerror=function(){lg.textContent=ch};lg.appendChild(im)}else lg.textContent=ch;return lg}
+function dEl(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+var DT=$("uodt"),DC=$("uodc");
+function dClose(){DT.classList.remove("open");DT.setAttribute("aria-hidden","true")}
+function dOpen(o){
+  $("uodn").textContent=o.store;DC.textContent="";
+  DC.appendChild(logoEl(o,"uodlg"));DC.appendChild(dEl("div","uods",o.store));DC.appendChild(dEl("div","uodti",o.title));
+  if(o.details){var b=dEl("div","uodbox");b.appendChild(dEl("div","uodk",ut("dt")));b.appendChild(dEl("div",null,o.details));DC.appendChild(b)}
+  var e=dEl("div","uodbox uodend");e.appendChild(dEl("span","uoleft",o.left<=0?ut("left0"):(ut("left")+o.left+ut("d"))));e.appendChild(dEl("span","uodk",ut("till")+o.ends));DC.appendChild(e);
+  var go=dEl("button","uogo",ut("go"));go.type="button";go.onclick=function(){dClose();pick(o)};DC.appendChild(go);
+  DC.appendChild(dEl("div","uonote",ut("note")));
+  var rp=dEl("button","uorp",ut("rp"));rp.type="button";rp.onclick=function(){rp.disabled=true;try{google.script.run.offerReport(o.id,"customer")}catch(x){}rp.textContent=ut("rpd");
+    L=L.filter(function(x){return x.id!==o.id});setTimeout(function(){dClose();draw();lbl()},1200)};DC.appendChild(rp);
+  DT.classList.add("open");DT.setAttribute("aria-hidden","false");DT.scrollTop=0}
+$("uodb").onclick=dClose;
 function open(){var dw=$("cdw");if(dw&&dw.classList.contains("open")){dw.classList.remove("open");dw.setAttribute("aria-hidden","true");var dm=$("cdim");if(dm)dm.classList.add("hide")}
   sh.classList.remove("hide");draw();load(draw)}
-function close(){sh.classList.add("hide")}
+function close(){dClose();sh.classList.add("hide")}
 $("uob").onclick=open;$("uox").onclick=close;sh.onclick=function(e){if(e.target===sh)close()};
-document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!sh.classList.contains("hide"))close()});
+document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;if(DT.classList.contains("open"))dClose();else if(!sh.classList.contains("hide"))close()});
 var lb=$("lang");if(lb)lb.addEventListener("click",function(){setTimeout(function(){lbl();if(!sh.classList.contains("hide"))draw()},100)});
 lbl();setTimeout(function(){load()},2500);
 })();
