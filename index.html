@@ -65,6 +65,17 @@ iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
 /* ===== غيّر هذا الرابط فقط لو غيّرت رابط التطبيق ===== */
 var APP = "https://script.google.com/macros/s/AKfycbwmS0DX-pqH17-cKKftKNqjVzD3lMuskpL8MvFKJpfSGt3uyVk5bli1dWeGOq782YbnLg/exec";
 /* ======================================================== */
+/* الصفحات السريعة: الصفحات نفسها من GitHub (فولدر app) والبيانات من Apps Script (ملف Api.gs).
+   لو حصلت أي مشكلة: خلّي FAST = false وكل حاجة ترجع زي الأول (الصفحات من Apps Script). */
+var FAST = true;
+var FASTP = { courier: "courier", track: "track", register: "register", restaurant: "restaurant", "restaurant-register": "restaurant-register",
+  terms: "legal", privacy: "legal", "terms-courier": "legal", "privacy-courier": "legal", "terms-restaurant": "legal", "privacy-restaurant": "legal" };
+var FASTL = { terms: "terms-customer", privacy: "privacy-customer" };
+function fastUrl(page, qs){
+  var f = FASTP[page] || "customer", q = qs ? String(qs).replace(/^\?/, "") : "";
+  if (f === "legal") q = (q ? q + "&" : "") + "p=" + encodeURIComponent(FASTL[page] || page);
+  return "app/" + f + ".html" + (q ? "?" + q : "");
+}
 function $(i){return document.getElementById(i)}
 var RK = "wasel_role", LK = "wasel_lang";   // الدور: u عميل ، c مندوب  |  اللغة: ar أو en
 function lsGet(k){try{return localStorage.getItem(k)||""}catch(e){return ""}}
@@ -93,6 +104,7 @@ function buildUrl(role, extra, lang){
   if (role === "c") qs.push("page=courier");
   if (extra) qs.push(String(extra).replace(/^[?&]/, ""));
   if (lang) qs.push("lang=" + lang);
+  if (FAST) return fastUrl(role === "c" ? "courier" : "", qs.join("&"));
   return APP + (qs.length ? "?" + qs.join("&") : "");
 }
 var LT = 0, LR = 0;
@@ -135,7 +147,7 @@ $("sw").onclick = function(){ lsSet(RK, ""); showPick(); };
 /* ===== تحديد ما يُفتح عند التشغيل ===== */
 (function(){
   var p = params(), page = p && p.get("page"), r = p && p.get("r");
-  if (page === "admin") { location.replace(APP + location.search); return; }
+  if (page === "admin" || page === "live") { location.replace(APP + location.search); return; }
   if (r === "c" || r === "u") {                     // رابط مباشر لاختيار الدور (?r=c أو ?r=u)
     lsSet(RK, r); openApp(r, p ? without(p, "r").replace(/^\?/, "") : "", ""); return;
   }
@@ -143,7 +155,7 @@ $("sw").onclick = function(){ lsSet(RK, ""); showPick(); };
     lsSet(RK, "c"); openApp("c", p ? without(p, "page").replace(/^\?/, "") : "", ""); return;
   }
   if (page) {                                         // تتبّع الطلب، التسجيل... تُفتح كما هي
-    loading(true); $("f").src = APP + location.search; $("f").classList.remove("hide"); if (page !== "restaurant" && page !== "restaurant-register") $("sw").classList.remove("hide"); return;
+    loading(true); $("f").src = (FAST && FASTP[page]) ? fastUrl(page, location.search) : APP + location.search; $("f").classList.remove("hide"); if (page !== "restaurant" && page !== "restaurant-register") $("sw").classList.remove("hide"); return;
   }
   if (p && p.get("pick")) { showPick(); return; }      // ?pick=1 يفتح شاشة الاختيار دائمًا
   var saved = getRole();
@@ -167,7 +179,7 @@ document.addEventListener("visibilitychange", function(){ if (!document.hidden &
 window.addEventListener("message", function (e) {
   var d = e.data, host = "";
   try { host = new URL(e.origin).hostname; } catch (x) { return; }
-  if (!d || typeof d !== "object" || !/\.googleusercontent\.com$/.test(host)) return;
+  if (!d || typeof d !== "object" || !(/\.googleusercontent\.com$/.test(host) || e.origin === location.origin)) return;
   if (d.wasel === "setwc") lsSet("wasel_wc", typeof d.v === "string" ? d.v.slice(0, 40) : "");
   else if (d.wasel === "getwc" && e.source) { try { e.source.postMessage({ wasel: "wc", v: lsGet("wasel_wc") }, e.origin); } catch (x) {} }
 });
