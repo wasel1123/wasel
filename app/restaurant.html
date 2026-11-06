@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head>
+<!-- صفحة سريعة على GitHub: نفس ملف Restaurant.html في Apps Script + bridge.js -->
+<script src="../bridge.js"></script>
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<title>واصل - المطعم</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>/* وضع العرض: فاتح افتراضيًا، والعميل يختار الغامق بزر ☀️/🌙 ويُحفظ على جهازه، ومع كل تغيير زر «تراجع» */
+(function(){var d=document.documentElement;try{if(localStorage.getItem("wth")==="dark")d.classList.add("dk");if(localStorage.getItem("wgd")==="f")d.classList.add("pk")}catch(e){}
+var TT=0;function en(){return d.lang==="en"}
+window.waselToast=function(msg,undoTxt,undo){var t=document.getElementById("wtoast");if(!t){t=document.createElement("div");t.id="wtoast";t.setAttribute("role","status");document.body.appendChild(t)}
+t.textContent="";var s=document.createElement("span");s.textContent=msg;t.appendChild(s);
+if(undo){var u=document.createElement("button");u.type="button";u.textContent=undoTxt;u.onclick=function(){clearTimeout(TT);t.className="";undo()};t.appendChild(u)}
+t.className="on";clearTimeout(TT);TT=setTimeout(function(){t.className=""},6000)};
+document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
+var b=document.createElement("button");b.type="button";b.className="thm";
+function ui(){var k=d.classList.contains("dk");b.textContent=k?"☀️":"🌙";b.title=k?(en()?"Light mode":"الوضع الفاتح"):(en()?"Dark mode":"الوضع الداكن");b.setAttribute("aria-label",b.title)}
+function setDk(k){d.classList.toggle("dk",k);try{localStorage.setItem("wth",k?"dark":"light")}catch(e){}ui()}
+b.onclick=function(){var was=d.classList.contains("dk");setDk(!was);
+ waselToast(!was?(en()?"✓ Dark mode on":"✓ اتحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ اتحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
+var l=h.querySelector("#lang");if(l&&l.parentNode)l.parentNode.insertBefore(b,l);else h.appendChild(b)})})();
+</script>
+<script>/* زر «غيّر مودك / غيّري مودك»: يبدّل شكل التطبيق بين الأخضر والبينك، ويتحفظ على الجهاز بس (مش بيتبعت للسيرفر)، ومعاه «تراجع» */
+(function(){var d=document.documentElement;
+function en(){return d.lang==="en"}
+function get(){try{return localStorage.getItem("wgd")||""}catch(e){return ""}}
+function lbl(b){var f=get()==="f",t=en()?"🎨 Change your look":(f?"🎨 غيّري مودك":"🎨 غيّر مودك");b.textContent=t;b.title=t;b.setAttribute("aria-label",t)}
+window.waselGender=function(v,silent){var prev=get();try{if(v)localStorage.setItem("wgd",v);else localStorage.removeItem("wgd")}catch(e){}
+ d.classList.toggle("pk",v==="f");Array.prototype.forEach.call(document.querySelectorAll(".gnd"),lbl);
+ try{document.dispatchEvent(new CustomEvent("waselgender",{detail:{v:v,prev:prev}}))}catch(e){}
+ if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ اتحوّل للون البينك"):(en()?"✓ Wasel green look on":"✓ اتحوّل للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
+document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
+ var b=document.createElement("button");b.type="button";b.className="thm gnd";lbl(b);
+ b.onclick=function(){window.waselGender(get()==="f"?"m":"f")};
+ var t=h.querySelector(".thm");if(t&&t.parentNode)t.parentNode.insertBefore(b,t);else h.appendChild(b);
+ var l=document.getElementById("lang");if(l)l.addEventListener("click",function(){setTimeout(function(){lbl(b)},0)})})})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f6f6;--card:#fff;--tx:#12211f;--mu:#4f6260;--br:#0e4f4c;--br2:#e1eeec;--ln:#dde5e3;--bad:#dc2626;--ok:#15803d}
+html.dk{--bg:#0d1413;--card:#16201f;--tx:#e8f0ee;--mu:#9bb0ab;--br:#5cc8bb;--br2:#1f3331;--ln:#273533;--bad:#f87171;--ok:#4ade80}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;line-height:1.6}
+header{background:#0e4f4c;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+header .brand{display:flex;align-items:center;gap:10px;min-width:0}header .brand svg{width:44px;height:44px;flex:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
+header b{font-size:20px}header small{display:block;color:#a9d3cf}
+header button{width:auto;margin:0 6px 0 0;padding:8px 12px;background:#fff;color:#0e4f4c;font-size:14px;border-radius:12px}
+main{max-width:640px;margin:0 auto;padding:12px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:20px;padding:16px;margin-bottom:12px}
+.card.wait{border:2px solid #f2b544;box-shadow:0 0 0 3px rgba(242,181,68,.2)}
+h2{font-size:18px;margin:6px 0 10px}label{display:block;color:var(--mu);font-size:14px;margin-bottom:4px}
+input,select{width:100%;padding:12px;border:1px solid var(--ln);border-radius:12px;background:var(--bg);color:var(--tx);font:inherit}
+button{width:100%;margin-top:10px;padding:13px;border:0;border-radius:14px;background:var(--br);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+button.sec{background:var(--br2);color:var(--br)}button.bad{background:var(--bad);color:#fff}button.ok{background:var(--ok);color:#fff}button:disabled{opacity:.6}
+.hide{display:none!important}.err{color:var(--bad);font-weight:700}.sub{color:var(--mu);font-size:13px}.muted{color:var(--mu);text-align:center;padding:18px}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:700;background:#fdf1d8;color:#5c3a00}
+.tag.a{background:#bae6fd;color:#075985}.tag.r{background:#bbf7d0;color:#14532d}.tag.x{background:#fecaca;color:#7f1d1d}
+.row{margin:8px 0}.row b{color:var(--mu);font-weight:600;font-size:14px;display:block}
+.items{white-space:pre-wrap;overflow-wrap:anywhere;font-size:17px;font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.stats b{display:block;font-size:24px;color:var(--br)}.stats span{font-size:12px;color:var(--mu)}
+.mins{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px}.mins button{margin:0;padding:12px 4px;background:var(--br2);color:var(--tx)}.mins button.on{background:var(--br);color:#fff}
+.timer{font-size:28px;font-weight:700;direction:ltr;text-align:center;margin:6px 0}.timer.late{color:var(--bad)}
+.cr{background:var(--bg);border-radius:12px;padding:8px 12px;margin-top:8px;font-weight:700}
+#alertBar{position:sticky;top:0;z-index:9;background:#f2b544;color:#3b2300;font-weight:700;text-align:center;padding:12px;display:none;font-size:18px}
+#alertBar.on{display:block;animation:pulse 1s 3}@keyframes pulse{50%{background:#fbbf24}}
+#sndHint{display:none;background:#fdf1d8;color:#5c3a00;border:1px solid #f0d890;border-radius:14px;padding:10px 12px;margin-bottom:10px;text-align:center;font-weight:700;cursor:pointer}
+#msg{font-weight:700;padding:0 4px 8px}
+.rsn{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.rsn button{width:auto;margin:0;padding:6px 10px;font-size:13px;background:var(--br2);color:var(--tx)}
+.tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}.tabs button{margin:0;background:var(--br2);color:var(--tx)}.tabs button.on{background:var(--br);color:#fff}
+.opn{display:flex;justify-content:space-between;align-items:center;gap:10px}.opn button{width:auto;margin:0;padding:10px 16px}
+.mi{border-top:1px solid var(--ln);padding:10px 0}.mi:first-child{border-top:0}.mi .nm{font-weight:700;font-size:16px;overflow-wrap:anywhere}
+.mi .pr{font-weight:700;color:var(--br)}.mi s{color:var(--mu);margin-inline-start:6px;font-size:13px}.mi.off .nm{opacity:.5;text-decoration:line-through}
+.acts{display:flex;gap:6px;margin-top:6px}.acts button{margin:0;padding:8px 6px;font-size:13px}
+.sech{font-size:15px;color:var(--mu);margin:12px 0 2px;font-weight:700}
+.mi{display:flex;gap:10px;align-items:flex-start}.mi .tx{flex:1;min-width:0}.thumb{width:64px;height:64px;border-radius:12px;object-fit:cover;flex:none;background:var(--ln)}
+.pic{display:flex;gap:10px;align-items:center}.pic .thumb{width:84px;height:84px}.pic button{margin:0;width:auto;padding:10px 14px;font-size:14px}
+.nopic{display:grid;place-items:center;color:var(--mu);font-size:12px;text-align:center}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fg .w{grid-column:1/3}
+:where(html.dk) button,:where(html.dk) .mins button.on,:where(html.dk) .tabs button.on{color:#06201d}:where(html.dk) header button{color:#0e4f4c}
+
+:root{color-scheme:light}html.dk{color-scheme:dark}
+header .thm{width:auto!important;flex:none;margin:0 6px!important;padding:6px 10px!important;border-radius:12px!important;background:rgba(255,255,255,.15)!important;color:#fff!important;border:1px solid rgba(255,255,255,.35)!important;font-size:16px!important;line-height:1.2!important;cursor:pointer;box-shadow:none!important}
+header>.thm:last-child{margin-inline-start:auto!important}
+#wtoast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:9500;display:flex;align-items:center;gap:12px;max-width:92vw;padding:10px 12px 10px 16px;border-radius:16px;background:#12211f;color:#fff;font-weight:700;font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.35);transition:opacity .2s,transform .2s}
+#wtoast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#wtoast button{width:auto!important;margin:0!important;padding:8px 14px!important;border:0!important;border-radius:12px!important;background:#f2b544!important;color:#3b2300!important;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+/* كلام أوضح: خط عريض في التطبيق كله، مع عمق خفيف للعناوين */
+body{font-weight:700}
+h1,h2,h3,h4,b,strong,.big,label,input,select,textarea,button,small{font-weight:700}
+input::placeholder,textarea::placeholder{font-weight:600}
+header b,.hero .big,.brand b{text-shadow:0 2px 4px rgba(0,0,0,.3)}
+h1,h2,h3,.big,.ch{text-shadow:0 1px 1px rgba(0,0,0,.1)}
+html.dk h1,html.dk h2,html.dk h3,html.dk .big,html.dk .ch{text-shadow:0 1px 2px rgba(0,0,0,.6)}
+/* الخانات متظللة: أخضر واصل افتراضيًا، ووردي لما العميل يختار 👩 */
+:root{--fld:#e7f2f0;--fldb:#b9d6d1}
+html.dk{--fld:#13302d;--fldb:#24524c}
+html.pk{--fld:#fdeef6;--fldb:#f5c2dc}
+html.pk.dk{--fld:#3a1729;--fldb:#6b2a4c}
+input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea{background-color:var(--fld)!important;border-color:var(--fldb)!important}
+input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,select:focus,textarea:focus{outline:2px solid var(--br);outline-offset:1px}
+.invb{margin:10px 0 4px}.invl{display:block;font-weight:700;margin-bottom:6px;color:var(--br,#0e4f4c)}
+input.inv{width:100%;font:inherit;font-weight:700;font-size:18px;letter-spacing:1px;text-align:left;padding:11px 14px;border-radius:14px;border:2px solid var(--fldb,#b9d6d1);background:var(--fld,#e7f2f0);color:inherit}
+input.inv:focus{outline:none;border-color:var(--br,#0e4f4c)}input.inv.bad{border-color:#dc2626}
+.invh{font-size:12.5px;opacity:.75;margin-top:4px}.invs{margin:8px 0;padding:8px 12px;border-radius:12px;background:var(--fld,#e7f2f0);border:1px dashed var(--fldb,#b9d6d1)}
+.invs b{direction:ltr;unicode-bidi:isolate;letter-spacing:1px}
+
+/* ===== شكل واحد لكل صفحات واصل: خلفية ملوّنة، كروت بإطار، عناوين الخانات بالأخضر (وبالبينك للبنات) ===== */
+:root{--pg:#e4efed;--pg2:#cfe3df;--sh:rgba(14,79,76,.14);--br3:#14635f}
+html.dk{--pg:#0a1514;--pg2:#11302c;--sh:rgba(0,0,0,.45);--br3:#3fa99d}
+body{background:linear-gradient(180deg,var(--pg2) 0,var(--pg) 320px) var(--pg);background-attachment:fixed}
+header{box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.card{border:2px solid var(--fldb)!important;box-shadow:0 8px 22px var(--sh)}
+.card{overflow:hidden}
+.card>h2:first-child{margin:-16px -16px 12px;padding:14px 16px;background:linear-gradient(135deg,var(--br),var(--br3));color:#fff;font-size:21px;text-shadow:0 2px 4px rgba(0,0,0,.25)}
+html.dk .card>h2:first-child{color:#06201d;text-shadow:none}
+main label:not(.chk):not(.lr):not(.mu):not(:has(input)){display:inline-block;width:auto;margin:14px 0 6px;font-size:14.5px;padding:4px 14px;border-radius:10px;background:linear-gradient(135deg,var(--br),var(--br3));color:#fff!important;font-weight:700;box-shadow:0 3px 8px var(--sh);text-shadow:0 1px 2px rgba(0,0,0,.2)}
+html.dk main label:not(.chk):not(.lr):not(.mu):not(:has(input)){color:#06201d!important;text-shadow:none}
+button:active{transform:scale(.97)}
+.card.wait{border:2px solid #f2b544!important;box-shadow:0 0 0 3px rgba(242,181,68,.25),0 8px 22px var(--sh)!important}
+@keyframes wrise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+main>*{animation:wrise .45s ease both}
+main>*:nth-child(2){animation-delay:.06s}main>*:nth-child(3){animation-delay:.12s}main>*:nth-child(n+4){animation-delay:.18s}
+@media(prefers-reduced-motion:reduce){main>*{animation:none}}
+
+/* زر «غيّر مودك» في الهيدر */
+header .gnd{font-size:13px!important;padding:6px 9px!important;white-space:nowrap}
+header>.gnd{margin-inline-start:auto!important}header>.gnd+.thm{margin-inline-start:6px!important}
+@media(max-width:380px){header .gnd{font-size:11.5px!important;padding:5px 7px!important}}
+html.pk #lang{color:#9d174d!important}
+header>div:last-child{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center;flex:0 1 auto}
+header>div:last-child>button{margin:0!important}
+html.pk .dwh,html.pk .cspl{background:#9d174d!important}
+@media(max-width:520px){
+header{gap:6px!important;padding-inline:10px!important}
+header>div:first-child,header .brand{min-width:0;flex:1 1 auto}
+header>svg+div{min-width:0;flex:1 1 auto}header .clock{font-size:13px}
+header b{font-size:17px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+header small{font-size:11.5px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header>svg,header .brand>svg{width:36px!important;height:36px!important}
+header .thm{padding:5px 8px!important;margin:0 3px!important}
+header .gnd{font-size:12px!important;padding:5px 7px!important}
+header #lang{padding:6px 10px!important;margin:0 3px!important}
+}
+
+/* ===== وضع البينك كامل في كل الصفحات (مش الخانات بس) ===== */
+html.pk{--br:#be185d;--br2:#fce7f3;--c1:#be185d;--fld:#fdeef6;--fldb:#f5c2dc;--pg:#fbe9f2;--pg2:#f6d0e3;--sh:rgba(157,23,77,.14);--br3:#9d174d}
+html.pk.dk{--br:#f472b6;--br2:#3b1427;--c1:#f472b6;--fld:#3a1729;--fldb:#6b2a4c;--pg:#1c0d15;--pg2:#331526;--sh:rgba(0,0,0,.45);--br3:#ec4899}
+html.pk header{background:#9d174d!important}
+html.pk header small{color:#fbcfe8!important}
+html.pk header svg [fill="#0e4f4c"]{fill:#9d174d}html.pk header svg [stroke="#0e4f4c"]{stroke:#9d174d}
+html.pk header button:not(.thm){color:#9d174d!important}
+.sumtabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}.sumtabs button{margin:0;padding:9px 4px;font-size:14px;background:var(--br2);color:var(--tx)}.sumtabs button.on{background:var(--br);color:#fff}
+.stats.s4{grid-template-columns:repeat(2,1fr)}.rbtn{display:grid;gap:8px;margin-top:10px}.rbtn button{margin:0}
+.hrs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}.bz{display:flex;gap:10px;align-items:flex-start;margin:12px 0;font-size:14px}.bz input{width:20px;height:20px;flex:none}
+.acl{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px dashed var(--ln);font-size:14.5px}.acl b{direction:ltr;unicode-bidi:isolate}
+.hi{border:1px solid var(--ln);border-radius:14px;padding:9px 11px;margin-top:8px;font-size:14px}.hi .hh{display:flex;justify-content:space-between;gap:6px;font-weight:700}.hi .sub{margin-top:3px}
+</style></head><body>
+<header><div class="brand"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="18" fill="#fff"/><g transform="translate(2 -3.55) scale(.3)"><path fill="#0e4f4c" d="M13.26,54.00 L42.97,158.00 L85.58,158.00 L100.00,131.44 L114.42,158.00 L157.03,158.00 L186.74,54.00 L155.54,54.00 L133.66,130.57 L100.00,68.56 L66.34,130.57 L44.46,54.00 Z"/><path fill="#0e4f4c" d="M67.315185546875 188.0H64.409912109375L62.824462890625 181.23486328125Q62.533935546875 180.03955078125 62.334716796875 178.736328125Q62.135498046875 179.82373046875 62.010986328125 180.392333984375Q61.886474609375 180.9609375 60.242919921875 188.0H57.337646484375L54.324462890625 176.30419921875H56.806396484375L58.499755859375 183.85791015625L58.881591796875 185.68408203125Q59.114013671875 184.5302734375 59.333984375 183.480224609375Q59.553955078125 182.43017578125 60.989990234375 176.30419921875H63.729248046875L65.206787109375 182.52978515625Q65.381103515625 183.22705078125 65.796142578125 185.68408203125L66.003662109375 184.72119140625L66.443603515625 182.81201171875L67.854736328125 176.30419921875H70.336669921875Z M85.758056640625 188.0 84.720458984375 185.01171875H80.262939453125L79.225341796875 188.0H76.776611328125L81.043212890625 176.30419921875H83.931884765625L88.181884765625 188.0ZM82.487548828125 178.10546875 82.437744140625 178.2880859375Q82.354736328125 178.5869140625 82.238525390625 178.96875Q82.122314453125 179.3505859375 80.810791015625 183.1689453125H84.172607421875L83.018798828125 179.80712890625L82.661865234375 178.67822265625Z M105.304931640625 184.6298828125Q105.304931640625 186.34814453125 104.03076171875 187.257080078125Q102.756591796875 188.166015625 100.291259765625 188.166015625Q98.041748046875 188.166015625 96.763427734375 187.369140625Q95.485107421875 186.572265625 95.119873046875 184.95361328125L97.485595703125 184.5634765625Q97.726318359375 185.4931640625 98.423583984375 185.912353515625Q99.120849609375 186.33154296875 100.357666015625 186.33154296875Q102.922607421875 186.33154296875 102.922607421875 184.77099609375Q102.922607421875 184.27294921875 102.6279296875 183.94921875Q102.333251953125 183.62548828125 101.7978515625 183.40966796875Q101.262451171875 183.19384765625 99.743408203125 182.88671875Q98.431884765625 182.57958984375 97.917236328125 182.392822265625Q97.402587890625 182.2060546875 96.987548828125 181.952880859375Q96.572509765625 181.69970703125 96.281982421875 181.3427734375Q95.991455078125 180.98583984375 95.82958984375 180.50439453125Q95.667724609375 180.02294921875 95.667724609375 179.400390625Q95.667724609375 177.81494140625 96.85888671875 176.972412109375Q98.050048828125 176.1298828125 100.324462890625 176.1298828125Q102.499267578125 176.1298828125 103.5908203125 176.810546875Q104.682373046875 177.4912109375 104.997802734375 179.06005859375L102.623779296875 179.3837890625Q102.441162109375 178.62841796875 101.880859375 178.24658203125Q101.320556640625 177.86474609375 100.274658203125 177.86474609375Q98.050048828125 177.86474609375 98.050048828125 179.25927734375Q98.050048828125 179.7158203125 98.28662109375 180.00634765625Q98.523193359375 180.296875 98.988037109375 180.500244140625Q99.452880859375 180.70361328125 100.872314453125 181.0107421875Q102.557373046875 181.36767578125 103.28369140625 181.670654296875Q104.010009765625 181.9736328125 104.433349609375 182.376220703125Q104.856689453125 182.77880859375 105.080810546875 183.339111328125Q105.304931640625 183.8994140625 105.304931640625 184.6298828125Z M113.106201171875 188.0V176.30419921875H122.303466796875V178.19677734375H115.554931640625V181.13525390625H121.797119140625V183.02783203125H115.554931640625V186.107421875H122.643798828125V188.0Z M130.445068359375 188.0V176.30419921875H132.893798828125V186.107421875H139.169189453125V188.0Z"/><g transform="translate(62.8 42.25) scale(3.1)"><path fill="#fff" stroke="#fff" stroke-width="3" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><path fill="#f2b544" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><circle cx="12" cy="9.4" r="3.2" fill="#fff"/></g></g></svg><div><b id="rn">واصل | المطعم</b><small id="who"></small></div></div><div><button id="snd" class="hide">🔔</button><button id="out" class="hide" data-a>خروج</button><button id="lang" type="button">EN</button></div></header>
+<div id="alertBar"></div>
+<main>
+<div id="login" class="card"><h2 data-a>دخول المطعم</h2><label data-a>رمز الدخول</label>
+<input id="code" type="password" autocomplete="off" data-ap placeholder="الرمز الذي أعطتك إياه إدارة واصل">
+<button id="in" data-a>دخول</button><div id="lmsg" class="err" style="margin-top:8px"></div>
+<div class="sub" style="margin-top:14px;text-align:center"><span data-a>ما عندكش رمز؟ </span><a id="regl" href="#" target="_top" rel="noopener" style="color:var(--br);font-weight:700" data-a>سجّل مطعمك معنا</a></div></div>
+<div id="app" class="hide">
+<div id="sndHint"></div><div id="msg"></div>
+<div class="tabs"><button id="tO" class="on" data-a>📋 الطلبات</button><button id="tM" data-a>🍽 المنيو والعروض</button><button id="tD" data-a>📊 لوحتي</button></div>
+<div id="locCard" class="card hide" style="border:2px solid #f2b544!important"><h2 data-a>📍 لازم تحدد موقع مطعمك</h2>
+<div class="sub" data-a>ما تقدرش تقبل طلبات غير بعد ما تحدد موقعك، عشان المندوب يوصلك على طول والعميل يشوف مكانك.</div>
+<button type="button" id="locHere" data-a>📍 موقعي الحالي (وإنت في المطعم)</button>
+<div class="sub" style="margin-top:8px" data-a>أو الصق لينك مطعمك من خرائط جوجل:</div>
+<input id="locLink" dir="ltr" data-ap placeholder="https://maps.app.goo.gl/..."><button type="button" id="locSave" class="sec" data-a>حفظ اللينك</button></div>
+<div id="pOrders">
+<div id="stat" class="card"></div>
+<h2 data-a>طلبات تحتاج تجهيز</h2><div id="act"></div>
+<h2 data-a>آخر الطلبات المنتهية</h2><div id="done"></div>
+</div>
+<div id="pMenu" class="hide">
+<div class="card opn"><div><b id="opT"></b><div class="sub" data-a>لما تقفل، يظهر مطعمك للعميل «مغلق» ولا يستقبل طلبات</div></div><button id="opB"></button></div>
+<div class="card" id="form"><h2 id="fT">إضافة صنف</h2>
+<div class="fg"><div class="w"><label data-a>اسم الصنف</label><input id="fN" maxlength="80" data-ap placeholder="مثال: وجبة برجر دجاج"></div>
+<div><label data-a>السعر (ريال)</label><input id="fP" type="number" inputmode="decimal" min="0.5" max="1000" step="0.5"></div>
+<div><label data-a>قبل الخصم (عرض - اختياري)</label><input id="fO" type="number" inputmode="decimal" min="0" max="2000" step="0.5"></div>
+<div class="w"><label data-a>صورة الصنف (إجبارية) 📷</label><div class="pic"><div id="pv" class="thumb nopic">لا توجد صورة</div><div><button id="pb" type="button" class="sec" data-a>اختر / صوّر الصورة</button><div class="sub" id="ps">تتصغّر وتتضغط تلقائي</div></div></div><input id="pf" type="file" accept="image/*" class="hide"></div>
+<div class="w"><label data-a>القسم</label><input id="fS" maxlength="40" list="secs" data-ap placeholder="مثال: وجبات / مشروبات / حلويات"><datalist id="secs"></datalist></div></div>
+<button id="fSave">حفظ الصنف</button><button id="fCancel" class="sec hide" data-a>إلغاء التعديل</button></div>
+<h2><span data-a>أصنافي </span><span class="sub" id="cnt"></span></h2><div id="mlist"></div>
+</div>
+<div id="pDash" class="hide">
+<div class="sumtabs"><button type="button" id="dP0" class="on" data-a>اليوم</button><button type="button" id="dP1" data-a>آخر 7 أيام</button><button type="button" id="dP2" data-a>الشهر ده</button></div>
+<div class="card"><div class="stats" id="dSum"></div></div>
+<div class="card"><h2 data-a>💰 حسابك مع واصل</h2><div id="dAcc"></div>
+<div class="rbtn"><button type="button" id="dR3" class="sec" data-a>📄 ابعتلي تقرير آخر 3 أيام PDF</button><button type="button" id="dR7" class="sec" data-a>📄 ابعتلي التقرير الأسبوعي PDF</button></div></div>
+<div class="card"><h2 data-a>🕘 مواعيد المطعم</h2><div class="sub" data-a>المطعم بيفتح ويقفل لوحده على المواعيد دي. سيبهم فاضيين لو عايز تفتح وتقفل بإيدك.</div>
+<div class="hrs"><div><label data-a>ساعة الفتح</label><input id="hO" type="time"></div><div><label data-a>ساعة القفل</label><input id="hC" type="time"></div></div>
+<label class="bz"><input type="checkbox" id="hB"><span data-a>⏳ وضع «مشغول»: وقت التجهيز يبدأ من 20 دقيقة، والعميل يشوف إن المطعم مزدحم</span></label>
+<button type="button" id="hS" data-a>💾 حفظ المواعيد</button></div>
+<div class="card"><h2 data-a>🔎 سجل الطلبات</h2><input id="dQ" data-ap placeholder="ابحث برقم الطلب أو رقم الفاتورة أو التاريخ 2026/11/05" dir="auto"><button type="button" id="dG" data-a>بحث</button><div id="dList"></div></div>
+</div>
+</div>
+</main>
+<script>
+var PIMG="",PHAD=false,MENU=null,EID=0,TAB="o",CODE="",timer=null,busy=false,LAST=null,SKEW=0,SND=true,AC=null,SEEN=null,TT=document.title,editTs=0,REJ={},MINS={},INV={};
+try{SND=localStorage.getItem("rs")!=="0"}catch(e){}
+function $(i){return document.getElementById(i)}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function touch(){editTs=Date.now()}
+/* ===== اللغتين: عربي / English (الاختيار يتحفظ على الجهاز ويتشارك مع باقي صفحات واصل) ===== */
+var LANG="ar";try{LANG=localStorage.getItem("wl")==="en"?"en":"ar"}catch(e){}
+var EN={
+"🧾 رقم الفاتورة الأصلية (إجباري)":"🧾 Original invoice number (required)","مثال: 10452":"e.g. 10452","أرقام وحروف إنجليزي فقط، والأرقام العربي بتتحول تلقائي":"English letters and numbers only; Arabic digits are converted automatically",
+"🔕 اضغط هنا لتفعيل صوت التنبيه":"🔕 Tap here to enable the alert sound","🔔 طلب جديد! اقبله وحدد وقت التجهيز":"🔔 New order! Accept it and set the prep time","🔔 طلبات جديدة: ":"🔔 New orders: ",
+"تعذر الاتصال، حاول مرة أخرى":"Connection failed, try again","تعذر التحديث، تأكد من الإنترنت":"Could not refresh, check your internet","جارٍ التنفيذ...":"Working...","تم ✓":"Done ✓","تعذر التنفيذ":"Could not complete","تعذر التنفيذ، حاول مرة أخرى":"Could not complete, try again",
+"الآن":"now","منذ ":""," د.":" min ago"," د":" min",
+"جاري التجهيز":"Preparing","جاهز":"Ready","اعتذرت":"Declined","بانتظار ردك":"Awaiting your reply","الطلب":"Order","ملاحظات":"Notes","لم يقبل مندوب الطلب بعد":"No courier has accepted yet",
+"اختر وقت التجهيز واكتب رقم الفاتورة ثم اضغط قبول:":"Choose the prep time, enter the invoice number, then tap Accept:","✅ قبول الطلب":"✅ Accept order","اختر وقت التجهيز":"Choose the prep time","اكتب رقم الفاتورة الأصلية صح":"Enter a valid original invoice number","تم قبول الطلب ✓":"Order accepted ✓",
+"سبب الاعتذار":"Reason for declining","تأكيد الاعتذار عن الطلب":"Confirm declining the order","اكتب سبب الاعتذار":"Write the reason for declining","الاعتذار عن هذا الطلب؟":"Decline this order?","تم إبلاغ الإدارة ✓":"Admin notified ✓","اعتذار عن الطلب":"Decline order",
+"قبلت الساعة ":"Accepted at "," · وقت التجهيز ":" · prep time "," دقيقة":" min","✅ الطلب جاهز للاستلام":"✅ Order ready for pickup","تأكيد أن الطلب جاهز؟":"Confirm the order is ready?","تم إبلاغ المندوب ✓":"Courier notified ✓",
+"أبلغت المندوب الساعة ":"You notified the courier at "," ✓ بانتظار استلامه":" ✓ waiting for pickup","سبب اعتذارك: ":"Your reason: ","الإدارة تتابع الطلب.":"Admin is following up on the order.",
+"🧾 رقم الفاتورة: ":"🧾 Invoice no.: ","💾 حفظ رقم الفاتورة":"💾 Save invoice number","اكتب رقم الفاتورة صح":"Enter a valid invoice number","تم حفظ رقم الفاتورة ✓":"Invoice number saved ✓","✏️ تعديل رقم الفاتورة":"✏️ Edit invoice number",
+"واصل | ":"Wasel | ","قيد التجهيز":"Preparing","سُلّمت اليوم":"Delivered today","لا توجد طلبات الآن. سيصلك تنبيه صوتي عند وصول طلب جديد.":"No orders now. You will hear an alert when a new order arrives.","لا توجد طلبات منتهية حديثًا":"No recently finished orders","سُلّم":"Delivered","أُلغي":"Cancelled",
+"تأخر ":"Late ","متبقي ":"Left ","تعذر تحميل المنيو":"Could not load the menu","جارٍ الحفظ...":"Saving...","تتصغّر وتتضغط تلقائي":"Resized and compressed automatically","إضافة صنف":"Add item","حفظ الصنف":"Save item","لا توجد صورة":"No photo",
+"اختر ملف صورة":"Choose an image file","الصورة كبيرة جدًا، اختر صورة أصغر":"Image too large, choose a smaller one","جارٍ تجهيز الصورة...":"Preparing image...","تعذر تجهيز الصورة، جرّب صورة أخرى":"Could not prepare the image, try another","تعذر تجهيز الصورة":"Could not prepare the image","جاهزة ✓ (":"Ready ✓ ("," ك.ب)":" KB)",
+"🟢 المطعم مفتوح":"🟢 Restaurant open","🔴 المطعم مغلق":"🔴 Restaurant closed","قفل المطعم":"Close restaurant","فتح المطعم":"Open restaurant"," من ":" of ","لسه ما ضفتش أصناف. ضيف أول صنف من الأعلى.":"No items yet. Add your first item above.","أصناف":"Items","صورة قديمة":"Old photo","بدون صورة":"No photo",
+" ريال":" SAR"," 🔥 عرض":" 🔥 Offer","إيقاف (خلص)":"Pause (sold out)","تشغيل (متاح)":"Enable (available)","تعديل":"Edit","حذف":"Delete","تم إيقاف الصنف":"Item paused","الصنف متاح الآن":"Item is available now","تعديل صنف":"Edit item","حفظ التعديل":"Save changes",
+"الصورة الحالية (اختر صورة جديدة لو عايز تغيّرها)":"Current photo (choose a new one to change it)","ارفع صورة للصنف":"Upload a photo for the item","حذف الصنف «":"Delete «","»؟":"»?","تم الحذف":"Deleted","اكتب اسم الصنف":"Enter the item name","اكتب السعر":"Enter the price","لازم تختار صورة للصنف 📷":"You must choose a photo for the item 📷",
+"تم حفظ التعديل ✓":"Changes saved ✓","تمت إضافة الصنف ✓":"Item added ✓","قفل المطعم؟ لن يستطيع العملاء الطلب منك.":"Close the restaurant? Customers won't be able to order from you.","المطعم مفتوح الآن":"Restaurant is open now","المطعم مغلق الآن":"Restaurant is closed now","واصل | المطعم":"Wasel | Restaurant","تعذر الاتصال":"Connection failed",
+"بانتظار مندوب":"Waiting for a courier","المندوب قبل الطلب وهو في الطريق إليك":"Courier accepted and is on the way to you","المندوب وصل عندك":"Courier has arrived at you","المندوب استلم الطلب":"Courier picked up the order","المندوب في الطريق للعميل":"Courier on the way to the customer","المندوب عند العميل":"Courier is at the customer","تم التسليم":"Delivered",
+"الصنف غير متوفر":"Item not available","المطعم مزدحم الآن":"Restaurant is busy now","المطعم مغلق":"Restaurant is closed",
+/* الصفحة الثابتة */
+"دخول المطعم":"Restaurant login","رمز الدخول":"Login code","الرمز الذي أعطتك إياه إدارة واصل":"The code Wasel admin gave you","دخول":"Log in","ما عندكش رمز؟ ":"No code? ","سجّل مطعمك معنا":"Register your restaurant","خروج":"Log out",
+"📋 الطلبات":"📋 Orders","📍 لازم تحدد موقع مطعمك":"📍 You must set your restaurant location","ما تقدرش تقبل طلبات غير بعد ما تحدد موقعك، عشان المندوب يوصلك على طول والعميل يشوف مكانك.":"You can't accept orders until you set your location, so couriers reach you directly and customers see where you are.","📍 موقعي الحالي (وإنت في المطعم)":"📍 My current location (while at the restaurant)","أو الصق لينك مطعمك من خرائط جوجل:":"Or paste your restaurant's Google Maps link:","حفظ اللينك":"Save link","تم حفظ موقع المطعم ✓":"Restaurant location saved ✓","جارٍ تحديد موقعك...":"Getting your location...","تعذر تحديد موقعك، فعّل الموقع أو الصق لينك خرائط جوجل":"Could not get your location; enable location or paste a Google Maps link","حدد موقع مطعمك الأول من أعلى الصفحة، عشان المندوب يوصلك":"Set your restaurant location first (top of the page) so couriers can reach you","دوس «موقعي الحالي» وإنت في المطعم، أو الصق لينك من خرائط جوجل":"Tap «My current location» while at the restaurant, or paste a Google Maps link","📊 لوحتي":"📊 Dashboard","اليوم":"Today","آخر 7 أيام":"Last 7 days","الشهر ده":"This month","💰 حسابك مع واصل":"💰 Your account with Wasel","📄 ابعتلي تقرير آخر 3 أيام PDF":"📄 Send me the last 3 days report (PDF)","📄 ابعتلي التقرير الأسبوعي PDF":"📄 Send me the weekly report (PDF)","🕘 مواعيد المطعم":"🕘 Opening hours","المطعم بيفتح ويقفل لوحده على المواعيد دي. سيبهم فاضيين لو عايز تفتح وتقفل بإيدك.":"The restaurant opens and closes automatically at these times. Leave them empty to open and close manually.","ساعة الفتح":"Opens at","ساعة القفل":"Closes at","⏳ وضع «مشغول»: وقت التجهيز يبدأ من 20 دقيقة، والعميل يشوف إن المطعم مزدحم":"⏳ Busy mode: prep time starts at 20 min and customers see the restaurant is busy","💾 حفظ المواعيد":"💾 Save hours","🔎 سجل الطلبات":"🔎 Order history","ابحث برقم الطلب أو رقم الفاتورة أو التاريخ 2026/11/05":"Search by order no., invoice no. or date 2026/11/05","بحث":"Search","طلبات اتسلّمت":"Delivered orders","قيمة الطلبات":"Orders value","متوسط التجهيز":"Avg. prep time","اعتذرت عنها":"Declined","آخر 3 أيام":"Last 3 days","عدد الطلبات":"Orders","العمولة":"Commission","فترة التجربة المجانية شغالة لحد ":"Free trial runs until ","فترة التجربة خلصت يوم ":"Free trial ended on ","تاريخ بداية الاتفاق لسه ما اتسجلش، فالعمولة مش بتتحسب.":"The agreement start date isn't recorded yet, so no commission is counted.","العمولة ":"Commission ","% من قيمة الطلبات بعد التجربة، والدفع كاش خلال فترة التجربة.":"% of orders value after the trial; cash payment during the trial period.","تم حفظ المواعيد ✓":"Hours saved ✓","وصلك التقرير على تليجرام ✓":"The report was sent to your Telegram ✓","لا توجد طلبات":"No orders","رقم فاتورتك: ":"Your invoice no.: ","التجهيز: ":"Prep: ","جارٍ التحميل...":"Loading...","تعذر تحميل اللوحة":"Could not load the dashboard","اكتب الساعة كده: 10:00":"Write the time like 10:00","اكتب ساعة الفتح وساعة القفل الاتنين، أو سيبهم فاضيين":"Enter both opening and closing times, or leave both empty","اربط تليجرام مطعمك الأول عشان التقرير يوصلك عليه":"Link your restaurant's Telegram first to receive the report","استنى دقيقتين وجرّب تاني":"Wait two minutes and try again","تعذر إرسال التقرير، حاول تاني":"Could not send the report, try again","ملغي":"Cancelled","مرفوض":"Declined","🍽 المنيو والعروض":"🍽 Menu & offers","طلبات تحتاج تجهيز":"Orders to prepare","آخر الطلبات المنتهية":"Recently finished orders","لما تقفل، يظهر مطعمك للعميل «مغلق» ولا يستقبل طلبات":"When closed, customers see your restaurant as «closed» and it receives no orders",
+"اسم الصنف":"Item name","مثال: وجبة برجر دجاج":"e.g. Chicken burger meal","السعر (ريال)":"Price (SAR)","قبل الخصم (عرض - اختياري)":"Before discount (offer - optional)","صورة الصنف (إجبارية) 📷":"Item photo (required) 📷","اختر / صوّر الصورة":"Choose / take photo","القسم":"Section","مثال: وجبات / مشروبات / حلويات":"e.g. Meals / Drinks / Desserts","إلغاء التعديل":"Cancel editing","أصنافي ":"My items ",
+/* رسائل السيرفر */
+"محاولات كثيرة، حاول بعد 10 دقائق":"Too many attempts, try again in 10 minutes","الرمز غير صحيح":"Wrong code","الطلب غير موجود":"Order not found","النظام مشغول، حاول بعد لحظات":"System busy, try again shortly","هذا الطلب ليس لمطعمك":"This order is not for your restaurant","الطلب منتهٍ":"The order is finished",
+"اكتب رقم الفاتورة الأصلية (أرقام وحروف إنجليزي فقط، حتى 20 خانة)":"Enter the original invoice number (English letters and numbers only, up to 20)","تم الرد على هذا الطلب من قبل":"This order was already answered","اقبل الطلب أولًا":"Accept the order first","المندوب استلم الطلب، كلّم الإدارة لتعديل الرقم":"The courier picked up the order, contact admin to change the number","الطلب جاهز بالفعل":"The order is already ready","المندوب استلم الطلب بالفعل":"The courier already picked up the order"
+};
+function A(x){if(!x||LANG!=="en")return x;var v=EN[x];return v===undefined?x:v}
+/* النصوص الثابتة في الصفحة: data-a للنص و data-ap للـ placeholder (الأصل العربي يتحفظ أول مرة) */
+function applyStatic(){
+  document.documentElement.lang=LANG;document.documentElement.dir=LANG==="en"?"ltr":"rtl";
+  document.querySelectorAll("[data-a]").forEach(function(e){if(e.dataset.ar==null)e.dataset.ar=e.getAttribute("data-a")||e.textContent;e.textContent=A(e.dataset.ar)});
+  document.querySelectorAll("[data-ap]").forEach(function(e){if(e.dataset.arp==null)e.dataset.arp=e.getAttribute("placeholder")||"";e.placeholder=A(e.dataset.arp)});
+  var l=document.getElementById("lang");if(l)l.textContent=LANG==="en"?"عربي":"EN";
+  try{document.title=LANG==="en"?"Wasel - Restaurant":TT}catch(e){}}
+/* رقم الفاتورة: أرقام عربية → إنجليزية، بدون مسافات، حروف إنجليزي وأرقام و - و / فقط */
+function invNorm(v){return String(v||"").replace(/[\u0660-\u0669]/g,function(d){return String(d.charCodeAt(0)-0x660)}).replace(/[\u06f0-\u06f9]/g,function(d){return String(d.charCodeAt(0)-0x6f0)}).replace(/[\u200e\u200f\u202a-\u202e\s]/g,"").toUpperCase()}
+function invOk(v){return /^[A-Za-z0-9][A-Za-z0-9\-\/]{0,19}$/.test(invNorm(v))}
+function invBox(o,val,btnTxt,onSave){
+  var w=el("div","invb");w.appendChild(el("label","invl",A("🧾 رقم الفاتورة الأصلية (إجباري)")));
+  var i=el("input","inv");i.maxLength=20;i.dir="ltr";i.autocomplete="off";i.inputMode="text";i.placeholder=A("مثال: 10452");i.value=val||"";
+  w.appendChild(i);w.appendChild(el("div","invh",A("أرقام وحروف إنجليزي فقط، والأرقام العربي بتتحول تلقائي")));
+  return {w:w,i:i}}
+var STG={new:"بانتظار مندوب",accepted:"المندوب قبل الطلب وهو في الطريق إليك",arrived:"المندوب وصل عندك",invoiced:"المندوب وصل عندك",picked:"المندوب استلم الطلب",ontheway:"المندوب في الطريق للعميل",atdest:"المندوب عند العميل",delivered:"تم التسليم"};
+var QR=["الصنف غير متوفر","المطعم مزدحم الآن","المطعم مغلق"];
+/* ===== الصوت ===== */
+function unlock(){try{if(!AC){var C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C()}if(AC&&AC.state==="suspended")AC.resume()}catch(e){}hint()}
+function hint(){var h=$("sndHint");var bad=SND&&!(AC&&AC.state==="running");h.style.display=bad?"block":"none";h.textContent=A("🔕 اضغط هنا لتفعيل صوت التنبيه")}
+function sndBtn(){$("snd").textContent=SND?"🔔":"🔕"}
+function beep(){
+  try{navigator.vibrate&&navigator.vibrate([500,150,500,150,500,150,500])}catch(e){}
+  if(!SND||!AC||AC.state!=="running")return;
+  try{[0,.3,.6,.9,1.2,1.5].forEach(function(d,i){var o=AC.createOscillator(),g=AC.createGain(),n=AC.currentTime+d;
+    o.type="square";o.frequency.value=i%2?1320:880;g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(.9,n+.02);g.gain.exponentialRampToValueAtTime(.0001,n+.26);
+    o.connect(g);g.connect(AC.destination);o.start(n);o.stop(n+.28)})}catch(e){}}
+function waiting(r){return (r.active||[]).filter(function(o){return o.rst===""})}
+function checkNew(r){
+  var cur={},nw=0;waiting(r).forEach(function(o){cur[o.no]=1;if(SEEN&&!SEEN[o.no])nw++});
+  SEEN=cur;if(!nw)return;
+  beep();var b=$("alertBar");b.textContent=nw===1?A("🔔 طلب جديد! اقبله وحدد وقت التجهيز"):A("🔔 طلبات جديدة: ")+nw;b.className="on";
+  try{document.title="🔔 "+TT}catch(e){}
+  clearTimeout(checkNew.t);checkNew.t=setTimeout(function(){b.className=""},12000)}
+/* يعيد التنبيه كل 25 ثانية طالما فيه طلب ما اتردّش عليه */
+setInterval(function(){if(CODE&&LAST&&waiting(LAST).length&&!document.hidden)beep()},25000);
+/* ===== الاتصال ===== */
+function setMsg(t,bad){$("msg").className=bad?"err":"";$("msg").textContent=t}
+function call(fn,args,ok,fail){
+  var g=google.script.run.withSuccessHandler(ok).withFailureHandler(fail||function(){setMsg(A("تعذر الاتصال، حاول مرة أخرى"),1)});
+  g[fn].apply(g,args)}
+function load(){
+  if(busy||!CODE||Date.now()-editTs<60000)return;
+  call("restaurantList",[CODE],render,function(){setMsg(A("تعذر التحديث، تأكد من الإنترنت"),1)})}
+function act(fn,args,b,okmsg){
+  busy=true;b.disabled=true;setMsg(A("جارٍ التنفيذ..."));
+  call(fn,[CODE].concat(args),function(r){busy=false;editTs=0;
+    if(r&&r.ok){setMsg(okmsg||A("تم ✓"))}else{b.disabled=false;setMsg(A(r&&r.msg)||A("تعذر التنفيذ"),1)}
+    load()},function(){busy=false;b.disabled=false;setMsg(A("تعذر التنفيذ، حاول مرة أخرى"),1)})}
+/* ===== العرض ===== */
+function tmOf(ms){var n=Date.now()+SKEW,m=Math.max(0,Math.floor((n-ms)/60000));return m<1?A("الآن"):A("منذ ")+m+A(" د.")}
+function clock(ms){return new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Riyadh",hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date(ms))}
+function row(c,k,v){if(!v)return;var r=el("div","row");r.appendChild(el("b",null,k));r.appendChild(el("div","items",v));c.appendChild(r)}
+function card(o){
+  var c=el("div","card"+(o.rst===""?" wait":""));
+  var tg=o.rst==="مقبول"?[A("جاري التجهيز"),"a"]:o.rst==="جاهز"?[A("جاهز"),"r"]:o.rst==="مرفوض"?[A("اعتذرت"),"x"]:[A("بانتظار ردك"),""];
+  c.appendChild(el("span","tag "+tg[1],tg[0]));c.appendChild(document.createTextNode(" "+o.no.replace("orderWASEL-","#")+" · "+tmOf(o.t0)));
+  row(c,A("الطلب"),o.items);row(c,A("ملاحظات"),o.notes);
+  if(o.courier){var cr=el("div","cr","🏍 "+o.courier+" — "+A(STG[o.stage]||""));c.appendChild(cr)}
+  else if(o.rst!=="مرفوض")c.appendChild(el("div","sub",A("لم يقبل مندوب الطلب بعد")));
+  if(o.rst===""){
+    c.appendChild(el("div","sub",A("اختر وقت التجهيز واكتب رقم الفاتورة ثم اضغط قبول:")));
+    var g=el("div","mins"),sel=MINS[o.no]||0,go,ib=invBox(o,INV[o.no]||"");
+    function canGo(){go.disabled=!(MINS[o.no]&&invOk(ib.i.value))}
+    (LAST.mins||[]).forEach(function(m){var b=el("button",m===sel?"on":"",m+A(" د"));b.onclick=function(){MINS[o.no]=m;touch();Array.prototype.forEach.call(g.children,function(x){x.className=x===b?"on":""});canGo()};g.appendChild(b)});
+    c.appendChild(g);
+    ib.i.oninput=function(){INV[o.no]=ib.i.value;touch();ib.i.classList.toggle("bad",ib.i.value!==""&&!invOk(ib.i.value));canGo()};
+    c.appendChild(ib.w);
+    go=el("button","ok",A("✅ قبول الطلب"));canGo();
+    go.onclick=function(){if(!MINS[o.no]){setMsg(A("اختر وقت التجهيز"),1);return}if(!invOk(ib.i.value)){setMsg(A("اكتب رقم الفاتورة الأصلية صح"),1);ib.i.focus();return}
+      act("restaurantAccept",[o.no,MINS[o.no],invNorm(ib.i.value)],go,A("تم قبول الطلب ✓"))};c.appendChild(go);
+    var d=REJ[o.no]||(REJ[o.no]={open:false,v:""});
+    var box=el("div",d.open?"":"hide"),rs=el("div","rsn"),inp=el("input");inp.maxLength=100;inp.placeholder=A("سبب الاعتذار");inp.value=d.v;inp.oninput=function(){d.v=inp.value;touch()};
+    QR.forEach(function(q){q=A(q);var b=el("button",null,q);b.onclick=function(){inp.value=q;d.v=q;touch()};rs.appendChild(b)});
+    box.appendChild(rs);box.appendChild(inp);
+    var cf=el("button","bad",A("تأكيد الاعتذار عن الطلب"));cf.onclick=function(){if(inp.value.trim().length<3){setMsg(A("اكتب سبب الاعتذار"),1);return}if(confirm(A("الاعتذار عن هذا الطلب؟")))act("restaurantReject",[o.no,inp.value],cf,A("تم إبلاغ الإدارة ✓"))};box.appendChild(cf);
+    var ob=el("button","sec",A("اعتذار عن الطلب"));ob.onclick=function(){d.open=!d.open;box.classList.toggle("hide",!d.open);touch()};
+    c.appendChild(ob);c.appendChild(box);
+  }else if(o.rst==="مقبول"){
+    var tm=el("div","timer","--:--");tm.setAttribute("data-end",String(o.racc+o.rmin*60000));c.appendChild(tm);
+    c.appendChild(el("div","sub",A("قبلت الساعة ")+clock(o.racc)+A(" · وقت التجهيز ")+o.rmin+A(" دقيقة")));
+    invShow(c,o);
+    var rb=el("button","ok",A("✅ الطلب جاهز للاستلام"));rb.onclick=function(){if(confirm(A("تأكيد أن الطلب جاهز؟")))act("restaurantReady",[o.no],rb,A("تم إبلاغ المندوب ✓"))};c.appendChild(rb);
+    var ob2=el("button","sec",A("اعتذار عن الطلب"));var d2=REJ[o.no]||(REJ[o.no]={open:false,v:""});
+    var box2=el("div",d2.open?"":"hide"),rs2=el("div","rsn"),in2=el("input");in2.maxLength=100;in2.placeholder=A("سبب الاعتذار");in2.value=d2.v;in2.oninput=function(){d2.v=in2.value;touch()};
+    QR.forEach(function(q){q=A(q);var b=el("button",null,q);b.onclick=function(){in2.value=q;d2.v=q;touch()};rs2.appendChild(b)});
+    box2.appendChild(rs2);box2.appendChild(in2);
+    var cf2=el("button","bad",A("تأكيد الاعتذار عن الطلب"));cf2.onclick=function(){if(in2.value.trim().length<3){setMsg(A("اكتب سبب الاعتذار"),1);return}if(confirm(A("الاعتذار عن هذا الطلب؟")))act("restaurantReject",[o.no,in2.value],cf2,A("تم إبلاغ الإدارة ✓"))};box2.appendChild(cf2);
+    ob2.onclick=function(){d2.open=!d2.open;box2.classList.toggle("hide",!d2.open);touch()};c.appendChild(ob2);c.appendChild(box2);
+  }else if(o.rst==="جاهز"){
+    c.appendChild(el("div","sub",A("أبلغت المندوب الساعة ")+clock(o.rrdy)+A(" ✓ بانتظار استلامه")));
+    invShow(c,o);
+  }else if(o.rst==="مرفوض"){
+    c.appendChild(el("div","err",A("سبب اعتذارك: ")+o.why.replace(/^'/,"")));c.appendChild(el("div","sub",A("الإدارة تتابع الطلب.")));
+  }
+  return c}
+/* عرض رقم الفاتورة بعد القبول + تعديله لو اتكتب غلط (قبل استلام المندوب) */
+function invShow(c,o){
+  var line=el("div","invs");line.appendChild(el("span",null,A("🧾 رقم الفاتورة: ")));line.appendChild(el("b",null,o.rinv||"—"));c.appendChild(line);
+  if(o.picked)return;
+  var k="e"+o.no,d=REJ[k]||(REJ[k]={open:false,v:o.rinv||""});
+  var box=el("div",d.open?"":"hide"),ib=invBox(o,d.v);box.appendChild(ib.w);
+  var sv=el("button","ok",A("💾 حفظ رقم الفاتورة"));sv.disabled=!invOk(ib.i.value);
+  ib.i.oninput=function(){d.v=ib.i.value;touch();ib.i.classList.toggle("bad",ib.i.value!==""&&!invOk(ib.i.value));sv.disabled=!invOk(ib.i.value)};
+  sv.onclick=function(){if(!invOk(ib.i.value)){setMsg(A("اكتب رقم الفاتورة صح"),1);return}d.open=false;act("restaurantInvoice",[o.no,invNorm(ib.i.value)],sv,A("تم حفظ رقم الفاتورة ✓"))};
+  box.appendChild(sv);
+  var eb=el("button","sec",A("✏️ تعديل رقم الفاتورة"));eb.onclick=function(){d.open=!d.open;box.classList.toggle("hide",!d.open);touch()};
+  c.appendChild(eb);c.appendChild(box)}
+function render(r){
+  if(!r||!r.ok){logout(A(r&&r.msg));return}
+  LAST=r;SKEW=(r.now||Date.now())-Date.now();
+  $("login").classList.add("hide");$("app").classList.remove("hide");$("out").classList.remove("hide");$("snd").classList.remove("hide");sndBtn();hint();
+  $("who").textContent=r.name;$("rn").textContent=A("واصل | ")+r.name;
+  checkNew(r);
+  var st=$("stat");st.textContent="";var g=el("div","stats");
+  [[A("بانتظار ردك"),waiting(r).length],[A("قيد التجهيز"),(r.active||[]).filter(function(o){return o.rst==="مقبول"}).length],[A("سُلّمت اليوم"),r.doneToday||0]].forEach(function(x){var b=el("div");b.appendChild(el("b",null,String(x[1])));b.appendChild(el("span",null,x[0]));g.appendChild(b)});
+  st.appendChild(g);
+  var a=$("act");a.textContent="";
+  if(!(r.active||[]).length)a.appendChild(el("div","muted",A("لا توجد طلبات الآن. سيصلك تنبيه صوتي عند وصول طلب جديد.")));
+  (r.active||[]).forEach(function(o){a.appendChild(card(o))});
+  var d=$("done");d.textContent="";
+  if(!(r.done||[]).length)d.appendChild(el("div","muted",A("لا توجد طلبات منتهية حديثًا")));
+  (r.done||[]).forEach(function(o){var c=el("div","card");c.appendChild(el("span","tag "+(o.status==="تم التسليم"?"r":"x"),o.status==="تم التسليم"?A("سُلّم"):A("أُلغي")));c.appendChild(document.createTextNode(" "+o.no.replace("orderWASEL-","#")+" · "+clock(o.t0)));row(c,A("الطلب"),o.items);d.appendChild(c)});
+  tickT()}
+function tickT(){
+  var ts=document.querySelectorAll(".timer"),n=Date.now()+SKEW;
+  for(var i=0;i<ts.length;i++){var end=parseInt(ts[i].getAttribute("data-end"),10),s=Math.floor((end-n)/1000),late=s<0;s=Math.abs(s);
+    var m=Math.floor(s/60),x=s%60;ts[i].textContent=(late?A("تأخر "):A("متبقي "))+(m<10?"0":"")+m+":"+(x<10?"0":"")+x;ts[i].className="timer"+(late?" late":"")}}
+setInterval(tickT,1000);
+/* ===== المنيو ===== */
+function tab(t){TAB=t;$("pOrders").classList.toggle("hide",t!=="o");$("pMenu").classList.toggle("hide",t!=="m");$("pDash").classList.toggle("hide",t!=="d");$("tO").className=t==="o"?"on":"";$("tM").className=t==="m"?"on":"";$("tD").className=t==="d"?"on":"";if(t==="m")loadMenu();if(t==="d")loadDash()}
+$("tO").onclick=function(){tab("o")};$("tM").onclick=function(){tab("m")};$("tD").onclick=function(){tab("d")};
+function loadMenu(){if(!CODE)return;call("restMenuList",[CODE],function(r){if(!r||!r.ok){setMsg(A(r&&r.msg)||A("تعذر تحميل المنيو"),1);return}MENU=r;drawMenu()},function(){setMsg(A("تعذر تحميل المنيو"),1)})}
+function mact(fn,args,b,okmsg,onok){
+  if(b)b.disabled=true;setMsg(A("جارٍ الحفظ..."));
+  call(fn,[CODE].concat(args),function(r){if(b)b.disabled=false;if(r&&r.ok){setMsg(okmsg||A("تم ✓"));if(onok)onok();loadMenu()}else setMsg(A(r&&r.msg)||A("تعذر التنفيذ"),1)},function(){if(b)b.disabled=false;setMsg(A("تعذر التنفيذ، حاول مرة أخرى"),1)})}
+function resetForm(){PIMG="";PHAD=false;pvDraw("");$("pf").value="";$("ps").textContent=A("تتصغّر وتتضغط تلقائي");EID=0;$("fN").value="";$("fP").value="";$("fO").value="";$("fT").textContent=A("إضافة صنف");$("fCancel").classList.add("hide");$("fSave").textContent=A("حفظ الصنف")}
+var IMG_RE=/^data:image\/(webp|jpeg);base64,[A-Za-z0-9+\/]+={0,2}$/;
+function pvDraw(src){
+  var pv=$("pv");pv.textContent="";
+  if(src&&IMG_RE.test(src)){var im=document.createElement("img");im.className="thumb";im.style.width="84px";im.style.height="84px";im.alt="";im.src=src;pv.className="";pv.appendChild(im)}
+  else{pv.className="thumb nopic";pv.textContent=A("لا توجد صورة")}}
+/* ضغط الصورة: مربع 220px (يتصغّر لو لزم) بصيغة webp أو jpeg، والحد 26000 حرف */
+function shrink(file,done){
+  var url=URL.createObjectURL(file),im=new Image();
+  im.onload=function(){
+    try{
+      var best="";
+      [220,180,150,120].some(function(sz){
+        var c=document.createElement("canvas");c.width=sz;c.height=sz;var g=c.getContext("2d");
+        var w=im.naturalWidth,h=im.naturalHeight,m=Math.min(w,h),sx=(w-m)/2,sy=(h-m)/2;
+        g.fillStyle="#fff";g.fillRect(0,0,sz,sz);g.drawImage(im,sx,sy,m,m,0,0,sz,sz);
+        return [.75,.6,.45].some(function(q){
+          var d=c.toDataURL("image/webp",q);
+          if(d.indexOf("data:image/webp")!==0)d=c.toDataURL("image/jpeg",q);
+          if(d.length<=26000&&IMG_RE.test(d)){best=d;return true}
+          return false})});
+      URL.revokeObjectURL(url);done(best)
+    }catch(e){URL.revokeObjectURL(url);done("")}};
+  im.onerror=function(){URL.revokeObjectURL(url);done("")};
+  im.src=url}
+$("pb").onclick=function(){$("pf").click()};
+$("pf").onchange=function(){
+  var f=this.files&&this.files[0];if(!f)return;
+  if(!/^image\//.test(f.type)){setMsg(A("اختر ملف صورة"),1);return}
+  if(f.size>15*1024*1024){setMsg(A("الصورة كبيرة جدًا، اختر صورة أصغر"),1);return}
+  $("ps").textContent=A("جارٍ تجهيز الصورة...");
+  shrink(f,function(d){
+    if(!d){PIMG="";pvDraw(PHAD?"":"");$("ps").textContent=A("تعذر تجهيز الصورة، جرّب صورة أخرى");setMsg(A("تعذر تجهيز الصورة"),1);return}
+    PIMG=d;pvDraw(d);$("ps").textContent=A("جاهزة ✓ (")+Math.round(d.length/1024)+A(" ك.ب)");setMsg("")})};
+function drawMenu(){
+  var m=MENU;$("opT").textContent=m.open?A("🟢 المطعم مفتوح"):A("🔴 المطعم مغلق");$("opB").textContent=m.open?A("قفل المطعم"):A("فتح المطعم");$("opB").className=m.open?"bad":"ok";
+  $("cnt").textContent="("+m.items.length+A(" من ")+m.max+")";
+  var dl=$("secs");dl.textContent="";var seen={};m.items.forEach(function(i){if(i.sec&&!seen[i.sec]){seen[i.sec]=1;var o=document.createElement("option");o.value=i.sec;dl.appendChild(o)}});
+  var L=$("mlist");L.textContent="";
+  if(!m.items.length){L.appendChild(el("div","muted",A("لسه ما ضفتش أصناف. ضيف أول صنف من الأعلى.")));return}
+  var by={},order=[];m.items.forEach(function(i){var k=i.sec||A("أصناف");if(!by[k]){by[k]=[];order.push(k)}by[k].push(i)});
+  order.forEach(function(k){
+    var c=el("div","card");c.appendChild(el("div","sech",k));
+    by[k].forEach(function(i){
+      var d=el("div","mi"+(i.on?"":" off")),tx=el("div","tx");
+      if(i.img&&IMG_RE.test(i.img)){var th=document.createElement("img");th.className="thumb";th.alt="";th.src=i.img;d.appendChild(th)}
+      else{d.appendChild(el("div","thumb nopic",i.legacy?A("صورة قديمة"):A("بدون صورة")))}
+      tx.appendChild(el("div","nm",i.name));
+      var p=el("div","pr",i.price+A(" ريال"));if(i.old){p.appendChild(el("s",null,i.old+A(" ريال")));p.appendChild(document.createTextNode(A(" 🔥 عرض")))}tx.appendChild(p);d.appendChild(tx);
+      var a=el("div","acts"),b1=el("button","sec",i.on?A("إيقاف (خلص)"):A("تشغيل (متاح)")),b2=el("button","sec",A("تعديل")),b3=el("button","bad",A("حذف"));
+      b1.onclick=function(){mact("restMenuAvail",[i.id,!i.on],b1,i.on?A("تم إيقاف الصنف"):A("الصنف متاح الآن"))};
+      b2.onclick=function(){EID=i.id;$("fN").value=i.name;$("fP").value=i.price;$("fO").value=i.old||"";$("fS").value=i.sec;$("fT").textContent=A("تعديل صنف");$("fSave").textContent=A("حفظ التعديل");PIMG="";PHAD=!!i.img;pvDraw(i.img||"");$("ps").textContent=i.img?A("الصورة الحالية (اختر صورة جديدة لو عايز تغيّرها)"):A("ارفع صورة للصنف");$("fCancel").classList.remove("hide");$("form").scrollIntoView({behavior:"smooth"})};
+      b3.onclick=function(){if(confirm(A("حذف الصنف «")+i.name+A("»؟")))mact("restMenuDelete",[i.id],b3,A("تم الحذف"))};
+      a.appendChild(b1);a.appendChild(b2);a.appendChild(b3);tx.appendChild(a);c.appendChild(d)});
+    L.appendChild(c)})}
+$("fSave").onclick=function(){
+  var it={id:EID||0,name:$("fN").value,sec:$("fS").value,price:$("fP").value,old:$("fO").value,on:true};
+  if(it.name.trim().length<2){setMsg(A("اكتب اسم الصنف"),1);return}
+  if(!(parseFloat(it.price)>0)){setMsg(A("اكتب السعر"),1);return}
+  if(!PIMG&&!(EID&&PHAD)){setMsg(A("لازم تختار صورة للصنف 📷"),1);return}
+  if(PIMG)it.img=PIMG;
+  if(EID&&MENU){MENU.items.forEach(function(x){if(x.id===EID)it.on=x.on})}
+  var wasEdit=!!EID;
+  mact("restMenuSave",[it],$("fSave"),wasEdit?A("تم حفظ التعديل ✓"):A("تمت إضافة الصنف ✓"),resetForm)};
+$("fCancel").onclick=resetForm;
+$("opB").onclick=function(){if(!MENU)return;var go=!MENU.open;if(go||confirm(A("قفل المطعم؟ لن يستطيع العملاء الطلب منك.")))mact("restSetOpen",[go],$("opB"),go?A("المطعم مفتوح الآن"):A("المطعم مغلق الآن"))};
+function logout(m){
+  CODE="";LAST=null;SEEN=null;MENU=null;resetForm();tab("o");clearInterval(timer);try{localStorage.removeItem("rc")}catch(e){}
+  $("app").classList.add("hide");$("out").classList.add("hide");$("snd").classList.add("hide");$("login").classList.remove("hide");
+  $("who").textContent="";$("rn").textContent=A("واصل | المطعم");$("lmsg").textContent=m||""}
+function start(code){
+  CODE=code;
+  call("restaurantLogin",[code],function(r){
+    if(r&&r.ok){try{localStorage.setItem("rc",code)}catch(e){}$("lmsg").textContent="";$("code").value="";load();clearInterval(timer);timer=setInterval(load,8000)}
+    else logout(A(r&&r.msg))},function(){logout(A("تعذر الاتصال"))})}
+$("in").onclick=function(){var c=$("code").value.trim();if(c)start(c)};
+$("code").onkeydown=function(e){if(e.key==="Enter")$("in").onclick()};
+$("out").onclick=function(){logout("")};
+$("snd").onclick=function(){SND=!SND;try{localStorage.setItem("rs",SND?"1":"0")}catch(e){}unlock();sndBtn();hint();if(SND)beep()};
+$("sndHint").onclick=unlock;$("alertBar").onclick=function(){this.className=""};
+document.addEventListener("pointerdown",unlock,{passive:true});
+document.addEventListener("visibilitychange",function(){if(!document.hidden){document.title=TT;if(CODE)load()}});
+function formLbl(){$("fT").textContent=A(EID?"تعديل صنف":"إضافة صنف");$("fSave").textContent=A(EID?"حفظ التعديل":"حفظ الصنف");if(!PIMG&&!PHAD){pvDraw("");$("ps").textContent=A("تتصغّر وتتضغط تلقائي")}}
+function setLang(g){if(g!=="en"&&g!=="ar")return;LANG=g;try{localStorage.setItem("wl",g)}catch(e){}
+  applyStatic();formLbl();hint();
+  if(LAST)render(LAST);else $("rn").textContent=A("واصل | المطعم");
+  if(MENU)drawMenu()}
+$("lang").onclick=function(){setLang(LANG==="en"?"ar":"en");try{window.top.postMessage({wasel_lang:LANG},"*")}catch(e){}};
+applyStatic();
+/* لغة التطبيق من الغلاف (?lang=en أو ar) */
+try{google.script.url.getLocation(function(l){var g=l&&l.parameter&&l.parameter.lang;if((g==="en"||g==="ar")&&g!==LANG)setLang(g)})}catch(e){}
+try{var s=localStorage.getItem("rc");if(s)start(s)}catch(e){}
+try{google.script.run.withSuccessHandler(function(u){if(typeof u==="string"&&/^https:\/\//.test(u))document.getElementById("regl").href=u}).ptRegisterUrl()}catch(e){}
+</script><script>
+/* ===== لوحة المطعم: ملخص + حساب + مواعيد + سجل ===== */
+var DASH=null,DP=0;
+function dCall(fn,args,ok){var g=google.script.run.withSuccessHandler(ok).withFailureHandler(function(){setMsg(A("تعذر الاتصال، حاول مرة أخرى"),1)});g[fn].apply(g,[CODE].concat(args))}
+function loadDash(q){if(!CODE)return;$("dList").textContent=A("جارٍ التحميل...");
+  dCall("restaurantDash",[q||$("dQ").value||""],function(r){if(!r||!r.ok){setMsg(A(r&&r.msg)||A("تعذر تحميل اللوحة"),1);return}DASH=r;drawDash()})}
+function sar(v){return (Math.round(v*100)/100)+A(" ريال")}
+function drawDash(){var r=DASH;if(!r)return;
+  ["dP0","dP1","dP2"].forEach(function(id,i){$(id).className=i===DP?"on":""});
+  var s=[r.today,r.week,r.month][DP],g=$("dSum");g.textContent="";g.className="stats s4";
+  [[A("طلبات اتسلّمت"),String(s.n)],[A("قيمة الطلبات"),sar(s.sales)],[A("متوسط التجهيز"),s.prep?s.prep+A(" د"):"—"],[A("اعتذرت عنها"),String(s.rej)]].forEach(function(x){var b=el("div");b.appendChild(el("b",null,x[1]));b.appendChild(el("span",null,x[0]));g.appendChild(b)});
+  var a=$("dAcc");a.textContent="";
+  function al(k,v){var d=el("div","acl");d.appendChild(el("span",null,k));d.appendChild(el("b",null,v));a.appendChild(d)}
+  al(A("آخر 3 أيام")+" · "+A("عدد الطلبات"),String(r.acc3.n));al(A("آخر 3 أيام")+" · "+A("قيمة الطلبات"),sar(r.acc3.sales));al(A("آخر 3 أيام")+" · "+A("العمولة"),sar(r.acc3.comm));
+  al(A("آخر 7 أيام")+" · "+A("العمولة"),sar(r.acc7.comm));
+  var nt=el("div","sub");nt.style.marginTop="8px";
+  var tx=r.trialEnd?((Date.now()<r.trialEnd?A("فترة التجربة المجانية شغالة لحد "):A("فترة التجربة خلصت يوم "))+new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Riyadh"}).format(new Date(r.trialEnd))+". "):A("تاريخ بداية الاتفاق لسه ما اتسجلش، فالعمولة مش بتتحسب.")+" ";
+  nt.textContent=tx+A("العمولة ")+Math.round(r.rate*100)+A("% من قيمة الطلبات بعد التجربة، والدفع كاش خلال فترة التجربة.");a.appendChild(nt);
+  if(document.activeElement!==$("hO"))$("hO").value=r.open||"";if(document.activeElement!==$("hC"))$("hC").value=r.close||"";$("hB").checked=!!r.busy;
+  var L=$("dList");L.textContent="";if(!r.list.length){L.appendChild(el("div","muted",A("لا توجد طلبات")));return}
+  r.list.forEach(function(o){var c=el("div","hi"),h=el("div","hh");h.appendChild(el("span",null,o.no.replace("orderWASEL-","#")+" · "+o.d));h.appendChild(el("span",null,A(o.rst==="مرفوض"?"مرفوض":o.st)));c.appendChild(h);
+    if(o.items)c.appendChild(el("div","sub",o.items));
+    var m=[];if(o.rinv)m.push(A("رقم فاتورتك: ")+o.rinv);if(o.amt)m.push(sar(o.amt));if(o.prep)m.push(A("التجهيز: ")+o.prep+A(" د"));if(m.length)c.appendChild(el("div","sub",m.join(" · ")));L.appendChild(c)})}
+$("dP0").onclick=function(){DP=0;drawDash()};$("dP1").onclick=function(){DP=1;drawDash()};$("dP2").onclick=function(){DP=2;drawDash()};
+$("dG").onclick=function(){loadDash($("dQ").value)};$("dQ").onkeydown=function(e){if(e.key==="Enter")loadDash($("dQ").value)};
+$("hS").onclick=function(){var b=this;b.disabled=true;dCall("restaurantSetHours",[$("hO").value,$("hC").value,$("hB").checked],function(r){b.disabled=false;if(r&&r.ok){setMsg(A("تم حفظ المواعيد ✓"));loadDash()}else setMsg(A(r&&r.msg)||A("تعذر التنفيذ"),1)})};
+function rep(d,b){b.disabled=true;dCall("restaurantReportNow",[d],function(r){b.disabled=false;if(r&&r.ok)setMsg(A("وصلك التقرير على تليجرام ✓"));else setMsg(A(r&&r.msg)||A("تعذر التنفيذ"),1)})}
+$("dR3").onclick=function(){rep(3,this)};$("dR7").onclick=function(){rep(7,this)};
+var _sl=window.setLang;if(typeof _sl==="function")window.setLang=function(g){var x=_sl.apply(this,arguments);try{drawDash()}catch(e){}return x};
+</script><script>
+/* موقع المطعم إجباري: كارت فوق الطلبات لحد ما يتحدد */
+(function(){
+function sv(v,b){b.disabled=true;var g=google.script.run.withSuccessHandler(function(r){b.disabled=false;if(r&&r.ok){setMsg(A("تم حفظ موقع المطعم ✓"));if(LAST)LAST.loc=r.loc;$("locCard").classList.add("hide");try{editTs=0;load()}catch(e){}}else setMsg(A(r&&r.msg)||A("تعذر التنفيذ"),1)}).withFailureHandler(function(){b.disabled=false;setMsg(A("تعذر الاتصال، حاول مرة أخرى"),1)});g.restaurantSetLoc(CODE,v)}
+$("locHere").onclick=function(){var b=this;if(!navigator.geolocation){setMsg(A("تعذر تحديد موقعك، فعّل الموقع أو الصق لينك خرائط جوجل"),1);return}setMsg(A("جارٍ تحديد موقعك..."));
+  navigator.geolocation.getCurrentPosition(function(p){sv(p.coords.latitude.toFixed(6)+","+p.coords.longitude.toFixed(6),b)},function(){setMsg(A("تعذر تحديد موقعك، فعّل الموقع أو الصق لينك خرائط جوجل"),1)},{enableHighAccuracy:true,timeout:15000})};
+$("locSave").onclick=function(){var v=$("locLink").value.trim();if(!v)return;sv(v,this)};
+$("locLink").oninput=function(){try{touch()}catch(e){}};
+var _r=window.render;if(typeof _r==="function")window.render=function(r){var x=_r.apply(this,arguments);try{$("locCard").classList.toggle("hide",!(r&&r.ok&&!r.loc));if(r&&r.ok&&!r.loc&&r.locSuggest&&!$("locLink").value)$("locLink").value=r.locSuggest}catch(e){}return x};
+function chk(){try{if(LAST&&LAST.ok){$("locCard").classList.toggle("hide",!!LAST.loc);if(!LAST.loc&&LAST.locSuggest&&!$("locLink").value)$("locLink").value=LAST.locSuggest}}catch(e){}}setTimeout(chk,1500);setTimeout(chk,4000);
+})();
+</script></body></html>
