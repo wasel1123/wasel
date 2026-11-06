@@ -22,6 +22,11 @@ iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
 #ld img{width:88px;height:88px;border-radius:22px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
 #ld i{width:34px;height:34px;border:4px solid rgba(255,255,255,.3);border-top-color:#f2b544;border-radius:50%;animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
+/* شاشة التحميل بنفس شكل بداية كلام الترحيب: خلفية واصل + مؤشر كتابة بيرمش، من غير شعار ولا دايرة */
+#ld{align-items:stretch!important;justify-content:center!important;padding:0 28px;gap:10px!important}
+#ld .lc{min-height:1.7em;line-height:1.7;font-size:32px}
+#ld .cur{display:inline-block;width:2px;height:1em;background:#fff;vertical-align:-2px;animation:blk .7s steps(1) infinite}@keyframes blk{50%{opacity:0}}
+#ld #ldt{font-size:15px;color:#d5ebe8;min-height:1.4em}#ld #ldr{align-self:center}
 #ldr{border:0;border-radius:14px;padding:12px 26px;background:#fff;color:#0e4f4c;font:700 16px 'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 #pick{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;box-sizing:border-box;background:#0e4f4c;color:#fff;text-align:center;overflow:auto}
 #pick .logo{width:104px;height:104px;border-radius:26px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
@@ -40,7 +45,7 @@ iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
 </style></head><body>
 <iframe id="f" class="hide" title="Wasel" allow="geolocation; camera; microphone; clipboard-write; fullscreen"></iframe>
 
-<div id="ld" class="hide"><img src="icon.svg" alt="Wasel"><i></i><span id="ldt"></span><button id="ldr" class="hide"></button></div>
+<div id="ld" class="hide"><div class="lc"><span class="cur"></span></div><span id="ldt"></span><button id="ldr" class="hide"></button></div>
 
 <div id="pick" class="hide">
 <button id="lg">English</button>
@@ -76,7 +81,7 @@ function applyWL(){
   document.documentElement.lang = WL; document.documentElement.dir = WL === "en" ? "ltr" : "rtl";
   $("lg").textContent = t.lg; $("tg").textContent = t.tg;
   $("t1").textContent = t.t1; $("s1").textContent = t.s1; $("t2").textContent = t.t2; $("s2").textContent = t.s2; $("nt").textContent = t.nt;
-  $("ldt").textContent = t.ld; $("ldr").textContent = t.rt; $("sw").title = t.sw; $("sw").textContent = "↩ " + t.swl; $("ig").textContent = t.ib;
+  $("ldt").textContent = ""; $("ldr").textContent = t.rt; $("sw").title = t.sw; $("sw").textContent = "↩ " + t.swl; $("ig").textContent = t.ib;
 }
 $("lg").onclick = function(){ WL = WL === "en" ? "ar" : "en"; lsSet(LK, WL); applyWL(); };
 applyWL();
@@ -96,7 +101,7 @@ var LT = 0, LR = 0;
 function loading(on){
   clearTimeout(LT);
   $("ld").classList.toggle("hide", !on);
-  $("ldr").classList.add("hide"); $("ldt").textContent = TX[WL].ld;
+  $("ldr").classList.add("hide"); $("ldt").textContent = "";
   if (on) { LR = 0; LT = setTimeout(slowLoad, 12000); }
 }
 function slowLoad(){
