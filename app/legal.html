@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head>
+<!-- صفحة سريعة على GitHub: نفس ملف Legal.html في Apps Script + bridge.js -->
+<script src="../bridge.js"></script>
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>/* وضع العرض: فاتح افتراضيًا، والعميل يختار الغامق بزر ☀️/🌙 ويُحفظ على جهازه، ومع كل تغيير زر «تراجع» */
+(function(){var d=document.documentElement;try{if(localStorage.getItem("wth")==="dark")d.classList.add("dk");if(localStorage.getItem("wgd")==="f")d.classList.add("pk")}catch(e){}
+var TT=0;function en(){return d.lang==="en"}
+window.waselToast=function(msg,undoTxt,undo){var t=document.getElementById("wtoast");if(!t){t=document.createElement("div");t.id="wtoast";t.setAttribute("role","status");document.body.appendChild(t)}
+t.textContent="";var s=document.createElement("span");s.textContent=msg;t.appendChild(s);
+if(undo){var u=document.createElement("button");u.type="button";u.textContent=undoTxt;u.onclick=function(){clearTimeout(TT);t.className="";undo()};t.appendChild(u)}
+t.className="on";clearTimeout(TT);TT=setTimeout(function(){t.className=""},6000)};
+document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
+var b=document.createElement("button");b.type="button";b.className="thm";
+function ui(){var k=d.classList.contains("dk");b.textContent=k?"☀️":"🌙";b.title=k?(en()?"Light mode":"الوضع الفاتح"):(en()?"Dark mode":"الوضع الداكن");b.setAttribute("aria-label",b.title)}
+function setDk(k){d.classList.toggle("dk",k);try{localStorage.setItem("wth",k?"dark":"light")}catch(e){}ui()}
+b.onclick=function(){var was=d.classList.contains("dk");setDk(!was);
+ waselToast(!was?(en()?"✓ Dark mode on":"✓ اتحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ اتحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
+var l=h.querySelector("#lang");if(l&&l.parentNode)l.parentNode.insertBefore(b,l);else h.appendChild(b)})})();
+</script>
+<script>/* زر «غيّر مودك / غيّري مودك»: يبدّل شكل التطبيق بين الأخضر والبينك، ويتحفظ على الجهاز بس (مش بيتبعت للسيرفر)، ومعاه «تراجع» */
+(function(){var d=document.documentElement;
+function en(){return d.lang==="en"}
+function get(){try{return localStorage.getItem("wgd")||""}catch(e){return ""}}
+function lbl(b){var f=get()==="f",t=en()?"🎨 Change your look":(f?"🎨 غيّري مودك":"🎨 غيّر مودك");b.textContent=t;b.title=t;b.setAttribute("aria-label",t)}
+window.waselGender=function(v,silent){var prev=get();try{if(v)localStorage.setItem("wgd",v);else localStorage.removeItem("wgd")}catch(e){}
+ d.classList.toggle("pk",v==="f");Array.prototype.forEach.call(document.querySelectorAll(".gnd"),lbl);
+ try{document.dispatchEvent(new CustomEvent("waselgender",{detail:{v:v,prev:prev}}))}catch(e){}
+ if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ اتحوّل للون البينك"):(en()?"✓ Wasel green look on":"✓ اتحوّل للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
+document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
+ var b=document.createElement("button");b.type="button";b.className="thm gnd";lbl(b);
+ b.onclick=function(){window.waselGender(get()==="f"?"m":"f")};
+ var t=h.querySelector(".thm");if(t&&t.parentNode)t.parentNode.insertBefore(b,t);else h.appendChild(b);
+ var l=document.getElementById("lang");if(l)l.addEventListener("click",function(){setTimeout(function(){lbl(b)},0)})})})();
+</script>
+<title>واصل - الشروط والخصوصية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f6f6;--card:#fff;--tx:#12211f;--mu:#4f6260;--br:#0e4f4c;--ln:#dde5e3;--soft:#eef4f3}
+html.dk{--bg:#0d1413;--card:#16201f;--tx:#e8f0ee;--mu:#9bb0ab;--br:#5cc8bb;--ln:#273533;--soft:#1b2928}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;line-height:1.85;font-size:16px}
+header{background:#0e4f4c;color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px}
+header svg{width:44px;height:44px;flex:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
+header b{font-size:20px}header small{display:block;color:#a9d3cf;font-size:13px}
+main{max-width:760px;margin:0 auto;padding:12px 16px 50px}
+.tabs{display:flex;gap:8px;margin:6px 0 10px;flex-wrap:wrap}
+.tabs button{flex:1;min-width:130px;padding:10px 12px;border:1px solid var(--ln);border-radius:14px;background:var(--card);color:var(--tx);font:inherit;font-weight:700;cursor:pointer}
+.tabs button.on{background:var(--br);color:#fff;border-color:var(--br)}
+:where(html.dk) .tabs button.on{color:#06201d}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:20px;padding:6px 18px 18px}
+h2{font-size:18px;margin:18px 0 4px;color:var(--br)}
+ol{margin:6px 0;padding-inline-start:22px}li{margin:4px 0}
+.mu{color:var(--mu);font-size:13.5px}
+.box{background:var(--soft);border-radius:16px;padding:12px 16px;margin-top:14px;font-size:14px}
+
+:root{color-scheme:light}html.dk{color-scheme:dark}
+header .thm{width:auto!important;flex:none;margin:0 6px!important;padding:6px 10px!important;border-radius:12px!important;background:rgba(255,255,255,.15)!important;color:#fff!important;border:1px solid rgba(255,255,255,.35)!important;font-size:16px!important;line-height:1.2!important;cursor:pointer;box-shadow:none!important}
+header>.thm:last-child{margin-inline-start:auto!important}
+html.pk{--br:#be185d;--br2:#fce7f3;--c1:#be185d}
+html.pk.dk{--br:#f472b6;--br2:#3b1427;--c1:#f472b6}
+html.pk header,html.pk .hero,html.pk .spl,html.pk .dwh,html.pk .welcome{background:#9d174d!important}
+html.pk header small,html.pk header .brand span,html.pk .hero .hn{color:#fbcfe8!important}
+html.pk .hero .hm{color:#fce7f3!important}
+html.pk header button:not(.thm){color:#9d174d!important}
+html.pk header svg [fill="#0e4f4c"]{fill:#9d174d}html.pk header svg [stroke="#0e4f4c"]{stroke:#9d174d}
+html.pk .flag{color:#9d174d}
+#wtoast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:9500;display:flex;align-items:center;gap:12px;max-width:92vw;padding:10px 12px 10px 16px;border-radius:16px;background:#12211f;color:#fff;font-weight:700;font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.35);transition:opacity .2s,transform .2s}
+#wtoast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#wtoast button{width:auto!important;margin:0!important;padding:8px 14px!important;border:0!important;border-radius:12px!important;background:#f2b544!important;color:#3b2300!important;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+/* كلام أوضح: خط عريض في التطبيق كله، مع عمق خفيف للعناوين */
+body{font-weight:700}
+h1,h2,h3,h4,b,strong,.big,label,input,select,textarea,button,small{font-weight:700}
+input::placeholder,textarea::placeholder{font-weight:600}
+header b,.hero .big,.brand b{text-shadow:0 2px 4px rgba(0,0,0,.3)}
+h1,h2,h3,.big,.ch{text-shadow:0 1px 1px rgba(0,0,0,.1)}
+html.dk h1,html.dk h2,html.dk h3,html.dk .big,html.dk .ch{text-shadow:0 1px 2px rgba(0,0,0,.6)}
+/* الخانات متظللة: أخضر واصل افتراضيًا، ووردي لما العميل يختار 👩 */
+:root{--fld:#e7f2f0;--fldb:#b9d6d1}
+html.dk{--fld:#13302d;--fldb:#24524c}
+html.pk{--fld:#fdeef6;--fldb:#f5c2dc}
+html.pk.dk{--fld:#3a1729;--fldb:#6b2a4c}
+input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea{background-color:var(--fld)!important;border-color:var(--fldb)!important}
+input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,select:focus,textarea:focus{outline:2px solid var(--br);outline-offset:1px}
+
+/* ===== شكل واحد لكل صفحات واصل: خلفية ملوّنة، كروت بإطار، عناوين الخانات بالأخضر (وبالبينك للبنات) ===== */
+:root{--pg:#e4efed;--pg2:#cfe3df;--sh:rgba(14,79,76,.14);--br3:#14635f}
+html.dk{--pg:#0a1514;--pg2:#11302c;--sh:rgba(0,0,0,.45);--br3:#3fa99d}
+html.pk{--pg:#fbe9f2;--pg2:#f6d0e3;--sh:rgba(157,23,77,.14);--br3:#9d174d}
+html.pk.dk{--pg:#1c0d15;--pg2:#331526;--sh:rgba(0,0,0,.45);--br3:#ec4899}
+body{background:linear-gradient(180deg,var(--pg2) 0,var(--pg) 320px) var(--pg);background-attachment:fixed}
+header{box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.card{border:2px solid var(--fldb)!important;box-shadow:0 8px 22px var(--sh)}
+main label:not(.chk):not(.lr):not(.mu):not(:has(input)){display:inline-block;width:auto;margin:14px 0 6px;font-size:14.5px;padding:4px 14px;border-radius:10px;background:linear-gradient(135deg,var(--br),var(--br3));color:#fff!important;font-weight:700;box-shadow:0 3px 8px var(--sh);text-shadow:0 1px 2px rgba(0,0,0,.2)}
+html.dk main label:not(.chk):not(.lr):not(.mu):not(:has(input)){color:#06201d!important;text-shadow:none}
+button:active{transform:scale(.97)}
+@keyframes wrise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+main>*{animation:wrise .45s ease both}
+main>*:nth-child(2){animation-delay:.06s}main>*:nth-child(3){animation-delay:.12s}main>*:nth-child(n+4){animation-delay:.18s}
+@media(prefers-reduced-motion:reduce){main>*{animation:none}}
+
+/* زر «غيّر مودك» في الهيدر */
+header .gnd{font-size:13px!important;padding:6px 9px!important;white-space:nowrap}
+header>.gnd{margin-inline-start:auto!important}header>.gnd+.thm{margin-inline-start:6px!important}
+@media(max-width:380px){header .gnd{font-size:11.5px!important;padding:5px 7px!important}}
+html.pk #lang{color:#9d174d!important}
+html.pk .dwh,html.pk .cspl{background:#9d174d!important}
+@media(max-width:520px){
+header{gap:6px!important;padding-inline:10px!important}
+header>div:first-child,header .brand{min-width:0;flex:1 1 auto}
+header>svg+div{min-width:0;flex:1 1 auto}header .clock{font-size:13px}
+header b{font-size:17px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+header small{font-size:11.5px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header>svg,header .brand>svg{width:36px!important;height:36px!important}
+header .thm{padding:5px 8px!important;margin:0 3px!important}
+header .gnd{font-size:12px!important;padding:5px 7px!important}
+header #lang{padding:6px 10px!important;margin:0 3px!important}
+}
+</style></head><body>
+<header><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="18" fill="#fff"/><g transform="translate(2 -3.55) scale(.3)"><path fill="#0e4f4c" d="M13.26,54.00 L42.97,158.00 L85.58,158.00 L100.00,131.44 L114.42,158.00 L157.03,158.00 L186.74,54.00 L155.54,54.00 L133.66,130.57 L100.00,68.56 L66.34,130.57 L44.46,54.00 Z"/><path fill="#0e4f4c" d="M67.315185546875 188.0H64.409912109375L62.824462890625 181.23486328125Q62.533935546875 180.03955078125 62.334716796875 178.736328125Q62.135498046875 179.82373046875 62.010986328125 180.392333984375Q61.886474609375 180.9609375 60.242919921875 188.0H57.337646484375L54.324462890625 176.30419921875H56.806396484375L58.499755859375 183.85791015625L58.881591796875 185.68408203125Q59.114013671875 184.5302734375 59.333984375 183.480224609375Q59.553955078125 182.43017578125 60.989990234375 176.30419921875H63.729248046875L65.206787109375 182.52978515625Q65.381103515625 183.22705078125 65.796142578125 185.68408203125L66.003662109375 184.72119140625L66.443603515625 182.81201171875L67.854736328125 176.30419921875H70.336669921875Z M85.758056640625 188.0 84.720458984375 185.01171875H80.262939453125L79.225341796875 188.0H76.776611328125L81.043212890625 176.30419921875H83.931884765625L88.181884765625 188.0ZM82.487548828125 178.10546875 82.437744140625 178.2880859375Q82.354736328125 178.5869140625 82.238525390625 178.96875Q82.122314453125 179.3505859375 80.810791015625 183.1689453125H84.172607421875L83.018798828125 179.80712890625L82.661865234375 178.67822265625Z M105.304931640625 184.6298828125Q105.304931640625 186.34814453125 104.03076171875 187.257080078125Q102.756591796875 188.166015625 100.291259765625 188.166015625Q98.041748046875 188.166015625 96.763427734375 187.369140625Q95.485107421875 186.572265625 95.119873046875 184.95361328125L97.485595703125 184.5634765625Q97.726318359375 185.4931640625 98.423583984375 185.912353515625Q99.120849609375 186.33154296875 100.357666015625 186.33154296875Q102.922607421875 186.33154296875 102.922607421875 184.77099609375Q102.922607421875 184.27294921875 102.6279296875 183.94921875Q102.333251953125 183.62548828125 101.7978515625 183.40966796875Q101.262451171875 183.19384765625 99.743408203125 182.88671875Q98.431884765625 182.57958984375 97.917236328125 182.392822265625Q97.402587890625 182.2060546875 96.987548828125 181.952880859375Q96.572509765625 181.69970703125 96.281982421875 181.3427734375Q95.991455078125 180.98583984375 95.82958984375 180.50439453125Q95.667724609375 180.02294921875 95.667724609375 179.400390625Q95.667724609375 177.81494140625 96.85888671875 176.972412109375Q98.050048828125 176.1298828125 100.324462890625 176.1298828125Q102.499267578125 176.1298828125 103.5908203125 176.810546875Q104.682373046875 177.4912109375 104.997802734375 179.06005859375L102.623779296875 179.3837890625Q102.441162109375 178.62841796875 101.880859375 178.24658203125Q101.320556640625 177.86474609375 100.274658203125 177.86474609375Q98.050048828125 177.86474609375 98.050048828125 179.25927734375Q98.050048828125 179.7158203125 98.28662109375 180.00634765625Q98.523193359375 180.296875 98.988037109375 180.500244140625Q99.452880859375 180.70361328125 100.872314453125 181.0107421875Q102.557373046875 181.36767578125 103.28369140625 181.670654296875Q104.010009765625 181.9736328125 104.433349609375 182.376220703125Q104.856689453125 182.77880859375 105.080810546875 183.339111328125Q105.304931640625 183.8994140625 105.304931640625 184.6298828125Z M113.106201171875 188.0V176.30419921875H122.303466796875V178.19677734375H115.554931640625V181.13525390625H121.797119140625V183.02783203125H115.554931640625V186.107421875H122.643798828125V188.0Z M130.445068359375 188.0V176.30419921875H132.893798828125V186.107421875H139.169189453125V188.0Z"/><g transform="translate(62.8 42.25) scale(3.1)"><path fill="#fff" stroke="#fff" stroke-width="3" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><path fill="#f2b544" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><circle cx="12" cy="9.4" r="3.2" fill="#fff"/></g></g></svg><div><b>واصل | WASEL</b><small>الشروط والأحكام وسياسة الخصوصية</small></div></header>
+<main>
+  <div class="tabs" id="what"></div>
+  <div class="card" id="doc"></div>
+  <div class="box" id="biz"></div>
+  <p class="mu" id="upd"></p>
+</main>
+<script>
+/* ===== عدّل هذه البيانات بعد التسجيل الرسمي (الفارغ لا يظهر) ===== */
+var BIZ={name:"واصل",city:"عنيزة، المملكة العربية السعودية",cr:"",vat:"",phone:"",email:"",updated:"1447/04/01 (أكتوبر 2026)"};
+/* نقطة البداية تُحقن من السيرفر: terms-customer | privacy-customer | terms-courier | privacy-courier | terms-restaurant | privacy-restaurant */
+var START=(function(){try{return new URLSearchParams(location.search).get("p")||"terms-customer"}catch(e){return "terms-customer"}})();
+var D={
+"terms-customer":["الشروط والأحكام للعملاء",[
+ ["من نحن","«واصل» خدمة توصيل طلبات داخل مدينة عنيزة. نحن نربطك بمندوب توصيل مستقل ينفّذ طلبك من المطعم أو المتجر إليك. باستخدامك الخدمة وإرسال طلب فأنت توافق على هذه الشروط."],
+ ["الطلب والسعر",["تُحدَّد رسوم التوصيل وتظهر لك قبل تأكيد الطلب. وقد تتغير حسب المسافة أو العروض.","قيمة الطلب نفسه (الوجبة أو المشتريات) هي المكتوبة في فاتورة المطعم أو المتجر، ويدفعها العميل كما هي.","قد يضيف المندوب أو الإدارة تعديلًا بعد الاتفاق معك إذا تغيّرت الأصناف أو الأسعار."]],
+ ["الدفع",["الدفع كاش فقط خلال فترة التجربة، وبيكون عند استلام الطلب.","طرق الدفع الإلكتروني هتتاح بعد التسجيل الرسمي للخدمة، وهنبلّغك بيها داخل التطبيق. لا تحوّل أي مبلغ لأي رقم يُرسل لك من خارج الخدمة."]],
+ ["دقة البيانات",["أنت مسؤول عن صحة الاسم ورقم الجوال والعنوان أو الموقع على الخريطة.","الجوال لازم يكون متاحًا أثناء التوصيل. إذا تعذر الوصول إليك بعد محاولات معقولة فقد يُلغى الطلب ويُحاسَب عليه إن كان قد تم تجهيزه."]],
+ ["الإلغاء",["يمكنك طلب الإلغاء قبل أن يستلم المندوب الطلب من المكان، عبر التواصل مع الإدارة.","بعد تجهيز الطلب أو استلامه قد لا يمكن الإلغاء أو قد تتحمل قيمته."]],
+ ["التأخير والمسؤولية",["المدة المعروضة تقديرية وتتأثر بالتجهيز في المطعم والزحام.","المطعم أو المتجر مسؤول عن جودة الطلب ومكوناته (بما فيها الحساسية الغذائية)، ودورنا نقل الطلب. ننظر في أي شكوى بجدّية ونحاول الحل مع الطرف المعني.","لا نتحمل ضررًا ناتجًا عن بيانات خاطئة قدّمها العميل أو عن ظروف خارجة عن إرادتنا."]],
+ ["التتبع",["أثناء تنفيذ طلبك قد ترى موقع المندوب على الخريطة ليساعدك على متابعته. ينتهي ظهور الموقع عند انتهاء الطلب."]],
+ ["ممنوعات","لا نوصّل ممنوعات نظامًا (مثل الكحول والمخدرات والأسلحة)، ولا أي شيء مخالف لأنظمة المملكة. يحق لنا رفض أي طلب أو إيقاف الخدمة عمّن يسيء استخدامها أو يتعامل بعنف أو إساءة مع المندوبين."],
+ ["التقييم والشكاوى","يمكنك تقييم الخدمة بعد التسليم، ونستخدم التقييم لتحسين الجودة. للشكاوى تواصل معنا عبر وسائل التواصل المذكورة أسفل الصفحة."],
+ ["التعديل والنظام","قد نحدّث هذه الشروط من وقت لآخر، واستمرارك في استخدام الخدمة يعني قبولك للنسخة المحدثة. تخضع هذه الشروط لأنظمة المملكة العربية السعودية."]
+]],
+"privacy-customer":["سياسة الخصوصية للعملاء",[
+ ["ما الذي نجمعه",["الاسم ورقم الجوال.","العنوان أو الموقع على الخريطة الذي تحدده للتوصيل.","تفاصيل الطلب (الأصناف، الملاحظات، طريقة الدفع، المبالغ).","التقييم إن أرسلته، وصورة إثبات الدفع أو الفاتورة عند الحاجة."]],
+ ["لماذا نستخدمها","لتنفيذ طلبك وإيصاله، والتواصل معك بشأنه، والمحاسبة مع المناديب والمطاعم، وحل الشكاوى والنزاعات، وتحسين الخدمة، والالتزام بالأنظمة."],
+ ["من يطّلع عليها",["المندوب الذي ينفّذ طلبك: يرى اسمك وعنوانك وموقعك فقط لتنفيذ الطلب. رقم جوالك مخفي عنه، والتواصل بينكما يتم بالمحادثة داخل واصل، والمحادثات محفوظة وتراجعها الإدارة عند الحاجة.","المطعم أو المتجر: يرى تفاصيل الطلب اللازمة للتجهيز.","الإدارة: لمتابعة التشغيل والمحاسبة وخدمة العملاء.","نستخدم خدمات تقنية لتشغيل الخدمة: Google (التخزين والتشغيل) وتيليجرام (إشعارات الفريق). لا نبيع بياناتك ولا نشاركها لأغراض إعلانية."]],
+ ["بياناتك على جهازك","قد يحفظ المتصفح على جهازك بياناتك (الاسم والجوال والعنوان) لتسهيل طلبك القادم. يمكنك مسحها بزر «انسَ بياناتي» داخل الصفحة أو من إعدادات المتصفح."],
+ ["مدة الاحتفاظ","نحتفظ بسجل الطلبات للمدة اللازمة للمحاسبة وحل النزاعات والالتزام بالأنظمة، ثم نحذفها أو نُخفي هويتها."],
+ ["حقوقك","يحق لك طلب الاطلاع على بياناتك أو تصحيحها أو حذفها، وسحب موافقتك على استخدامها، ما لم يمنع نظام أو التزام محاسبي ذلك. تواصل معنا عبر وسائل التواصل أسفل الصفحة."],
+ ["الحماية","نحصر الاطلاع على البيانات بمن يحتاجها، ونحمي صفحات الإدارة برمز سري، ولا نخزّن أرقام بطاقات بنكية. لا توجد وسيلة حماية كاملة 100%، ونعمل على تقليل المخاطر."],
+ ["الأطفال","الخدمة موجهة لمن هم 18 عامًا فأكثر، أو بإشراف ولي الأمر."],
+ ["التحديث","قد نعدّل هذه السياسة، وسيظهر تاريخ آخر تحديث في أسفل الصفحة."]
+]],
+"terms-courier":["شروط وأحكام المناديب",[
+ ["الانضمام",["يشترط أن يكون عمرك 18 عامًا فأكثر، وأن يكون لديك حق قانوني في العمل بالتوصيل، ووسيلة نقل صالحة ورخصة قيادة سارية إن لزم، وجوال تعمل عليه صفحة المندوب.","تُراجَع بيانات التسجيل، ويحق للإدارة قبول الطلب أو رفضه أو إيقاف الحساب."]],
+ ["طبيعة العمل","تعمل بقبول الطلبات التي تناسبك من صفحة المندوب. أجرك عن كل طلب يظهر لك قبل القبول. هذه الشروط لا تعني بذاتها علاقة توظيف، وقد تتغير الصياغة بعد استكمال التسجيل الرسمي لـ«واصل»."],
+ ["التزامات المندوب",["قبول الطلب التزام: لا تقبل ما لا تستطيع تنفيذه.","التعامل باحترام مع العملاء والمطاعم وفريق واصل.","الاستلام والتسليم بعناية وبدون فتح الطلب أو العبث به.","رفع الفاتورة وإثبات التسليم عندما يطلبها التطبيق، وبدقة.","الالتزام بأنظمة المرور والسلامة وعدم استخدام الجوال أثناء القيادة."]],
+  ["الموقع",["يطلب التطبيق مشاركة موقعك الدقيق أثناء الطلبات النشطة ليتابعها العميل والإدارة، ويُسجَّل الوصول تلقائيًا عند الاقتراب من نقطة التسليم.","لا يُنفَّذ الطلب إذا كان الموقع مغلقًا أو غير دقيق.","لا نستخدم الموقع لأي غرض آخر غير تشغيل الطلبات والأمان وحل النزاعات."]],
+ ["المبالغ والكاش",["رصيدك في «محفظتي» يوضّح ما لك وما عليك. إذا استلمت مبلغ الطلب كاشًا فتُخصم حصة التطبيق من رصيدك، ويُسجَّل لك الباقي كما في المحفظة.","الكاش الذي معك للتطبيق أمانة، ويجب تسليمه في موعد التسوية (كل 3 أيام عادةً).","قد يُوقَف استقبال الطلبات الجديدة مؤقتًا إذا بلغ المبلغ الذي عليك للتطبيق الحد المسموح، ويُفتح فور تسليمه.","الإدارة هي التي تسجّل التسوية، وكل حركة تظهر في محفظتك."]],
+ ["بيانات الحساب",["إدخال الآيبان أو STC Pay اختياري لاستلام مستحقاتك، وعليك التأكد من صحته. نحوّل لما ورد باسم صاحب الحساب فقط.","نحن غير مسؤولين عن تحويل صحيح وقع على بيانات أخطأت أنت في كتابتها."]],
+ ["المخالفات",["يمنع الغش أو التلاعب بالموقع أو الفواتير أو المبالغ أو العمل بحساب غيرك.","يحق للإدارة التنبيه أو الإيقاف المؤقت أو الدائم عند المخالفة، ويحق لها خصم أو استرداد المبالغ المستحقة نظامًا."]],
+ ["التأمين والمسؤولية","أنت مسؤول عن مركبتك ومخالفاتك المرورية وسلامتك. تحقق من تغطية التأمين المناسبة لعملك. نحن لسنا مسؤولين عن حوادث الطريق ما لم يُنص على غير ذلك نظامًا."],
+ ["إنهاء التعاون","يمكنك التوقف في أي وقت بعد تسوية ما عليك وما لك. ويحق للإدارة إنهاء التعاون عند الإخلال بهذه الشروط."],
+ ["التعديل والنظام","قد نحدّث هذه الشروط، وتخضع لأنظمة المملكة العربية السعودية."]
+]],
+"privacy-courier":["سياسة الخصوصية للمناديب",[
+ ["ما الذي نجمعه",["الاسم ورقم الجوال والجنسية.","صور مستندات التسجيل: الإقامة (أو الهوية)، واستمارة المركبة، ورخصة القيادة.","موقعك الجغرافي أثناء الطلبات النشطة (يُحفظ مؤقتًا لدقائق لتشغيل التتبع ولا يُبنى منه سجل دائم لتحركاتك).","سجل الطلبات التي نفّذتها وأجرك ورصيدك وتسوياتك وتقييمات العملاء.","صور الفواتير وإثباتات التسليم التي ترفعها.","بيانات الحساب إن أدخلتها: اسم صاحب الحساب والآيبان و/أو رقم STC Pay."]],
+ ["صور المستندات","صور الإقامة (أو الهوية) والاستمارة والرخصة تُستخدم للتحقق من أهليتك للعمل فقط، وتُحفظ بشكل خاص لدى الإدارة ولا تُعرض للعملاء ولا للمناديب الآخرين. لا نشاركها مع أي جهة إلا إذا طلبتها جهة رسمية مختصة نظامًا."],
+ ["لماذا نستخدمها","لتوزيع الطلبات وتتبعها، وحساب أجرك ومستحقاتك وتحويلها، ومنع الغش، وخدمة العملاء، والالتزام بالأنظمة."],
+ ["من يطّلع عليها",["العميل: يرى اسمك وموقعك أثناء طلبه فقط.","الإدارة: ترى بياناتك وسجل عملك للتشغيل والمحاسبة.","بيانات حسابك البنكي تظهر لك مخفية جزئيًا، ولا يطّلع عليها غير الإدارة المخولة.","نستخدم Google للتخزين والتشغيل وتيليجرام لإشعارات الفريق. لا نبيع بياناتك."]],
+ ["مدة الاحتفاظ","نحتفظ بسجل عملك وتسوياتك للمدة اللازمة للمحاسبة والنظام. صور المستندات تُحفظ طوال فترة تعاملك معنا، ثم تُحذف خلال مدة معقولة بعد انتهائه ما لم يوجب النظام غير ذلك. موقعك اللحظي لا يُحفظ إلا مؤقتًا."],
+ ["حقوقك","يحق لك طلب الاطلاع على بياناتك أو تصحيحها أو حذف بيانات حسابك البنكي في أي وقت، وطلب حذف صور مستنداتك عند انتهاء التعامل، وسحب إذن الموقع (مع التوقف عن استقبال الطلبات التي تحتاجه). تواصل معنا عبر وسائل التواصل أسفل الصفحة."],
+ ["الحماية","نحمي صفحات الإدارة برمز سري، ونحفظ صور المستندات في مكان خاص غير مفتوح للعامة، ونخفي بياناتك البنكية في الشاشات، ونقيّد الاطلاع عليها. احمِ رمز دخولك ولا تشاركه مع أحد."],
+ ["التحديث","قد نعدّل هذه السياسة، وسيظهر تاريخ آخر تحديث في أسفل الصفحة."]
+]],
+"terms-restaurant":["شروط وأحكام المطاعم والمتاجر",[
+ ["من نحن","«واصل» خدمة توصيل طلبات داخل مدينة عنيزة، تربط مطعمك أو متجرك بالعملاء وبمناديب توصيل مستقلين. هذه الشروط تنطبق على كل مطعم أو متجر أو صاحب أكل بيتي يسجّل معنا ويستخدم صفحة المطعم. بتسجيلك واستخدامك الصفحة فأنت توافق عليها."],
+ ["التسجيل والاعتماد",["يشترط أن يكون النشاط مرخّصًا نظامًا (سجل تجاري أو ترخيص مناسب لنوع النشاط) وملتزمًا بالاشتراطات الصحية والبلدية.","تراجع الإدارة طلب التسجيل، ويحق لها قبوله أو رفضه أو طلب مستندات إضافية.","بعد الاعتماد يصلك رمز دخول خاص بمطعمك. لا تشاركه إلا مع المسؤولين عندك، وأنت مسؤول عن أي استخدام له."]],
+ ["الموقع",["تحدّد موقع مطعمك بنفسك من صفحتك، ويجب أن يكون داخل عنيزة ودقيقًا، لأنه الموقع الذي يتجه إليه المندوب ويظهر للعميل."]],
+ ["المنيو والأسعار والصور",["تضيف أصنافك وأسعارك وعروضك بنفسك، وأنت مسؤول عن دقتها وتحديثها.","صورة كل صنف إلزامية، ويجب أن تكون صورة حقيقية للصنف نفسه، ومملوكة لك أو مسموحًا لك باستخدامها.","السعر في المنيو يجب أن يطابق سعرك المعتاد في المحل. الفاتورة التي تسلمها للمندوب هي المرجع النهائي لقيمة الطلب.","أوقف الصنف من صفحتك فور نفاده، واقفل المطعم من الصفحة وقت الإغلاق حتى لا تصلك طلبات."]],
+ ["استقبال الطلبات",["تصلك الطلبات على صفحة المطعم، ويمكن أن يصلك تنبيه على تليجرام.","اقبل الطلب مع تحديد وقت التجهيز، أو اعتذر عنه مع ذكر السبب، في أسرع وقت.","اضغط «الطلب جاهز» عندما يكون جاهزًا فعلًا للاستلام، وسلّمه للمندوب مغلقًا ومع فاتورته.","تكرار التأخير أو الاعتذار بدون سبب أو عدم الرد قد يؤدي إلى إيقاف ظهور المطعم مؤقتًا."]],
+ ["الجودة والمسؤولية",["المطعم أو المتجر مسؤول عن جودة الطلب ونظافته وسلامته ومكوناته، ومنها مسببات الحساسية، وعن تغليفه بشكل مناسب للتوصيل.","دور واصل نقل الطلب. عند وجود شكوى تخص الطلب نفسه نتواصل معك لحلها مع العميل بشكل عادل."]],
+ ["الدفع والتسوية",["خلال فترة التجربة الحالية يدفع المندوب قيمة فاتورة الطلب للمطعم عند الاستلام، إلى أن يتم ربط الدفع الإلكتروني رسميًا.","فترة التجربة (شهر تقريبًا) بدون عمولة على المطعم. بعدها يتم الاتفاق مع كل مطعم على رسم ثابت لكل طلب أو أي ترتيب آخر، ولا يُطبَّق أي رسم إلا بعد إبلاغك والاتفاق معك.","تظهر طلبات واصل لمطعمك في تقارير الإدارة، وتتم التسوية حسب ما يتم الاتفاق عليه."]],
+ ["الظهور في التطبيق","يظهر مطعمك للعملاء في قائمة المطاعم بالاسم والتصنيف والمنيو والصور والموقع. يحق لواصل ترتيب طريقة العرض والتصنيفات بما يخدم العملاء."],
+ ["المخالفات والإيقاف",["يمنع رفع أسعار أو صور غير حقيقية، أو بيع أي شيء ممنوع نظامًا، أو التعامل بإساءة مع المناديب أو العملاء.","يحق للإدارة التنبيه أو الإيقاف المؤقت أو الدائم عند المخالفة."]],
+ ["إنهاء التعاون","يمكنك طلب إيقاف ظهور مطعمك في أي وقت بعد تسوية ما لك وما عليك، ويحق لواصل إنهاء التعاون عند الإخلال بهذه الشروط."],
+ ["التعديل والنظام","قد نحدّث هذه الشروط، ونبلغك بأي تغيير مهم يخص الرسوم قبل تطبيقه. تخضع هذه الشروط لأنظمة المملكة العربية السعودية."]
+]],
+"privacy-restaurant":["سياسة الخصوصية للمطاعم والمتاجر",[
+ ["ما الذي نجمعه",["اسم المطعم أو المتجر وتصنيفه.","اسم المسؤول ورقم جواله.","موقع المطعم الذي تحدده.","المنيو والأسعار والعروض وصور الأصناف.","سجل الطلبات التي وصلتك وحالتها وأوقات القبول والتجهيز، وأسباب الاعتذار.","ربط تليجرام إن فعّلته لاستلام التنبيهات والرمز."]],
+ ["لماذا نستخدمها","لعرض مطعمك للعملاء، وتوصيل الطلبات إليك، وتوجيه المندوب لموقعك، ومتابعة جودة الخدمة، والمحاسبة والتسوية، والتواصل معك، والالتزام بالأنظمة."],
+ ["من يطّلع عليها",["العملاء: يرون اسم المطعم وتصنيفه والمنيو والأسعار والصور والموقع.","المندوب: يرى تفاصيل الطلب وموقع المطعم لتنفيذ الطلب.","الإدارة: ترى كل بيانات المطعم وسجل الطلبات للتشغيل والمحاسبة.","رقم جوال المسؤول لا يظهر للعملاء.","نستخدم Google للتخزين والتشغيل وتيليجرام للتنبيهات. لا نبيع بياناتك."]],
+ ["مدة الاحتفاظ","نحتفظ بسجل الطلبات والتسويات للمدة اللازمة للمحاسبة والنظام. عند إنهاء التعاون نوقف ظهور المطعم، ونحذف المنيو والصور خلال مدة معقولة ما لم يوجب النظام غير ذلك."],
+ ["حقوقك","يحق لك طلب الاطلاع على بيانات مطعمك أو تصحيحها أو حذفها، وتعديل المنيو والصور في أي وقت من صفحتك. تواصل معنا عبر وسائل التواصل أسفل الصفحة."],
+ ["الحماية","نحمي صفحة المطعم برمز دخول خاص، ونقيّد الاطلاع على البيانات بمن يحتاجها. احمِ رمز دخولك ولا تشاركه إلا مع المسؤولين عندك."],
+ ["التحديث","قد نعدّل هذه السياسة، وسيظهر تاريخ آخر تحديث في أسفل الصفحة."]
+]]
+};
+function $(i){return document.getElementById(i)}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+var cur=D[START]?START:"terms-customer";
+/* كل زائر يرى مستندات نوعه فقط: العميل للعميل والمندوب للمندوب والمطعم للمطعم */
+var AUD=cur.split("-")[1];
+Object.keys(D).forEach(function(k){if(k.split("-")[1]!==AUD)delete D[k]});
+function parts(){var a=cur.split("-");return {w:a[0],c:a[1]}}
+function draw(){
+  var p=parts(),what=$("what");what.textContent="";
+  [["terms","الشروط والأحكام"],["privacy","سياسة الخصوصية"]].forEach(function(x){var b=el("button",p.w===x[0]?"on":"",x[1]);b.onclick=function(){cur=x[0]+"-"+p.c;draw()};what.appendChild(b)});
+  var d=D[cur],doc=$("doc");doc.textContent="";
+  doc.appendChild(el("h2",null,d[0]));
+  d[1].forEach(function(s,i){
+    doc.appendChild(el("h2",null,(i+1)+". "+s[0]));
+    if(typeof s[1]==="string")doc.appendChild(el("div",null,s[1]));
+    else{var ol=el("ol");s[1].forEach(function(t){ol.appendChild(el("li",null,t))});doc.appendChild(ol)}});
+  try{document.title="واصل - "+d[0]}catch(e){}}
+function biz(){
+  var b=$("biz"),L=["الجهة: "+BIZ.name+" — "+BIZ.city];
+  if(BIZ.cr)L.push("السجل التجاري: "+BIZ.cr);if(BIZ.vat)L.push("الرقم الضريبي: "+BIZ.vat);
+  if(BIZ.phone)L.push("للتواصل: "+BIZ.phone);if(BIZ.email)L.push("البريد: "+BIZ.email);
+  b.textContent="";L.forEach(function(t){b.appendChild(el("div",null,t))});
+  $("upd").textContent="آخر تحديث: "+BIZ.updated}
+draw();biz();
+</script></body></html>
