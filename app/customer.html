@@ -509,7 +509,8 @@ var FQ=0,FT=0;
 function pickName(){var v=$("pk").value;return v==="x"?$("pko").value:v}
 function feeCoord(){
   if($("dm").value==="here")return COORD?("https://www.google.com/maps?q="+COORD):"";
-  return /(-?\d{1,2}\.\d{2,}),\s*(-?\d{1,3}\.\d{2,})/.test($("dl").value)?$("dl").value:""}
+  var v=$("dl").value;return (/(-?\d{1,2}\.\d{2,}),\s*(-?\d{1,3}\.\d{2,})/.test(v)||SHORTL.test(v.trim()))?v:""}
+var SHORTL=/^https?:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|g\.co\/kgs)\//i;   // رابط خرائط جوجل القصير: السيرفر بيطلّع منه الإحداثيات
 function feeUpd(){
   var b=$("feebox");if(!OFFER||!OFFER.pricing){b.classList.add("hide");return}
   b.classList.remove("hide");clearTimeout(FT);
@@ -519,6 +520,7 @@ function feeUpd(){
   FT=setTimeout(function(){
     google.script.run.withSuccessHandler(function(r){
       if(id!==FQ)return;
+      if(r&&r.dlink&&$("dm").value!=="here"&&SHORTL.test($("dl").value.trim()))$("dl").value=r.dlink;
       if(!r||!r.ok||!r.active||r.needLoc){b.textContent=t("feeNeed");return}
       b.textContent=t("feeLbl")+r.fee+t("feeCur")+(r.km>=0?t("feeKm")+r.km+(LANG==="en"?" km)":" كم)"):"")+(r.km<0?" — "+t("feeApprox"):"")
     }).withFailureHandler(function(){if(id===FQ)b.textContent=t("feeApprox")})
@@ -722,6 +724,13 @@ function send(){
   o.lk=LK;o.redeem=!!(LOYI&&LOYI.can&&$("loyc").checked);
   var m=$("msg");m.style.color="";
   var dc=coordOf(o.dlink);
+  if(!dc&&SHORTL.test(String(o.dlink||"").trim())&&!send.rs){   // رابط قصير: نجيب إحداثياته من السيرفر ونكمل الإرسال
+    m.textContent=t("sending");$("go").disabled=true;
+    google.script.run.withSuccessHandler(function(r){$("go").disabled=false;
+      if(r&&r.dlink){$("dl").value=r.dlink;send.rs=1;try{send()}finally{send.rs=0}}
+      else{m.style.color="#dc2626";m.textContent=t("locNeed2")}})
+    .withFailureHandler(function(){$("go").disabled=false;m.style.color="#dc2626";m.textContent=t("locNeed2")})
+    .quoteFee({dlink:o.dlink});return}
   if(!dc){m.style.color="#dc2626";m.textContent=t("locNeed2");return}
   if(farC(dc)){m.style.color="#b45309";m.textContent=t("outA");return}
   m.textContent=t("sending");$("go").disabled=true;
