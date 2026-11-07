@@ -1227,7 +1227,7 @@ document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&
 </script>
 <div id="uosh" class="hide" role="dialog" aria-modal="true"><div class="uow">
 <div class="uohero"><button id="uox" type="button" aria-label="close">✕</button><div class="uoht" id="uott">👀 وش الجديد؟</div><div class="uohs" id="uosub"></div><span class="uocnt" id="uocnt"></span></div>
-<div id="uofh" class="uosec hide"><b id="uofl"></b><span id="uofs"></span></div>
+<div id="uofh" class="uosec hide"><b id="uofl"></b><button type="button" id="uofs" class="uofnx"></button></div>
 <div id="uofeat" class="uofeat"></div>
 <div id="uoch" class="uoch"></div>
 <div id="uol" class="uogrid"></div>
@@ -1245,6 +1245,7 @@ document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&
 .uocnt:empty{display:none}
 .uosec{display:flex;justify-content:space-between;align-items:center;padding:14px 14px 4px;font-weight:800}
 .uosec.hide{display:none!important}.uosec span{color:var(--br);font-size:12px;font-weight:700}
+.uofnx{width:auto!important;margin:0!important;padding:6px 14px!important;border:0!important;border-radius:999px!important;background:var(--br)!important;color:#fff!important;font-size:13px;font-weight:800;cursor:pointer}
 .uofeat{display:flex;gap:10px;overflow-x:auto;padding:4px 14px 10px;scrollbar-width:none;scroll-snap-type:x mandatory}
 .uofeat::-webkit-scrollbar,.uoch::-webkit-scrollbar{display:none}
 .uofc{flex:none;width:260px;height:160px;border-radius:20px;overflow:hidden;position:relative;color:#fff;cursor:pointer;scroll-snap-align:start;background:linear-gradient(135deg,#14706b,#0e4f4c)}
@@ -1302,7 +1303,7 @@ document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&
 /* ===== «وش الجديد؟ 👀» (ملف Offers.gs): إضافة فقط، مش بتغيّر أي حاجة في الطلب ===== */
 (function(){
 var UT={t:["👀 وش الجديد؟","👀 What's new?"],sub:["أحدث عروض مطاعم ومحلات عنيزة","Latest offers in Unayzah"],cnt:["🔥 {n} عرض شغال النهارده","🔥 {n} offers live today"],
- feat:["⭐ عروض مميزة","⭐ Featured"],swipe:["اسحب ←","Swipe →"],all:["الكل","All"],from:["يبدأ","Starts"],to:["ينتهي","Ends"],rem:["باقي","Left"],
+ feat:["⭐ عروض مميزة","⭐ Featured"],swipe:["المزيد ←","More →"],all:["الكل","All"],from:["يبدأ","Starts"],to:["ينتهي","Ends"],rem:["باقي","Left"],
  go:["🛵 اطلبه مع واصل","🛵 Order with Wasel"],rp:["العرض مش متاح؟","Offer not available?"],rpd:["شكرًا، اتشال العرض ✅","Thanks, offer removed ✅"],
  left0:["آخر يوم","Last day"],day1:["يوم","1 day"],day2:["يومين","2 days"],days:[" أيام"," days"],
  none:["مفيش عروض دلوقتي، ارجع بعدين 🙏","No offers right now, check back later 🙏"],ld:["جارٍ التحميل...","Loading..."],
@@ -1356,6 +1357,8 @@ function feat(){var f=$("uofeat");f.textContent="";
   var A=(L||[]).filter(function(o){return o.img&&o.price}).slice(0,6);
   $("uofh").classList.toggle("hide",A.length<2);if(A.length<2)return;
   $("uofl").textContent=ut("feat");$("uofs").textContent=ut("swipe");
+  $("uofs").onclick=function(){var w=(f.firstElementChild?f.firstElementChild.offsetWidth+10:200),rtl=getComputedStyle(f).direction==="rtl",x=Math.abs(f.scrollLeft),mx=f.scrollWidth-f.clientWidth;
+    if(x>=mx-5)f.scrollTo({left:0,behavior:"smooth"});else f.scrollBy({left:rtl?-w:w,behavior:"smooth"})};
   A.forEach(function(o){var c=el("div","uofc");c.appendChild(img(o.img,"bg"));c.appendChild(el("div","ov"));
     c.appendChild(el("span","uopr",o.price));
     var tx=el("div","tx"),nm=el("div","nm");nm.appendChild(logoEl(o));nm.appendChild(el("span",null,o.store));tx.appendChild(nm);tx.appendChild(el("div","ti",o.title));c.appendChild(tx);
