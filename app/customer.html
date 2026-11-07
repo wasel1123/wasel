@@ -376,7 +376,7 @@ html.pk .cdh{background:#9d174d}
 <button type="button" data-c="hist"><span data-cm="hist"></span></button>
 <button type="button" data-c="again"><span data-cm="again"></span></button>
 <button type="button" data-c="of"><span data-cm="of"></span><span id="cofn" class="cnw hide"></span></button>
-<button type="button" data-c="uo" id="uob"><span id="uobt">🔥 عروض عنيزة</span><span id="uon" class="cnw hide"></span></button>
+<button type="button" data-c="uo" id="uob"><span id="uobt">👀 وش الجديد؟</span><span id="uon" class="cnw hide"></span></button>
 <button type="button" data-c="wa"><span data-cm="wa"></span></button>
 <button type="button" data-c="thm"><span id="cthm"></span></button>
 <button type="button" data-c="gnd"><span id="cgnd"></span></button>
@@ -1226,7 +1226,8 @@ document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&
 })();
 </script>
 <div id="uosh" class="hide" role="dialog" aria-modal="true"><div class="uow">
-<div class="uoh"><b id="uott">🔥 عروض عنيزة</b><button id="uox" type="button">✕</button></div>
+<div class="uoh"><b id="uott">👀 وش الجديد؟</b><button id="uox" type="button">✕</button></div>
+<div id="uoch" class="uoch"></div>
 <div id="uol"></div>
 <p class="uonote" id="uonote"></p></div></div>
 <div id="uodt" aria-hidden="true"><div class="uodh"><button id="uodb" type="button">›</button><b id="uodn"></b></div><div id="uodc"></div></div>
@@ -1246,6 +1247,15 @@ document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&
 .uogo{background:var(--br)!important;color:#fff!important;border:0!important;border-radius:10px!important;padding:8px 14px!important;font-weight:700;width:auto!important;margin:0!important}
 .uorp{background:transparent!important;border:0!important;color:var(--mu)!important;font-size:12px;text-decoration:underline;width:auto!important;padding:2px!important;margin:6px 0 0!important;box-shadow:none!important}
 .uomsg{color:var(--mu);text-align:center;padding:30px 10px}
+.uoch{display:flex;gap:6px;overflow-x:auto;padding:0 0 10px;scrollbar-width:none}
+.uoch button{flex:none;width:auto!important;margin:0!important;padding:4px 12px!important;border-radius:999px!important;border:1px solid var(--ln)!important;background:var(--card)!important;color:var(--tx)!important;font-size:13px;box-shadow:none!important}
+.uoch button.on{background:var(--br)!important;color:#fff!important;border-color:var(--br)!important}
+.uoc{padding:0!important;overflow:hidden}
+.uoc .uoin{padding:12px}
+.uoim{width:100%;max-height:170px;object-fit:cover;display:block;background:var(--br2)}
+.uocat{font-size:11px;color:var(--mu);border:1px solid var(--ln);border-radius:999px;padding:0 8px;margin-inline-start:6px;font-weight:400}
+.uodim{width:100%;max-height:260px;object-fit:cover;display:block;border-radius:14px;background:var(--br2)}
+.uodd{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .uonote{color:var(--mu);font-size:12px;text-align:center;margin:6px 0 0}
 .uoc{cursor:pointer}
 #uodt{position:fixed;top:0;bottom:0;right:0;width:min(420px,100vw);background:var(--bg);color:var(--tx);z-index:71;transform:translateX(105%);transition:transform .25s,visibility 0s .25s;visibility:hidden;overflow-y:auto;box-shadow:-6px 0 20px rgba(0,0,0,.3)}
@@ -1268,7 +1278,7 @@ document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&
 <script>
 /* ===== «عروض عنيزة 🔥» (ملف Offers.gs): إضافة فقط، مش بتغيّر أي حاجة في الطلب ===== */
 (function(){
-var UT={t:["🔥 عروض عنيزة","🔥 Unayzah offers"],go:["اطلبه مع واصل","Order with Wasel"],rp:["العرض مش متاح؟","Offer not available?"],rpd:["شكرًا، اتشال العرض ✅","Thanks, offer removed ✅"],
+var UT={t:["👀 وش الجديد؟","👀 What's new?"],all:["الكل","All"],from:["يبدأ","Starts"],to:["ينتهي","Ends"],go:["اطلبه مع واصل","Order with Wasel"],rp:["العرض مش متاح؟","Offer not available?"],rpd:["شكرًا، اتشال العرض ✅","Thanks, offer removed ✅"],
  left0:["⏳ آخر يوم","⏳ Last day"],left:["⏳ باقي ","⏳ "],d:[" يوم"," days left"],none:["مفيش عروض دلوقتي، ارجع بعدين 🙏","No offers right now, check back later 🙏"],
  ld:["جارٍ التحميل...","Loading..."],note:["حسب إعلان المطعم، ويؤكَّد عند الطلب. لو العرض مش موجود هنبلّغك قبل ما تدفع أي حاجة.","As announced by the restaurant, confirmed when ordering. If it's not available we'll tell you before you pay anything."],
  ofn:["🔥 عرض: ","🔥 Offer: "],nw:["جديد","New"],dt:["تفاصيل العرض","Offer details"],till:["لحد ","Until "]};
@@ -1290,38 +1300,50 @@ function pick(o){
   var it=$("items"),tag=ut("ofn")+o.title;
   if(it.value.indexOf(tag)<0)it.value=(it.value?it.value+"\n":"")+tag;
   setTimeout(function(){pk.scrollIntoView({behavior:"smooth",block:"center"})},150)}
+var CAT="";
+function chips(){var c=$("uoch");c.textContent="";if(!L||!L.length){c.classList.add("hide");return}
+  var have={};L.forEach(function(o){have[o.cat||"أخرى"]=1});var cats=Object.keys(have);
+  if(cats.length<2){c.classList.add("hide");CAT="";return}c.classList.remove("hide");
+  if(CAT&&!have[CAT])CAT="";
+  [""].concat(cats).forEach(function(k){var b=document.createElement("button");b.type="button";b.textContent=k||ut("all");if(k===CAT)b.className="on";
+    b.onclick=function(){CAT=k;draw()};c.appendChild(b)})}
 function draw(){
-  box.textContent="";
+  box.textContent="";chips();
   if(L===null){box.appendChild(Object.assign(document.createElement("div"),{className:"uomsg",textContent:ut("ld")}));return}
-  if(!L.length){box.appendChild(Object.assign(document.createElement("div"),{className:"uomsg",textContent:ut("none")}));return}
-  L.forEach(function(o){
+  var A=L.filter(function(o){return !CAT||(o.cat||"أخرى")===CAT});
+  if(!A.length){box.appendChild(Object.assign(document.createElement("div"),{className:"uomsg",textContent:ut("none")}));return}
+  A.forEach(function(o){
     var c=document.createElement("div");c.className="uoc";
+    if(o.img){var pi=document.createElement("img");pi.className="uoim";pi.src=o.img;pi.alt="";pi.loading="lazy";pi.onerror=function(){pi.remove()};c.appendChild(pi)}
+    var inn=document.createElement("div");inn.className="uoin";c.appendChild(inn);
     var t=document.createElement("div");t.className="uot";
-    var lg=document.createElement("div");lg.className="uolg";
-    if(o.logo){var im=document.createElement("img");im.src=o.logo;im.alt="";im.onerror=function(){lg.textContent=(o.store||"؟").replace(/^(مطعم|كافيه|مقهى)\s+/,"").charAt(0)};lg.appendChild(im)}
-    else lg.textContent=(o.store||"؟").replace(/^(مطعم|كافيه|مقهى)\s+/,"").charAt(0);
+    t.appendChild(logoEl(o,"uolg"));
     var nm=document.createElement("div");nm.className="uos";nm.textContent=o.store;
-    t.appendChild(lg);t.appendChild(nm);c.appendChild(t);
-    var ti=document.createElement("div");ti.className="uoti";ti.textContent=o.title;c.appendChild(ti);
-    if(o.details){var d=document.createElement("div");d.className="uod";d.textContent=o.details;c.appendChild(d)}
+    if(o.cat){var ct=document.createElement("span");ct.className="uocat";ct.textContent=o.cat;nm.appendChild(ct)}
+    t.appendChild(nm);inn.appendChild(t);
+    var ti=document.createElement("div");ti.className="uoti";ti.textContent=o.title;inn.appendChild(ti);
+    if(o.details){var d=document.createElement("div");d.className="uod";d.textContent=o.details;inn.appendChild(d)}
     var row=document.createElement("div");row.className="uorow";
     var lf=document.createElement("span");lf.className="uoleft";lf.textContent=o.left<=0?ut("left0"):(ut("left")+o.left+ut("d"));
     var go=document.createElement("button");go.type="button";go.className="uogo";go.textContent=ut("go");go.onclick=function(){pick(o)};
-    row.appendChild(lf);row.appendChild(go);c.appendChild(row);
+    row.appendChild(lf);row.appendChild(go);inn.appendChild(row);
     var rp=document.createElement("button");rp.type="button";rp.className="uorp";rp.textContent=ut("rp");
     rp.onclick=function(){rp.disabled=true;try{google.script.run.offerReport(o.id,"customer")}catch(e){}rp.textContent=ut("rpd");
       L=L.filter(function(x){return x.id!==o.id});setTimeout(function(){draw();lbl()},1200)};
-    c.appendChild(rp);c.onclick=function(ev){if(ev.target.closest("button"))return;dOpen(o)};box.appendChild(c)})}
+    inn.appendChild(rp);c.onclick=function(ev){if(ev.target.closest("button"))return;dOpen(o)};box.appendChild(c)})}
 function logoEl(o,cls){var lg=document.createElement("div");lg.className=cls;var ch=(o.store||"؟").replace(/^(مطعم|كافيه|مقهى)\s+/,"").charAt(0);
   if(o.logo){var im=document.createElement("img");im.src=o.logo;im.alt="";im.onerror=function(){lg.textContent=ch};lg.appendChild(im)}else lg.textContent=ch;return lg}
+function fd(d){var m=String(d||"").split("-");if(m.length!==3)return d||"";var M=LANG==="en"?["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]:["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];return parseInt(m[2],10)+" "+M[parseInt(m[1],10)-1]}
 function dEl(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
 var DT=$("uodt"),DC=$("uodc");
 function dClose(){DT.classList.remove("open");DT.setAttribute("aria-hidden","true")}
 function dOpen(o){
   $("uodn").textContent=o.store;DC.textContent="";
-  DC.appendChild(logoEl(o,"uodlg"));DC.appendChild(dEl("div","uods",o.store));DC.appendChild(dEl("div","uodti",o.title));
+  if(o.img){var di=dEl("img","uodim");di.src=o.img;di.alt="";di.onerror=function(){di.remove()};DC.appendChild(di)}
+  DC.appendChild(logoEl(o,"uodlg"));DC.appendChild(dEl("div","uods",o.store+(o.cat?" · "+o.cat:"")));DC.appendChild(dEl("div","uodti",o.title));
   if(o.details){var b=dEl("div","uodbox");b.appendChild(dEl("div","uodk",ut("dt")));b.appendChild(dEl("div",null,o.details));DC.appendChild(b)}
-  var e=dEl("div","uodbox uodend");e.appendChild(dEl("span","uoleft",o.left<=0?ut("left0"):(ut("left")+o.left+ut("d"))));e.appendChild(dEl("span","uodk",ut("till")+o.ends));DC.appendChild(e);
+  var dd=dEl("div","uodd");[[ut("from"),o.start],[ut("to"),o.ends]].forEach(function(p){if(!p[1])return;var bx=dEl("div","uodbox");bx.appendChild(dEl("div","uodk",p[0]));bx.appendChild(dEl("div",null,fd(p[1])));dd.appendChild(bx)});DC.appendChild(dd);
+  DC.appendChild(dEl("div","uoleft",o.left<=0?ut("left0"):(ut("left")+o.left+ut("d"))));
   var go=dEl("button","uogo",ut("go"));go.type="button";go.onclick=function(){dClose();pick(o)};DC.appendChild(go);
   DC.appendChild(dEl("div","uonote",ut("note")));
   var rp=dEl("button","uorp",ut("rp"));rp.type="button";rp.onclick=function(){rp.disabled=true;try{google.script.run.offerReport(o.id,"customer")}catch(x){}rp.textContent=ut("rpd");
