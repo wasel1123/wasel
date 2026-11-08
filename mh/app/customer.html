@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head>
+<!-- صفحة سريعة على GitHub: نفس ملف Index.html في Apps Script + bridge.js -->
+<script src="../bridge.js"></script>
+<script>
+/* ===== واصل: تطبيق واحد لكل المدن (عنيزة / المحلة). الاختيار بيتحفظ على الجهاز ===== */
+(function(){
+var ME="mhl",K="wcity",BASE="/wasel/";
+var C={unz:{n:"عنيزة",s:"السعودية · بالريال",f:"🇸🇦",la:26.0875,ln:43.9942,km:40,p:BASE+"app/"},mhl:{n:"المحلة الكبرى",s:"مصر · بالجنيه",f:"🇪🇬",la:30.9697,ln:31.1663,km:25,p:BASE+"mh/app/"}};
+function g(){try{return localStorage.getItem(K)}catch(e){return null}}
+function sv(v){try{localStorage.setItem(K,v)}catch(e){}}
+var page=location.pathname.split("/").pop()||"customer.html",c=g();
+// اللي كان بيستخدم واصل عنيزة قبل كده: يفضل على عنيزة من غير ما نسأله
+if(!c&&ME==="unz"){try{if(localStorage.getItem("wp")||localStorage.getItem("wc")||localStorage.getItem("wt")){c="unz";sv(c)}}catch(e){}}
+if(c&&c!==ME&&C[c]){location.replace(C[c].p+page+location.search);return}
+function go(v){sv(v);if(v!==ME)location.replace(C[v].p+page+location.search);else{var o=document.getElementById("wcity");if(o)o.remove()}}
+function km(a,b,c2,d){var r=Math.PI/180,x=(c2-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c2*r)*Math.sin(y/2)*Math.sin(y/2);return 12742*Math.asin(Math.sqrt(h))}
+function el(t,css,tx){var e=document.createElement(t);if(css)e.style.cssText=css;if(tx!=null)e.textContent=tx;return e}
+function show(first){
+  var o=document.getElementById("wcity");if(o)o.remove();
+  o=el("div","position:fixed;inset:0;z-index:2147483000;background:#0e4f4c;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;font-family:inherit;direction:rtl");o.id="wcity";
+  var box=el("div","width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px;align-items:stretch");o.appendChild(box);
+  function perm(){box.textContent="";
+    box.appendChild(el("div","font-size:60px","📍"));
+    box.appendChild(el("b","font-size:22px","علشان نوصّلك أسرع"));
+    box.appendChild(el("div","color:#d5ebe8;font-size:15px","واصل محتاج موقعك علشان يفتحلك مدينتك على طول، ويحسب رسوم التوصيل صح."));
+    var a=el("button","border:0;border-radius:16px;padding:14px;background:#f2b544;color:#1b1200;font:inherit;font-weight:800;font-size:17px;margin-top:6px","سماح بالموقع");a.type="button";
+    var st=el("div","color:#d5ebe8;font-size:14px;min-height:1.4em");
+    a.onclick=function(){a.disabled=true;st.textContent="بنحدد مدينتك...";
+      if(!navigator.geolocation){pick("مقدرناش نحدد موقعك، اختار مدينتك");return}
+      navigator.geolocation.getCurrentPosition(function(p){var la=p.coords.latitude,ln=p.coords.longitude,hit=null;
+          for(var k in C)if(km(la,ln,C[k].la,C[k].ln)<=C[k].km){hit=k;break}
+          if(hit)go(hit);else pick("إنت بره عنيزة والمحلة، اختار المدينة")},
+        function(){pick("الموقع مقفول، اختار مدينتك")},{enableHighAccuracy:false,timeout:12000,maximumAge:600000})};
+    var b=el("button","border:0;background:none;color:#d5ebe8;font:inherit;text-decoration:underline;font-size:14px","أختار المدينة بنفسي");b.type="button";b.onclick=function(){pick("اختار مدينتك")};
+    box.appendChild(a);box.appendChild(st);box.appendChild(b)}
+  function pick(why){box.textContent="";
+    box.appendChild(el("b","font-size:22px","إنت في أنهي مدينة؟"));box.appendChild(el("div","color:#d5ebe8;font-size:14px",why));
+    ["unz","mhl"].forEach(function(k){var x=C[k],bt=el("button","display:flex;align-items:center;gap:12px;border:0;border-radius:18px;padding:14px;background:#fff;color:#0e4f4c;font:inherit;text-align:right;cursor:pointer");bt.type="button";
+      bt.appendChild(el("span","font-size:34px",x.f));var t=el("span");t.appendChild(el("b","display:block;font-size:18px",x.n));t.appendChild(el("small","color:#4f6260",x.s));bt.appendChild(t);
+      bt.onclick=function(){go(k)};box.appendChild(bt)});
+    box.appendChild(el("div","color:#a9d3cf;font-size:12px","اختيارك بيتحفظ، وتقدر تغيّره من ☰ «🌍 غيّر المدينة»"));
+    if(!first){var x=el("button","border:0;background:none;color:#d5ebe8;font:inherit;text-decoration:underline","رجوع");x.type="button";x.onclick=function(){o.remove()};box.appendChild(x)}}
+  if(first)perm();else pick("اختار المدينة");
+  document.body.appendChild(o)}
+window.WCITY={open:function(){show(false)}};
+document.addEventListener("DOMContentLoaded",function(){
+  if(!g())show(true);
+  // زرار «🌍 غيّر المدينة» في القايمة ☰
+  try{var dw=document.getElementById("cdw")||document.getElementById("dw"),ref=dw&&(dw.querySelector('[data-c="lang"]')||dw.querySelector("#shfb"));
+    if(dw){var b=document.createElement("button");b.type="button";b.textContent="🌍 غيّر المدينة ("+C[ME].n+")";b.onclick=function(){show(false)};
+      if(ref&&ref.parentNode)ref.parentNode.insertBefore(b,ref.nextSibling);else dw.appendChild(b)}}catch(e){}
+});
+})();
+</script>
+<link rel="icon" href="../../icon.svg" type="image/svg+xml">
+<title>واصل - اطلب توصيل (المحلة)</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>/* وضع العرض: فاتح افتراضيًا، والعميل يختار الغامق بزر ☀️/🌙 ويُحفظ على جهازه، ومع كل تغيير زر «تراجع» */
+(function(){var d=document.documentElement;try{if(localStorage.getItem("wth")==="dark")d.classList.add("dk");if(localStorage.getItem("wgd")==="f")d.classList.add("pk")}catch(e){}
+var TT=0;function en(){return d.lang==="en"}
+window.waselToast=function(msg,undoTxt,undo){var t=document.getElementById("wtoast");if(!t){t=document.createElement("div");t.id="wtoast";t.setAttribute("role","status");document.body.appendChild(t)}
+t.textContent="";var s=document.createElement("span");s.textContent=msg;t.appendChild(s);
+if(undo){var u=document.createElement("button");u.type="button";u.textContent=undoTxt;u.onclick=function(){clearTimeout(TT);t.className="";undo()};t.appendChild(u)}
+t.className="on";clearTimeout(TT);TT=setTimeout(function(){t.className=""},6000)};
+document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
+var b=document.createElement("button");b.type="button";b.className="thm";
+function ui(){var k=d.classList.contains("dk");b.textContent=k?"☀️":"🌙";b.title=k?(en()?"Light mode":"الوضع الفاتح"):(en()?"Dark mode":"الوضع الداكن");b.setAttribute("aria-label",b.title)}
+function setDk(k){d.classList.toggle("dk",k);try{localStorage.setItem("wth",k?"dark":"light")}catch(e){}ui()}
+b.onclick=function(){var was=d.classList.contains("dk");setDk(!was);
+ waselToast(!was?(en()?"✓ Dark mode on":"✓ اتحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ اتحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
+var l=h.querySelector("#lang");if(l&&l.parentNode)l.parentNode.insertBefore(b,l);else h.appendChild(b)})})();
+</script>
+<script>/* تقييم المطعم والزحمة جنب اسم المطعم في زرار المنيو */
+var RATE={},BUSY={},WTZ="Africa/Cairo";
+function rTx(n){var x="";try{var r=RATE[n];if(r&&r[1])x+="  ⭐ "+r[0]+" ("+r[1]+")";if(BUSY[n])x+=(document.documentElement.lang==="en")?"  ⏳ busy":"  ⏳ مزدحم";}catch(e){}return x}
+</script>
+<script>/* زر «غيّر مودك / غيّري مودك»: يبدّل شكل التطبيق بين الأخضر والبينك، ويتحفظ على الجهاز بس (مش بيتبعت للسيرفر)، ومعاه «تراجع» */
+(function(){var d=document.documentElement;
+function en(){return d.lang==="en"}
+function get(){try{return localStorage.getItem("wgd")||""}catch(e){return ""}}
+function lbl(b){var f=get()==="f",t=en()?"🎨 Change your look":(f?"🎨 غيّري مودك":"🎨 غيّر مودك");b.textContent=t;b.title=t;b.setAttribute("aria-label",t)}
+window.waselGender=function(v,silent){var prev=get();try{if(v)localStorage.setItem("wgd",v);else localStorage.removeItem("wgd")}catch(e){}
+ d.classList.toggle("pk",v==="f");Array.prototype.forEach.call(document.querySelectorAll(".gnd"),lbl);
+ try{document.dispatchEvent(new CustomEvent("waselgender",{detail:{v:v,prev:prev}}))}catch(e){}
+ if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ اتحوّل للون البينك"):(en()?"✓ Wasel green look on":"✓ اتحوّل للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
+document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
+ var b=document.createElement("button");b.type="button";b.className="thm gnd";lbl(b);
+ b.onclick=function(){window.waselGender(get()==="f"?"m":"f")};
+ var t=h.querySelector(".thm");if(t&&t.parentNode)t.parentNode.insertBefore(b,t);else h.appendChild(b);
+ var l=document.getElementById("lang");if(l)l.addEventListener("click",function(){setTimeout(function(){lbl(b)},0)})})})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f6f6;--card:#fff;--tx:#12211f;--mu:#4f6260;--br:#0e4f4c;--br2:#e1eeec;--ln:#dde5e3}
+html.dk{--bg:#0d1413;--card:#16201f;--tx:#e8f0ee;--mu:#9bb0ab;--br:#5cc8bb;--br2:#1f3331;--ln:#273533}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;line-height:1.6}
+header{background:#0e4f4c;color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:12px}.brand svg{width:58px;height:58px;flex:none;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25))}
+.brand b{display:block;font-size:30px;line-height:1.1;font-weight:700;letter-spacing:.5px}.brand span{display:block;font-size:12px;letter-spacing:5px;color:#a9d3cf;direction:ltr}.brand small{display:block;color:#a9d3cf;font-size:13px;margin-top:2px}
+.lane{flex:1;min-width:0;height:112px;margin:4px 10px;position:relative;overflow:hidden}
+.rk{position:absolute;top:24%;height:52%;aspect-ratio:236/88;inset-inline-start:100%;will-change:inset-inline-start}
+.rk.free .flag,.rk.free .rpw{opacity:0}#pflag{opacity:0;z-index:0}
+@keyframes go{0%{inset-inline-start:100%}85%{inset-inline-start:calc(-6% - 320px)}100%{inset-inline-start:calc(-6% - 320px)}}
+.ride{position:relative;z-index:1}
+.rpw{position:absolute;top:50%;inset-inline-start:71%;width:calc(29% + 20px);height:2px;margin-top:-1px;background:linear-gradient(90deg,rgba(255,255,255,.9),rgba(255,255,255,.55));pointer-events:none}
+.flag{position:absolute;top:50%;inset-inline-start:calc(100% + 18px);white-space:nowrap;padding:7px 20px 7px 16px;background:#fff;color:#0e4f4c;font-weight:700;font-size:13px;line-height:1.3;border-radius:4px;box-shadow:0 3px 8px rgba(0,0,0,.25);transform-origin:center;animation:wv 1.1s ease-in-out infinite;pointer-events:none;clip-path:polygon(0 0,100% 0,calc(100% - 12px) 50%,100% 100%,0 100%)}
+:root[dir=rtl] .flag{padding:7px 16px 7px 20px;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,12px 50%)}
+@keyframes wv{0%,100%{transform:translateY(-50%) skewY(-2.5deg)}50%{transform:translateY(-50%) skewY(2.5deg)}}
+.ride{width:100%;height:100%;display:block;overflow:visible}[dir=rtl] .ride{transform:scaleX(-1)}[dir=rtl] .ride text{transform:scaleX(-1);transform-box:fill-box;transform-origin:center}.ride .fly{animation:fly 2.4s ease-in-out infinite}.ride .flame{transform-box:fill-box;transform-origin:left center;animation:fl .18s ease-in-out infinite alternate}
+.ride .puff{animation:pf 1.2s linear infinite}.ride .trail{animation:tr 1s linear infinite}.ride .tw path{animation:tw 1.6s ease-in-out infinite}.ride .tw .b{animation-delay:.5s}.ride .tw .c{animation-delay:1s}
+@keyframes fly{50%{transform:translateY(-5px)}}@keyframes fl{to{transform:scaleX(1.15) scaleY(.92)}}@keyframes pf{from{transform:translateX(-6px);opacity:1}to{transform:translateX(16px);opacity:0}}@keyframes tr{from{transform:translateX(8px);opacity:0}30%{opacity:1}to{transform:translateX(-18px);opacity:0}}@keyframes tw{50%{opacity:.2}}
+@media(prefers-reduced-motion:reduce){.ride *,.rk,.flag{animation:none!important}.rk{inset-inline-start:30%;opacity:1}.rpw,.flag,#pflag{display:none}}
+@media(max-width:520px){header{flex-wrap:wrap}.lane{order:3;flex:0 0 100%;height:104px;margin:2px 0 -6px}}
+header button{width:auto;margin:0;padding:8px 14px;background:#fff;color:#0e4f4c;font-size:14px;border-radius:12px}
+.welcome{margin:0 0 12px;padding:18px 16px;border-radius:20px;background:#0e4f4c;color:#fff;position:relative;overflow:hidden}
+.welcome:after{content:"";position:absolute;inset-inline-end:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.12)}
+.welcome h1{margin:0 0 6px;font-size:22px}.welcome p{margin:0 0 12px;opacity:.95;position:relative}
+.chips{display:flex;flex-wrap:wrap;gap:8px;position:relative}.chips span{background:rgba(255,255,255,.2);border-radius:99px;padding:4px 12px;font-size:13px;font-weight:700}
+main{max-width:620px;margin:0 auto;padding:12px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:20px;padding:16px}
+h2{margin:0 0 4px}label{display:block;font-size:14px;color:var(--mu);margin:12px 0 4px}small{color:var(--mu)}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--ln);border-radius:12px;background:var(--bg);color:var(--tx);font:inherit}
+button{width:100%;margin-top:16px;padding:13px;border:0;border-radius:14px;background:var(--br);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+button:disabled{opacity:.6}.hide{display:none}#msg{margin-top:12px;font-weight:700}
+button.sec{background:var(--br2);color:var(--br);margin-top:8px}.mu{font-size:14px;color:var(--mu);margin-top:6px}.mu.ok{color:#15803d;font-weight:700}.mu.bad{color:#dc2626;font-weight:700}
+.wb{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;border-radius:12px;padding:10px 12px;margin:10px 0 4px;font-weight:700}:where(html.dk) .wb{background:#10241a;color:#bbf7d0;border-color:#166534}.wb button.lnk{display:block;margin:4px 0 0;color:inherit;font-weight:400}
+button.lnk{width:auto;background:none;color:var(--mu);font-size:13px;font-weight:400;text-decoration:underline;margin:10px 0 0;padding:0}
+.trk{display:block;margin:12px 0 0;padding:11px 14px;border-radius:14px;background:var(--br2);color:var(--tx);font-weight:700;text-align:center;text-decoration:none}
+.trk small{display:block;font-weight:400;margin-top:2px}
+.topc{margin:0 0 10px;padding:14px 16px;border-radius:20px;background:var(--card);border:1px solid var(--ln)}
+.topc .wb{background:none!important;border:0!important;padding:0!important;margin:0!important;color:var(--tx)!important}
+.topc .loy{background:none!important;border:0!important;padding:0!important;margin:8px 0 0!important;color:var(--tx)!important}
+.topc .wb.hide+.loy{margin-top:0!important}
+.qrow{display:flex;gap:8px;margin:0 0 10px}
+.qrow .qa{flex:1;width:auto;margin:0;padding:12px 6px;border-radius:16px;background:var(--card);color:var(--br);border:1px solid var(--ln);font-weight:700;font-size:14px;line-height:1.3;text-align:center;text-decoration:none;display:block}
+.promise div{font-size:14px}
+.wa{display:block;margin:14px 0 0;padding:11px 14px;font-size:14px;border-radius:16px;background:#0b6b3a;color:#fff!important;font-weight:700;text-align:center;text-decoration:none}
+.wa span,.wa small{color:#fff!important}.wa small{display:block;font-weight:400;margin-top:2px;opacity:.92}
+.feebox{margin:10px 0 0;padding:12px 14px;border-radius:14px;background:var(--br2);color:var(--br);border:1px solid var(--br);font-weight:700}
+.offer{margin:12px 0 0;padding:12px 14px;border-radius:14px;background:#fdf1d8;color:#5c3a00;border:1px solid #f0d890;font-weight:700}
+.menubtn.hide{display:none}
+.sec2{border:1px dashed var(--br);border-radius:14px;padding:10px 12px;margin-top:10px}
+.menubtn{display:block;width:100%;margin:8px 0 0;padding:12px 14px;border-radius:14px;background:var(--br);color:#fff;border:0;font:inherit;font-weight:700;text-align:center}
+.msheet{position:fixed;inset:0;z-index:50;background:var(--bg);overflow:auto;padding-bottom:96px}
+.msheet.hide{display:none}
+.mw{max-width:560px;margin:0 auto;padding:12px}
+.mh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 8px}
+.mh h2{margin:0;font-size:22px}
+.mx{width:auto;margin:0;padding:6px 14px;background:var(--br2);color:var(--br);border-radius:99px;font-size:14px}
+.mtabs{position:sticky;top:0;z-index:2;background:var(--bg);display:flex;gap:8px;overflow-x:auto;padding:8px 0}
+.mtabs a{flex:none;padding:7px 16px;border-radius:99px;border:1px solid var(--ln);color:var(--tx);text-decoration:none;font-weight:700;font-size:14px;background:var(--card)}
+.msec{margin:16px 0 8px;font-size:18px;scroll-margin-top:60px}
+.mit{position:relative;display:flex;gap:12px;padding:12px;border-radius:16px;background:var(--card);border:1px solid var(--ln);margin-bottom:10px}
+.mit .mp{width:84px;height:84px;border-radius:12px;object-fit:cover;flex:none}
+.mit .mn{flex:none;width:84px;height:84px;border-radius:12px;background:var(--br2);color:var(--br);display:grid;place-items:center;text-align:center;font-weight:700;font-size:13px;padding:6px}
+.mit .mt{flex:1;min-width:0}.mit .nm{font-weight:700}
+.mb{position:absolute;inset-inline-start:12px;top:68px;width:84px;height:28px;border-radius:0 0 12px 12px;background:rgba(11,107,58,.92);color:#fff;font-size:17px;line-height:28px;text-align:center;display:none}.mb.on{display:block}
+.mm{display:flex;gap:6px;margin-top:8px}.mm button{flex:1;width:auto;margin:0;padding:6px 4px;border-radius:99px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font-size:13px;font-weight:700}.mm button.on{background:var(--br);border-color:var(--br);color:#fff}
+.mv{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px}
+.mv s{color:var(--mu);font-size:12px;margin-inline-start:6px}.mv .hot{color:#dc2626;font-size:12px;font-weight:700;margin-inline-start:4px}
+.mq{display:flex;align-items:center;border:1px solid var(--ln);border-radius:99px;overflow:hidden}
+.mq button{width:34px;height:32px;margin:0;padding:0;border:0;border-radius:0;background:none;color:var(--br);font-size:20px;font-weight:700}
+.mq button:disabled{opacity:.3}.mq span{min-width:26px;text-align:center;font-weight:700}
+.mbar{position:fixed;inset-inline:0;bottom:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--ln);z-index:51}
+.mbar.hide{display:none}
+.mbar>div{max-width:560px;margin:0 auto}
+.mbar button{margin:0}
+.mnote{color:var(--mu);font-size:12.5px;margin:6px 0 0}
+.hsec{margin:0 0 12px}
+.histbtn{width:100%;margin:0;background:var(--card);color:var(--br);border:2px solid var(--br)}
+.hbox{margin:0 0 10px;padding:14px;border-radius:20px;background:var(--card);border:1px solid var(--ln)}
+.hfind{margin-top:10px;padding-top:10px;border-top:1px dashed var(--ln)}
+.hfind .hr{display:flex;gap:8px;margin-top:6px}.hfind input{flex:1;min-width:0}.hfind button{width:auto;margin:0;padding:10px 16px}
+.hi{padding:12px;border-radius:14px;background:var(--bg);border:1px solid var(--ln);margin-bottom:8px}
+.hi .h1{display:flex;justify-content:space-between;gap:8px;font-weight:700}
+.hi .h2{font-size:13px;color:var(--mu);margin-top:2px;overflow-wrap:anywhere}
+.hi .st{display:inline-block;margin-top:6px;padding:1px 10px;border-radius:99px;font-size:12.5px;font-weight:700;background:var(--br2);color:var(--br)}
+.hi .st.ok{background:#bbf7d0;color:#14532d}.hi .st.x{background:#fecaca;color:#7f1d1d}
+.hi .ha{display:flex;gap:8px;margin-top:8px}
+.hi .ha a,.hi .ha button{flex:1;width:auto;margin:0;padding:8px 6px;border-radius:12px;font-size:14px;font-weight:700;text-align:center;text-decoration:none;border:0}
+.hi .dt{margin-top:10px;padding:10px;border-radius:12px;background:var(--card);border:1px solid var(--ln);font-size:13.5px}
+.hi .dt h4{margin:8px 0 4px;font-size:13.5px}.hi .dt h4:first-child{margin-top:0}
+.hi .dt .ev{display:flex;gap:8px;padding:3px 0;border-bottom:1px dashed var(--ln)}.hi .dt .ev b{flex:none;color:var(--mu);font-weight:600;min-width:78px;direction:ltr;text-align:start}
+.hi .dt .cm{padding:6px 10px;border-radius:10px;margin:4px 0;max-width:88%;overflow-wrap:anywhere}
+.hi .dt .cm.c{background:#d1fae5;color:#064e3b;margin-inline-start:auto}.hi .dt .cm.d{background:var(--ln);color:var(--tx)}
+.hi .dt .cm small{display:block;color:var(--mu);font-size:11.5px}
+.hi .ha a{background:var(--br);color:#fff}.hi .ha button{background:var(--br2);color:var(--br)}
+.cats{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 2px}.cats.hide{display:none}
+.cats button{width:auto;margin:0;padding:7px 14px;border-radius:99px;font-size:14px;font-weight:700;background:var(--br2);color:var(--tx)}
+.cats button.on{background:var(--br);color:#fff}
+:where(html.dk) .cats button.on{color:#06201d}:where(html.dk) button,:where(html.dk) .menubtn,:where(html.dk) .mm button.on,:where(html.dk) .hi .ha a{color:#06201d}
+.pks{margin:8px 0 4px}.pkm{display:block;margin:0 0 6px}
+.loy{margin:12px 0 0;padding:11px 14px;border-radius:14px;background:#fdf1d8;color:#5c3a00;border:1px solid #f0d890;font-weight:700}
+:where(html.dk) .loy{background:#2a2108;color:#fde68a;border-color:#a16207}
+.loy .lb{height:8px;border-radius:99px;background:rgba(0,0,0,.12);margin:8px 0 2px;overflow:hidden}.loy .lb i{display:block;height:100%;width:0;background:#f2b544;transition:width .6s}
+.loy .lr{display:flex;gap:10px;align-items:flex-start;margin:8px 0 0;font-size:14px;color:inherit}.loy .lr.hide{display:none}.loy .lr input{width:20px;height:20px;flex:none;margin-top:2px}
+.spl{position:fixed;inset:0;z-index:9999;background:#0e4f4c;color:#fff;display:flex;flex-direction:column;justify-content:center;padding:0 28px;transition:opacity .7s}
+.spl.out{opacity:0;pointer-events:none}.spl .l{min-height:1.7em;line-height:1.7;font-size:19px;font-weight:700;margin:6px 0;overflow-wrap:anywhere}.spl .l.t{font-size:32px;margin-bottom:14px}
+.spl .cur{display:inline-block;width:2px;height:1em;background:#fff;vertical-align:-2px;margin-inline-start:3px;animation:blk .7s steps(1) infinite}@keyframes blk{50%{opacity:0}}
+.spl button{position:absolute;top:14px;width:auto;margin:0;padding:8px 14px;font-size:14px;background:rgba(255,255,255,.18);color:#fff;border-radius:99px}
+#spk{inset-inline-start:14px}#spm{inset-inline-end:14px}
+.spb{position:absolute;bottom:34px;inset-inline:28px;height:4px;border-radius:4px;background:rgba(255,255,255,.2);overflow:hidden}.spb i{display:block;height:100%;width:0;background:#f2b544;border-radius:4px;transition:width .3s}
+@media(prefers-reduced-motion:reduce){.spl{display:none!important}}
+
+:root{color-scheme:light}html.dk{color-scheme:dark}
+header .thm{width:auto!important;flex:none;margin:0 6px!important;padding:6px 10px!important;border-radius:12px!important;background:rgba(255,255,255,.15)!important;color:#fff!important;border:1px solid rgba(255,255,255,.35)!important;font-size:16px!important;line-height:1.2!important;cursor:pointer;box-shadow:none!important}
+header>.thm:last-child{margin-inline-start:auto!important}
+html.pk{--br:#be185d;--br2:#fce7f3;--c1:#be185d}
+html.pk.dk{--br:#f472b6;--br2:#3b1427;--c1:#f472b6}
+html.pk header,html.pk .hero,html.pk .spl,html.pk .dwh,html.pk .welcome{background:#9d174d!important}
+html.pk header small,html.pk header .brand span,html.pk .hero .hn{color:#fbcfe8!important}
+html.pk .hero .hm{color:#fce7f3!important}
+html.pk header button:not(.thm){color:#9d174d!important}
+html.pk header svg [fill="#0e4f4c"]{fill:#9d174d}html.pk header svg [stroke="#0e4f4c"]{stroke:#9d174d}
+html.pk .flag{color:#9d174d}
+.gch{display:flex;gap:8px;margin-top:10px}.gch button{flex:1;margin:0;padding:12px 6px;border-radius:14px;background:var(--br2);color:var(--br);font-size:15px}
+#wtoast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:9500;display:flex;align-items:center;gap:12px;max-width:92vw;padding:10px 12px 10px 16px;border-radius:16px;background:#12211f;color:#fff;font-weight:700;font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.35);transition:opacity .2s,transform .2s}
+#wtoast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#wtoast button{width:auto!important;margin:0!important;padding:8px 14px!important;border:0!important;border-radius:12px!important;background:#f2b544!important;color:#3b2300!important;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+/* كلام أوضح: خط عريض في التطبيق كله، مع عمق خفيف للعناوين */
+body{font-weight:700}
+h1,h2,h3,h4,b,strong,.big,label,input,select,textarea,button,small{font-weight:700}
+input::placeholder,textarea::placeholder{font-weight:600}
+header b,.hero .big,.brand b{text-shadow:0 2px 4px rgba(0,0,0,.3)}
+h1,h2,h3,.big,.ch{text-shadow:0 1px 1px rgba(0,0,0,.1)}
+html.dk h1,html.dk h2,html.dk h3,html.dk .big,html.dk .ch{text-shadow:0 1px 2px rgba(0,0,0,.6)}
+/* الخانات متظللة: أخضر واصل افتراضيًا، ووردي لما العميل يختار 👩 */
+:root{--fld:#e7f2f0;--fldb:#b9d6d1}
+html.dk{--fld:#13302d;--fldb:#24524c}
+html.pk{--fld:#fdeef6;--fldb:#f5c2dc}
+html.pk.dk{--fld:#3a1729;--fldb:#6b2a4c}
+input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea{background-color:var(--fld)!important;border-color:var(--fldb)!important}
+input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,select:focus,textarea:focus{outline:2px solid var(--br);outline-offset:1px}
+/* ===== روح للصفحة: خلفية ملوّنة، إطار للصفحة، عناوين متظللة، حركة خفيفة ===== */
+:root{--pg:#e4efed;--pg2:#cfe3df;--sh:rgba(14,79,76,.14);--br3:#14635f}
+html.dk{--pg:#0a1514;--pg2:#11302c;--sh:rgba(0,0,0,.45);--br3:#3fa99d}
+html.pk{--pg:#fbe9f2;--pg2:#f6d0e3;--sh:rgba(157,23,77,.14);--br3:#9d174d}
+html.pk.dk{--pg:#1c0d15;--pg2:#331526;--sh:rgba(0,0,0,.45);--br3:#ec4899}
+body{background:linear-gradient(180deg,var(--pg2) 0,var(--pg) 320px) var(--pg);background-attachment:fixed}
+header{box-shadow:0 6px 18px rgba(0,0,0,.18)}
+main{margin:14px auto 18px;padding:14px;border:2px solid var(--fldb);border-radius:26px;background:rgba(255,255,255,.4);box-shadow:0 12px 32px var(--sh)}
+html.dk main{background:rgba(0,0,0,.22)}
+@media(max-width:660px){main{margin:10px;padding:10px}}
+.card,.topc,.hbox{border:2px solid var(--fldb)!important;box-shadow:0 8px 22px var(--sh)}
+.card{overflow:hidden}
+.card>h2:first-child{margin:-16px -16px 10px;padding:14px 16px;background:linear-gradient(135deg,var(--br),var(--br3));color:#fff;font-size:22px;text-shadow:0 2px 4px rgba(0,0,0,.25)}
+html.dk .card>h2:first-child{color:#06201d;text-shadow:none}
+.card label:not(.lr){display:inline-block;margin:16px 0 6px;padding:4px 14px;border-radius:10px;background:linear-gradient(135deg,var(--br),var(--br3));color:#fff;font-size:14.5px;box-shadow:0 3px 8px var(--sh);text-shadow:0 1px 2px rgba(0,0,0,.2)}
+html.dk .card label:not(.lr){color:#06201d;text-shadow:none}
+/* زرارين «تتبّع طلبي» و«طلباتي السابقة» بالأخضر (وبالبينك للبنات) */
+.qrow .qa{background:linear-gradient(135deg,var(--br),var(--br3))!important;color:#fff!important;border-color:var(--br)!important}
+html.dk .qrow .qa{color:#06201d!important}
+.qrow .qa{border:2px solid var(--br)!important;box-shadow:0 4px 12px var(--sh);transition:transform .12s}
+.qrow .qa:active,button:active{transform:scale(.97)}
+#go{font-size:18px;padding:15px;background:linear-gradient(135deg,var(--br),var(--br3));box-shadow:0 10px 22px var(--sh)}
+.sec2{border:2px dashed var(--br)!important;background:rgba(255,255,255,.35)}
+html.dk .sec2{background:rgba(0,0,0,.18)}
+.wa{box-shadow:0 8px 18px rgba(11,107,58,.3)}
+.card>small,.sec2>small{display:block;margin-top:4px}
+@keyframes wrise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+main>*{animation:wrise .45s ease both}
+main>*:nth-child(2){animation-delay:.06s}main>*:nth-child(3){animation-delay:.12s}main>*:nth-child(4){animation-delay:.18s}main>*:nth-child(5){animation-delay:.24s}main>*:nth-child(n+6){animation-delay:.3s}
+@media(prefers-reduced-motion:reduce){main>*{animation:none}}
+
+/* زر «غيّر مودك» في الهيدر */
+header .gnd{font-size:13px!important;padding:6px 9px!important;white-space:nowrap}
+header>.gnd{margin-inline-start:auto!important}header>.gnd+.thm{margin-inline-start:6px!important}
+@media(max-width:380px){header .gnd{font-size:11.5px!important;padding:5px 7px!important}}
+html.pk #lang{color:#9d174d!important}
+html.pk .dwh,html.pk .cspl{background:#9d174d!important}
+@media(max-width:520px){
+header{gap:6px!important;padding-inline:10px!important}
+header>div:first-child,header .brand{min-width:0;flex:1 1 auto}
+header>svg+div{min-width:0;flex:1 1 auto}header .clock{font-size:13px}
+header b{font-size:17px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+header small{font-size:11.5px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header>svg,header .brand>svg{width:36px!important;height:36px!important}
+header .thm{padding:5px 8px!important;margin:0 3px!important}
+header .gnd{font-size:12px!important;padding:5px 7px!important}
+header #lang{padding:6px 10px!important;margin:0 3px!important}
+}
+/* بطاقة الترحيب ونقاط الولاء: لونها يتغير مع المود (أخضر أو بينك)، والنقاط بالأصفر الذهبي */
+#top{background:linear-gradient(135deg,var(--br),var(--br3))!important;border-color:var(--br)!important;color:#fff}
+#top .wb{color:#fff!important;font-size:17px}
+#top .wb button.lnk{color:#fff!important;opacity:.9}
+#top .loy,#top .loy>div:first-child,#top .loy .lr{color:#fff!important}
+#top .loy .lb{height:10px!important;background:rgba(255,255,255,.3)!important;border:0}
+#top .loy .lb i{background:linear-gradient(90deg,#fde047,#f59e0b)!important}
+#top .loy .lr input{accent-color:#f59e0b}
+html.dk #top,html.dk #top .wb,html.dk #top .wb button.lnk,html.dk #top .loy,html.dk #top .loy>div:first-child,html.dk #top .loy .lr{color:#06201d!important}
+/* اختيار بالأيقونات بدل القوائم (نوع الطلب + الحي) */
+.wtiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
+.wtile{font:inherit;font-weight:700;border:2px solid var(--fldb);background:var(--fld);color:var(--tx);border-radius:18px;padding:12px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-size:13.5px;margin:0;width:auto;box-shadow:0 3px 8px var(--sh)}
+.wtile i{font-style:normal;font-size:28px;line-height:1}
+.wtile.on{border-color:var(--br);background:linear-gradient(135deg,var(--br),var(--br3));color:#fff}
+html.dk .wtile.on{color:#06201d}
+.wchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.wchip{font:inherit;font-weight:700;font-size:13.5px;border:2px solid var(--fldb);background:var(--fld);color:var(--tx);border-radius:99px;padding:8px 14px;cursor:pointer;margin:0;width:auto}
+.wchip.on{background:linear-gradient(135deg,var(--br),var(--br3));border-color:var(--br);color:#fff}
+html.dk .wchip.on{color:#06201d}
+@media(max-width:360px){.wtiles{grid-template-columns:repeat(2,1fr)}}
+/* أيقونة «عروضنا»: علامة حمرا بعدد العروض + «جديد» لما يكون فيه عرض */
+.qrow .qa{position:relative}
+#ofbtn.dim{background:var(--fld)!important;color:var(--tx)!important;border-color:var(--fldb)!important}
+.obdg{position:absolute;top:-8px;left:-6px;min-width:22px;height:22px;border-radius:99px;background:#e11d48;color:#fff;font-size:12px;display:grid;place-items:center;padding:0 6px;box-shadow:0 0 0 3px var(--card);animation:opl 1.6s ease-in-out infinite}
+.onew{position:absolute;top:-9px;right:-6px;background:#f59e0b;color:#1b1200;font-size:10.5px;border-radius:99px;padding:2px 7px}
+.obdg.hide,.onew.hide{display:none}
+@keyframes opl{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+@media(prefers-reduced-motion:reduce){.obdg{animation:none}}
+.ofi{display:flex;gap:10px;align-items:center;background:var(--fld);border:1px solid var(--fldb);border-radius:14px;padding:10px;margin-top:8px}
+.ofi .ic{font-size:30px;line-height:1}.ofi small{display:block;opacity:.8;font-weight:600}
+
+/* ===== القائمة الجانبية ☰ للعميل: الصفحة الأساسية للطلب فقط، وكل الباقي في القائمة ===== */
+header #lang,header .thm,header .gnd{display:none!important}
+header #cmb{width:auto!important;margin:0!important;padding:6px 12px!important;font-size:22px!important;line-height:1.2!important;border-radius:12px!important;background:rgba(255,255,255,.16)!important;color:#fff!important;border:1px solid rgba(255,255,255,.3)!important;position:relative;flex:none;box-shadow:none!important}
+#cmdot{position:absolute;top:-6px;left:-6px;min-width:18px;height:18px;border-radius:99px;background:#f2b544;color:#3b2300;font-size:11px;line-height:18px;text-align:center;padding:0 4px;font-weight:700}
+main .qrow,main>#wa,#again{display:none!important}
+main>#top{display:none!important}
+#cdw #top:not(.hide){display:block!important;margin:0;box-shadow:none;border:0;border-radius:0;background:transparent;padding:10px 12px 0}
+#cdim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:60}
+#cdw{position:fixed;top:0;bottom:0;right:0;width:min(310px,86vw);background:var(--card);z-index:61;transform:translateX(105%);transition:transform .25s,visibility 0s .25s;visibility:hidden;overflow-y:auto;box-shadow:-6px 0 20px rgba(0,0,0,.3)}
+[dir=ltr] #cdw{right:auto;left:0;transform:translateX(-105%)}
+#cdw.open{transform:none;visibility:visible;transition:transform .25s}
+.cdh{background:#0e4f4c;color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}.cdh b{font-size:17px}
+.cdh button{width:auto!important;margin:0!important;padding:4px 12px!important;background:rgba(255,255,255,.18)!important;color:#fff!important;border-radius:10px!important;border:0!important;box-shadow:none!important}
+html.pk .cdh{background:#9d174d}
+.clist{padding:6px 0 30px}
+.clist button{display:flex!important;justify-content:space-between;align-items:center;width:100%!important;margin:0!important;border-radius:0!important;background:transparent!important;color:var(--tx)!important;box-shadow:none!important;border:0!important;border-bottom:1px solid var(--ln)!important;text-align:start;padding:13px 16px!important;font-size:15.5px!important;font-weight:700}
+.clist .cnw{background:#dc2626;color:#fff;border-radius:99px;font-size:12px;padding:0 8px}
+#ctrk{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--card);border:2px solid #f2b544;border-radius:16px;padding:10px 12px;margin:0 0 10px;font-weight:700;font-size:14px;text-decoration:none;color:var(--tx)}
+#ctrk b{color:var(--br)}
+#ctrk.hide,#cdim.hide,#cmdot.hide{display:none!important}
+#cdw #lgl{margin:0!important;padding:14px 16px 30px;text-align:start!important;line-height:1.9}
+</style></head><body>
+<div id="spl" class="spl" role="presentation"><button id="spk" type="button"></button><button id="spm" type="button"></button><div id="spt"></div><div class="spb"><i id="spi"></i></div></div>
+<header><div class="brand"><svg viewBox="0 0 64 64" role="img" aria-label="Wasel"><rect width="64" height="64" rx="18" fill="#fff"/><g transform="translate(2 -3.55) scale(.3)"><path fill="#0e4f4c" d="M13.26,54.00 L42.97,158.00 L85.58,158.00 L100.00,131.44 L114.42,158.00 L157.03,158.00 L186.74,54.00 L155.54,54.00 L133.66,130.57 L100.00,68.56 L66.34,130.57 L44.46,54.00 Z"/><path fill="#0e4f4c" d="M67.315185546875 188.0H64.409912109375L62.824462890625 181.23486328125Q62.533935546875 180.03955078125 62.334716796875 178.736328125Q62.135498046875 179.82373046875 62.010986328125 180.392333984375Q61.886474609375 180.9609375 60.242919921875 188.0H57.337646484375L54.324462890625 176.30419921875H56.806396484375L58.499755859375 183.85791015625L58.881591796875 185.68408203125Q59.114013671875 184.5302734375 59.333984375 183.480224609375Q59.553955078125 182.43017578125 60.989990234375 176.30419921875H63.729248046875L65.206787109375 182.52978515625Q65.381103515625 183.22705078125 65.796142578125 185.68408203125L66.003662109375 184.72119140625L66.443603515625 182.81201171875L67.854736328125 176.30419921875H70.336669921875Z M85.758056640625 188.0 84.720458984375 185.01171875H80.262939453125L79.225341796875 188.0H76.776611328125L81.043212890625 176.30419921875H83.931884765625L88.181884765625 188.0ZM82.487548828125 178.10546875 82.437744140625 178.2880859375Q82.354736328125 178.5869140625 82.238525390625 178.96875Q82.122314453125 179.3505859375 80.810791015625 183.1689453125H84.172607421875L83.018798828125 179.80712890625L82.661865234375 178.67822265625Z M105.304931640625 184.6298828125Q105.304931640625 186.34814453125 104.03076171875 187.257080078125Q102.756591796875 188.166015625 100.291259765625 188.166015625Q98.041748046875 188.166015625 96.763427734375 187.369140625Q95.485107421875 186.572265625 95.119873046875 184.95361328125L97.485595703125 184.5634765625Q97.726318359375 185.4931640625 98.423583984375 185.912353515625Q99.120849609375 186.33154296875 100.357666015625 186.33154296875Q102.922607421875 186.33154296875 102.922607421875 184.77099609375Q102.922607421875 184.27294921875 102.6279296875 183.94921875Q102.333251953125 183.62548828125 101.7978515625 183.40966796875Q101.262451171875 183.19384765625 99.743408203125 182.88671875Q98.431884765625 182.57958984375 97.917236328125 182.392822265625Q97.402587890625 182.2060546875 96.987548828125 181.952880859375Q96.572509765625 181.69970703125 96.281982421875 181.3427734375Q95.991455078125 180.98583984375 95.82958984375 180.50439453125Q95.667724609375 180.02294921875 95.667724609375 179.400390625Q95.667724609375 177.81494140625 96.85888671875 176.972412109375Q98.050048828125 176.1298828125 100.324462890625 176.1298828125Q102.499267578125 176.1298828125 103.5908203125 176.810546875Q104.682373046875 177.4912109375 104.997802734375 179.06005859375L102.623779296875 179.3837890625Q102.441162109375 178.62841796875 101.880859375 178.24658203125Q101.320556640625 177.86474609375 100.274658203125 177.86474609375Q98.050048828125 177.86474609375 98.050048828125 179.25927734375Q98.050048828125 179.7158203125 98.28662109375 180.00634765625Q98.523193359375 180.296875 98.988037109375 180.500244140625Q99.452880859375 180.70361328125 100.872314453125 181.0107421875Q102.557373046875 181.36767578125 103.28369140625 181.670654296875Q104.010009765625 181.9736328125 104.433349609375 182.376220703125Q104.856689453125 182.77880859375 105.080810546875 183.339111328125Q105.304931640625 183.8994140625 105.304931640625 184.6298828125Z M113.106201171875 188.0V176.30419921875H122.303466796875V178.19677734375H115.554931640625V181.13525390625H121.797119140625V183.02783203125H115.554931640625V186.107421875H122.643798828125V188.0Z M130.445068359375 188.0V176.30419921875H132.893798828125V186.107421875H139.169189453125V188.0Z"/><g transform="translate(62.8 42.25) scale(3.1)"><path fill="#fff" stroke="#fff" stroke-width="3" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><path fill="#f2b544" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><circle cx="12" cy="9.4" r="3.2" fill="#fff"/></g></g></svg><div><b data-i="brand"></b><span>WASEL</span><small data-i="slogan"></small></div></div><div class="lane"><div class="rk"><div class="rpw" aria-hidden="true"></div><div class="flag" id="flag" aria-hidden="true"></div><svg class="ride" viewBox="12 6 236 88" role="img" aria-label="Wasel rocket">
+<defs>
+<linearGradient id="rb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#eef2f7"/><stop offset="1" stop-color="#b6c2d1"/></linearGradient>
+<linearGradient id="rn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fb7185"/><stop offset="1" stop-color="#e11d48"/></linearGradient>
+<linearGradient id="rf" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fef08a"/><stop offset=".45" stop-color="#fb923c"/><stop offset="1" stop-color="#ef4444" stop-opacity="0"/></linearGradient>
+</defs>
+<g class="tw" fill="#fde68a"><path d="M18 14l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/><path d="M60 84l1.5 3.5 3.5 1.5-3.5 1.5L60 94l-1.5-3.5L55 89l3.5-1.5z" class="b"/><path d="M96 8l1.3 3 3 1.3-3 1.3L96 17l-1.3-3.400-3-1.3 3-1.3z" class="c"/></g>
+<g class="trail" stroke="#fff" stroke-linecap="round" fill="none"><path d="M196 22h40" stroke-width="3" opacity=".35"/><path d="M206 78h34" stroke-width="3" opacity=".3"/><path d="M214 34h30" stroke-width="2.5" opacity=".25"/></g>
+<g class="fly"><g>
+ <g class="flame"><path d="M176 38C198 33 224 43 246 50 224 57 198 67 176 62z" fill="url(#rf)"/><path d="M176 43C192 41 208 46 222 50 208 54 192 59 176 57z" fill="#fff7c2" opacity=".9"/></g>
+ <g class="puff" fill="#fff"><circle cx="214" cy="30" r="5" opacity=".5"/><circle cx="228" cy="72" r="4" opacity=".4"/><circle cx="238" cy="36" r="3" opacity=".35"/></g>
+ <path d="M150 30 172 7h13l-14 23z" fill="#e11d48"/><path d="M150 70 172 93h13l-14-23z" fill="#be123c"/>
+ <rect x="167" y="38" width="12" height="24" rx="3" fill="#475569"/>
+ <path d="M20 50C34 36 58 30 84 30H168V70H84C58 70 34 64 20 50Z" fill="url(#rb)"/>
+ <path d="M20 50C28 41 40 35 55 31V69C40 65 28 59 20 50Z" fill="url(#rn)"/>
+ <rect x="146" y="30" width="6" height="40" fill="#fbbf24"/><rect x="156" y="30" width="3" height="40" fill="#fbbf24" opacity=".6"/>
+ <circle cx="78" cy="50" r="12.5" fill="#fbbf24"/><circle cx="78" cy="50" r="9.5" fill="#0c4a6e"/><path d="M72 46a8 8 0 0 1 8-4" stroke="#7dd3fc" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+ <text x="126" y="58" text-anchor="middle" font-family="Tahoma,Arial,sans-serif" font-weight="800" font-size="21" fill="#0e4f4c">واصل</text>
+</g></g>
+</svg></div><div class="flag" id="pflag" aria-hidden="true"></div></div><button id="lang">EN</button><button id="cmb" type="button" aria-label="menu">☰<span id="cmdot" class="hide"></span></button></header>
+<main>
+<a id="ctrk" class="hide" target="_top" rel="noopener"></a>
+<div id="top" class="topc hide"><div id="wb" class="wb hide"><span id="wbt"></span><button id="wbc" type="button" class="lnk"></button></div>
+<div id="loy" class="loy hide"><div id="loyt"></div><div class="lb"><i id="loyb"></i></div>
+<label id="loyr" class="lr hide"><input type="checkbox" id="loyc"><span id="loyrt"></span></label><div id="loyref" class="hide" style="margin-top:8px;font-size:14px"></div></div></div>
+<div class="qrow"><button id="ofbtn" type="button" class="qa"><span class="obdg hide" id="obdg"></span><span class="onew hide" id="onew"></span><span id="oftx"></span></button><a id="trk" class="qa" target="_top" rel="noopener"><span data-i="trkBtn"></span></a><button id="histbtn" type="button" class="qa" data-i="histBtn"></button></div>
+<div id="ofbox" class="topc hide"><div id="ofh" style="font-weight:700;margin-bottom:8px"></div><div id="ofl"></div></div>
+<div id="hbox" class="hbox hide"></div>
+<div id="gbox" class="topc hide"><div class="gh" style="font-weight:700"></div><div class="gs mu" style="margin-top:2px"></div><div class="gch"><button type="button" id="gm"></button><button type="button" id="gf"></button></div></div>
+<div class="card">
+<h2 data-i="title"></h2><small data-i="only"></small>
+<div id="offer" class="offer hide"></div>
+<button id="again" type="button" class="sec hide"></button>
+<div id="idbox"><label data-i="name"></label><input id="name" maxlength="60">
+<label data-i="phone"></label><input id="phone" type="tel" inputmode="tel" placeholder="01xxxxxxxxx"></div>
+<label data-i="type"></label><select id="type"><option>اطعمه / مشروبات - Food/Drinks</option><option>سلم و استلم - delivered and received</option><option>أخرى - OTHERS</option><option>كافيهات - Cafés</option><option>بقالة - Grocery</option><option>صيدلية - Pharmacy</option></select>
+<div id="rbox" class="sec2 hide" style="margin-top:10px;padding:12px;border-radius:16px"><b data-i="rbT"></b><small data-i="rbH"></small>
+<label data-i="rbNo"></label><input id="rno" maxlength="40" dir="ltr">
+<label data-i="rbName"></label><input id="rname" maxlength="60">
+<label data-i="rbImg"></label><button type="button" id="rimgb" class="sec" style="margin-top:4px"></button><input id="rimgf" type="file" accept="image/*" class="hide"><small id="rimgs"></small></div>
+<label data-i="pickup"></label><div id="cats" class="cats hide"></div>
+<input id="pks" class="pks" type="search" enterkeyhint="search" autocomplete="off" maxlength="40" data-ph="pks">
+<small id="pkm" class="pkm" data-i="pkLg"></small><div id="pkn" class="mu bad hide"></div>
+<select id="pk"></select>
+<button id="menubtn" type="button" class="menubtn hide"></button>
+<input id="pko" class="hide" data-ph="pko" style="margin-top:8px">
+<input id="pkl" type="url" inputmode="url" data-ph="pkl" style="margin-top:8px">
+<small data-i="partner"></small>
+<label data-i="items"></label><textarea id="items" rows="3"></textarea>
+<button id="add2" type="button" class="sec hide" data-i="add2"></button>
+<div id="sec2" class="sec2 hide">
+<label data-i="pk2l"></label><select id="pk2"></select>
+<button id="menubtn2" type="button" class="menubtn hide"></button>
+<input id="pko2" class="hide" data-ph="pko" style="margin-top:8px">
+<input id="pkl2" type="url" inputmode="url" data-ph="pkl" style="margin-top:8px">
+<label data-i="items2l"></label><textarea id="items2" rows="3"></textarea>
+<div id="fee2" class="mu"></div><small data-i="cold"></small>
+<button id="rm2" type="button" class="lnk" data-i="rm2"></button>
+</div>
+<select id="hood" class="hide" aria-hidden="true" tabindex="-1"></select>
+<label data-i="dm"></label><select id="dm"></select>
+<div id="here"><button id="loc" class="sec" type="button" data-i="locBtn"></button></div>
+<div id="dlbox" class="hide"><input id="dl" type="url" inputmode="url" data-ph="dlp"><small data-i="dlh"></small></div>
+<div id="lst" class="mu"></div>
+<label data-i="dt"></label><input id="dt" maxlength="200" data-ph="dtp">
+<label data-i="door"></label><button type="button" id="doorb" class="sec" style="margin-top:4px"></button><input id="doorf" type="file" accept="image/*" class="hide"><small id="doors"></small>
+<div id="feebox" class="feebox hide"></div>
+<label data-i="pay"></label><select id="pay"><option>كاش - CASH</option></select>
+<small data-i="cash" id="cashn"></small><small id="vfn" class="hide" style="display:block;font-weight:700;color:#b00000"></small>
+<label data-i="nt"></label><textarea id="nt" rows="2"></textarea>
+<label class="lr" style="display:flex;gap:10px;align-items:center;margin-top:14px;font-size:15px"><input type="checkbox" id="schc" style="width:20px;height:20px"><span id="scht0"></span></label>
+<div id="schb" class="hide" style="display:flex;gap:8px;margin-top:6px"><select id="schd" style="flex:1"></select><select id="scht" style="flex:1" dir="ltr"></select></div>
+<small id="schm" class="hide"></small>
+<label id="refl"></label><input id="refc" maxlength="10" dir="ltr" autocomplete="off" style="text-transform:uppercase">
+<input id="website" class="hide" tabindex="-1" autocomplete="off">
+<button id="go" data-i="send"></button><div id="msg"></div>
+<button id="forget" type="button" class="lnk hide" data-i="forget"></button>
+</div>
+<a id="wa" class="wa" target="_blank" rel="noopener noreferrer"><span data-i="waBtn"></span></a>
+<div id="lgl" style="text-align:center;margin:12px 0 0;font-size:13px;color:var(--mu)"></div>
+<div style="text-align:center;margin:6px 0 0"><button type="button" id="gchg" class="lnk hide"></button></div>
+</main>
+<div id="cdim" class="hide"></div>
+<aside id="cdw" aria-hidden="true"><div class="cdh"><b id="cnm"></b><button id="cx" type="button">✕</button></div>
+<div id="ctop"></div>
+<div class="clist">
+<button type="button" data-c="trk"><span data-cm="trk"></span></button>
+<button type="button" data-c="hist"><span data-cm="hist"></span></button>
+<button type="button" data-c="again"><span data-cm="again"></span></button>
+<button type="button" data-c="of"><span data-cm="of"></span><span id="cofn" class="cnw hide"></span></button>
+<button type="button" data-c="uo" id="uob"><span id="uobt">👀 وش الجديد؟</span><span id="uon" class="cnw hide"></span></button>
+<button type="button" data-c="wa"><span data-cm="wa"></span></button>
+<button type="button" data-c="thm"><span id="cthm"></span></button>
+<button type="button" data-c="gnd"><span id="cgnd"></span></button>
+<button type="button" data-c="lang"><span id="clang"></span></button>
+</div></aside>
+
+<div id="msheet" class="msheet hide" role="dialog" aria-modal="true"><div class="mw">
+<div class="mh"><h2 id="mtitle"></h2><button id="mclose" type="button" class="mx" data-i="menuClose"></button></div>
+<div id="mbody"></div>
+<p class="mnote" data-i="menuNote"></p></div>
+<div id="mbar" class="mbar hide"><div><button id="mok" type="button"></button><div id="mmsg" class="mu"></div></div></div></div>
+<script>
+var LANG="ar";try{LANG=localStorage.getItem("wl")||"ar"}catch(e){}
+var T={
+brand:["واصل","Wasel"],slogan:["واصل، خليك واصل","Wasel, stay connected"],
+bn0:["واصل… دايمًا متواصل معاك","Wasel… always connected"],bn1:["واصل… طلبك يوصلك أسرع","Wasel… delivered faster"],bn2:["من بابهم لبابك… واصل","Door to door… Wasel"],
+wl1:["أهلًا بك في واصل 👋","Welcome to Wasel 👋"],wl2:["اطلب من أي مطعم أو متجر في المحلة الكبرى، ونوصّله لك بسرعة وأمانة. عبّي الطلب تحت وخلّ الباقي علينا.","Order from any restaurant or store in El-Mahalla and we deliver it fast and safely. Fill in the form below and leave the rest to us."],
+c1:["🚀 توصيل سريع","🚀 Fast delivery"],c2:["📍 تتبّع طلبك مباشرة","📍 Live order tracking"],c3:["💬 محادثة مع المندوب","💬 Chat with the courier"],c4:["💵 الدفع كاش","💵 Cash payment"],
+sp0:["أهلًا بك في واصل 👋","Welcome to Wasel 👋"],sp1:["من أي مطعم أو متجر في المحلة الكبرى… لحد بابك.","From any restaurant or store in El-Mahalla… to your door."],sp2:["💰 سعر المطعم الحقيقي، بدون زيادة على الأصناف.","💰 The restaurant's real price, no markup on items."],sp3:["🧾 رسوم توصيل واضحة قبل التأكيد، بدون رسوم خفية.","🧾 A clear delivery fee before you confirm, no hidden fees."],sp4:["📸 تتبّع طلبك وشوف فاتورته خطوة بخطوة.","📸 Track your order and see its invoice step by step."],sp5:["🚀 واصل… دايمًا متواصل معاك","🚀 Wasel… always connected with you"],spSkip:["تخطي ›","Skip ›"],spOn:["🔊 صوت","🔊 Sound"],spOff:["🔇 صوت","🔇 Sound"],spTap:["🔊 اضغط لتشغيل الصوت","🔊 Tap for sound"],
+title:["اطلب توصيل","Order a delivery"],only:["الخدمة داخل مدينة المحلة الكبرى فقط.","Delivery within El-Mahalla city only."],
+wb:["👋 أهلاً بك يا ","👋 Welcome, "],schC:["⏰ عايز الطلب يوصل في وقت معين","⏰ Deliver at a specific time"],schT:["النهارده","Today"],schTm:["بكرة","Tomorrow"],schBad:["اختار موعد بعد ساعة على الأقل من دلوقتي","Choose a time at least one hour from now"],schH:["الطلب هيتبعت للمندوب قبل الموعد بشوية","The order goes to a courier shortly before that time"],refL:["كود دعوة من صاحبك (اختياري)","Friend's invite code (optional)"],refMy:["🎁 كود دعوتك: ","🎁 Your invite code: "],refH:["ابعته لصاحبك، ولما يكمل أول طلب ليه تاخدوا إنتو الاتنين {p} نقطة","Send it to a friend; when they complete their first order you both get {p} points"],refCp:["نسخ","Copy"],refOk:["✓ اتنسخ","✓ Copied"],rbT:["🧾 بيانات طلبك الجاهز","🧾 Your ready order details"],rbH:["طلبت من تطبيق المطعم وعايزنا نستلمه؟ اكتب رقم الطلب أو الاسم اللي عليه، أو ارفع صورة الفاتورة (واحدة على الأقل).","Ordered from the restaurant app and want us to pick it up? Enter the order number or the name on it, or upload the invoice photo (at least one)."],rbNo:["رقم الطلب في تطبيق المطعم","Order number in the restaurant app"],rbName:["الطلب باسم مين","Name on the order"],rbImg:["صورة الفاتورة أو الطلب","Invoice or order photo"],rbPick:["📷 اختر / صوّر الصورة","📷 Choose / take photo"],rbChg:["📷 تغيير الصورة","📷 Change photo"],rbReady:["✓ الصورة جاهزة","✓ Photo ready"],rbBad:["تعذر تجهيز الصورة، جرّب صورة أخرى","Could not prepare the photo, try another"],rbNeed:["اكتب رقم الطلب أو الاسم اللي عليه، أو ارفع صورة الفاتورة","Enter the order number or the name on it, or upload the invoice photo"],wbc:["ليس أنت؟ تغيير الاسم أو الرقم","Not you? Change name or number"],name:["الاسم","Name"],phone:["رقم الجوال","Phone number"],type:["نوع الطلب","Order type"],pickup:["موقع الاستلام","Pickup location"],
+pko:["اكتب اسم المكان","Type the place name"],pkl:["رابط موقع الاستلام (يُعبّأ تلقائيًا للمطاعم المعروفة)","Pickup location link (auto-filled for known restaurants)"],
+pks:["🔍 ابحث عن المطعم أو المتجر…","🔍 Search for a restaurant or store…"],pkLg:["📋 = عنده منيو تطلب منه مباشرة","📋 = has a menu you can order from"],
+pkNone:["مفيش نتيجة بالاسم ده. اختار «أخرى» من القائمة واكتب الاسم.","No match. Choose “Other” from the list and type the name."],
+loyPts:["⭐ نقاطك: {p} من {n} — باقي {r} نقطة للتوصيل المجاني","⭐ Your points: {p} of {n} — {r} more for free delivery"],
+loyFull:["🎁 عندك نقاط تكفي لتوصيل مجاني!","🎁 You have enough points for free delivery!"],
+loyUse:["استخدم نقاطي لتوصيل مجاني في هذا الطلب","Use my points for free delivery on this order"],
+loyDev:["للاستخدام: افتح من الجهاز اللي طلبت منه قبل كده.","To use: open from the device you ordered with before."],
+loyNote:["⭐ هتكسب نقطتين لما الطلب يتسلّم.","⭐ You will earn 2 points when it is delivered."],
+loyFree:["🎁 توصيل مجاني بنقاطك — ادفع للمندوب ثمن مشترياتك فقط.","🎁 Free delivery with your points — pay the courier only for your items."],
+outA:["نعتذر، واصل متاحة حاليًا في المحلة الكبرى فقط 💚 وهنكون موجودين في منطقتك قريبًا بإذن الله.","Sorry, Wasel is currently available in El-Mahalla only 💚 We will be in your area soon, God willing."],
+locNeed2:["حدّد موقعك على الخريطة (زر موقعي الحالي) أو الصق رابط موقع من خرائط جوجل.","Please set your location on the map (My location button) or paste a Google Maps location link."],
+partner:["ظهور المطعم في القائمة لا يعني أنه شريك رسمي لواصل.","Being listed does not mean the restaurant is an official partner of Wasel."],
+items:["مكونات الطلب","Order details"],add2:["➕ أضف مكانًا ثانيًا (طلب من مكانين)","➕ Add a second place (order from two places)"],pk2l:["المكان الثاني","Second place"],items2l:["مكونات الطلب من المكان الثاني","Order details from the second place"],rm2:["إلغاء المكان الثاني","Remove the second place"],ex2:["رسوم توصيل المكان الثاني: +","Second place delivery fee: +"],cold:["نوصّل الطلبين معًا. للأكل الساخن الأفضل تختار مكانين قريبين من بعض.","We deliver both together. For hot food, pick two places close to each other."],hood:["حي التسليم","Delivery district"],dt:["وصف موقع التسليم (اختياري)","Delivery location description (optional)"],door:["صورة باب البيت (اختياري)","Photo of your door (optional)"],doorPick:["📷 أضف صورة باب البيت","📷 Add a photo of your door"],doorChg:["🔄 غيّر الصورة","🔄 Change photo"],doorReady:["✅ الصورة جاهزة، هتوصل للمندوب","✅ Photo ready, it will reach the courier"],doorBad:["تعذر قراءة الصورة، جرّب صورة تانية","Couldn’t read the photo, try another"],
+dtp:["الشارع أو أقرب معلم","Street or nearest landmark"],dm:["موقع التسليم","Delivery location"],dmHere:["موقعي الحالي (يُحدَّد تلقائيًا)","My current location (detected automatically)"],dmOther:["موقع آخر (أضيفه بنفسي)","Another location (I will add it)"],
+locBtn:["📍 حدّد موقعي الآن","📍 Detect my location now"],locing:["جارٍ تحديد موقعك... وافق على طلب الموقع","Detecting your location... please allow location access"],
+locOk:["✓ تم تحديد موقعك","✓ Your location was detected"],locFail:["تعذر تحديد موقعك. اختر «موقع آخر» وأضف الرابط أو اكتب وصف الموقع.","Could not detect your location. Choose \"Another location\" and add a link or describe the place."],
+feeLbl:["رسوم التوصيل حسب المسافة: ","Delivery fee by distance: "],feeCur:[" جنيه"," EGP"],feeKm:[" (حوالي "," (about "],feeWait:["جارٍ حساب رسوم التوصيل…","Calculating the delivery fee…"],feeNeed:["حدّد موقعك لتظهر رسوم التوصيل","Set your location to see the delivery fee"],feeApprox:["السعر تقريبي وسيؤكده فريق واصل","Approximate price, Wasel will confirm it"],
+pm1:["💰 سعر المطعم الحقيقي: تدفع قيمة الفاتورة كما هي، بدون زيادة على الأصناف.","💰 The restaurant's real price: you pay the invoice as is, no markup on items."],
+pm2:["🧾 رسوم توصيل واحدة واضحة قبل التأكيد، بدون رسوم خفية.","🧾 One clear delivery fee before you confirm, no hidden fees."],
+pm3:["📸 نوريك صورة فاتورة طلبك وتتابعه خطوة بخطوة.","📸 We show you your invoice photo and you track every step."],
+waBtn:["💬 تواصل معنا على واتساب","💬 Chat with us on WhatsApp"],waHint:["مشكلة في طلبك أو استفسار؟ نرد عليك بشكل مباشر","Problem with your order or a question? A real person replies"],
+waMsg:["مرحبًا واصل، عندي استفسار","Hello Wasel, I have a question"],waMsg2:["مرحبًا واصل، بخصوص طلبي رقم ","Hello Wasel, about my order no. "],
+menuBtn:["📖 شوف منيو ","📖 See the menu of "],mealNo:["بدون وجبة","No meal"],mealYes:["🍟🥤 مع وجبة","🍟🥤 With meal"],mealTag:[" + وجبة"," + meal"],menuClose:["✕ رجوع","✕ Back"],menuNote:["الأسعار من قائمة المطعم. المبلغ تقديري، وفاتورة المطعم هي النهائية، ورسوم التوصيل تُضاف عند التأكيد.","Prices are from the restaurant's menu. The amount is an estimate; the restaurant's invoice is final and the delivery fee is added at confirmation."],menuLoad:["جارٍ تحميل المنيو…","Loading the menu…"],menuFail:["تعذر تحميل المنيو، اكتب طلبك يدويًا.","Could not load the menu, please type your order."],menuConfirm:["تأكيد الأصناف","Confirm items"],menuCart:["السلة","Cart"],menuSar:[" جنيه"," EGP"],menuLong:["الطلب كبير جدًا، قلّل الأصناف أو اكتب الباقي في الملاحظات.","The order is too long; reduce items or write the rest in the notes."],menuEmpty:["اختر صنفًا واحدًا على الأقل","Pick at least one item"],menuTot:["الإجمالي التقديري للأصناف: ","Estimated items total: "],
+histBtn:["📋 طلباتي السابقة","📋 My previous orders"],histHide:["إخفاء طلباتي السابقة","Hide my previous orders"],histLoad:["جارٍ التحميل…","Loading…"],histEmpty:["لا توجد طلبات محفوظة على هذا الجهاز. لو عندك طلب قديم أضفه بالأسفل.","No orders saved on this device. Add an old order below."],histFind:["لقيت طلب قديم مش ظاهر؟ اكتب رقمه وآخر 4 أرقام من جوالك","Can't see an old order? Enter its number and the last 4 digits of your phone"],histNo:["رقم الطلب (مثال: 42)","Order number (e.g. 42)"],histP4:["آخر 4 أرقام","Last 4 digits"],histAdd:["إضافة","Add"],histNotFound:["لم نجد طلبًا بهذه البيانات","No order found with these details"],histWait:["جارٍ التحقق…","Checking…"],histFail:["تعذر تحميل طلباتك، حاول لاحقًا.","Could not load your orders, try later."],histTrack:["تتبّع","Track"],histAgain:["🔁 اطلب مرة ثانية","🔁 Order again"],histNote:["تظهر هنا الطلبات التي أرسلتها من هذا الجهاز فقط.","Only orders sent from this device appear here."],histSar:[" جنيه"," EGP"],histBy:["المندوب: ","Courier: "],histRated:["✓ تم التقييم","✓ Rated"],histDet:["🧾 التفاصيل","🧾 Details"],histDetHide:["إخفاء التفاصيل","Hide details"],detLoad:["جارٍ تحميل التفاصيل…","Loading details…"],detFail:["تعذر تحميل التفاصيل، حاول لاحقًا.","Could not load details, try later."],detTl:["سير الطلب","Order timeline"],detChat:["المحادثة","Chat"],detNoChat:["لا توجد محادثة على هذا الطلب.","No chat on this order."],detMe:["أنت","You"],detCr:["المندوب","Courier"],detShot:["تقدر تعمل لقطة شاشة (سكرين شوت) لهذه التفاصيل وترسلها للإدارة عند الحاجة.","You can screenshot these details and send them to support if needed."],
+sNew:["بانتظار مندوب","Waiting for a courier"],sAccepted:["المندوب قبل الطلب","Courier accepted"],sArrived:["المندوب عند المطعم","Courier at the restaurant"],sInvoiced:["الفاتورة مرفوعة","Invoice uploaded"],sPicked:["تم استلام الطلب","Order picked up"],sOntheway:["في الطريق إليك","On the way to you"],sAtdest:["وصل المندوب لموقعك","Courier at your location"],sDelivered:["تم التسليم","Delivered"],sCancelled:["ملغي","Cancelled"],sUnavailable:["غير متاح","Unavailable"],
+trkBtn:["📍 تتبّع طلبي","📍 Track my order"],trkHint:["ضاع منك الرابط؟ اضغط هنا وادخل رقم الطلب وآخر 4 أرقام من جوالك","Lost the link? Tap here and enter your order number and the last 4 digits of your phone"],
+locNeed:["حدّد موقعك أولًا (اضغط زر تحديد الموقع) أو اختر «موقع آخر»","Detect your location first (tap the button) or choose \"Another location\""],
+locAcc:[" (الدقة تقريبية، اكتب وصف الموقع للمساعدة)"," (approximate accuracy, add a description to help)"],
+dlh:["افتح خرائط جوجل، اضغط على موقعك ثم مشاركة وانسخ الرابط.","Open Google Maps, tap your spot, then Share and copy the link."],dlp:["رابط خرائط جوجل","Google Maps link"],
+pay:["طريقة الدفع","Payment method"],cash:["💵 خلال فترة التجربة (30 يومًا) الدفع كاش للمندوب عند الاستلام فقط (قيمة الفاتورة + التوصيل). الدفع الإلكتروني قريبًا بإذن الله.","💵 During our 30-day trial, payment is cash to the courier on delivery only (invoice + delivery fee). Online payment is coming soon."],
+catAll:["الكل","All"],
+nt:["ملاحظات للمندوب (اختياري)","Notes for the courier (optional)"],send:["إرسال الطلب","Send order"],
+other:["غير موجود في القائمة (اكتب يدويًا)","Not listed (type it)"],sending:["جارٍ الإرسال...","Sending..."],
+got:["تم استلام طلبك","Your order was received"],num:[" ورقمه: "," - number: "],soon:[". سيتواصل معك المندوب قريبًا.",". A courier will contact you soon."],
+track:[" ← تابع طلبي","Track my order →"],need4:["ستحتاج آخر 4 أرقام من جوالك للدخول.","You will need the last 4 digits of your phone number."],
+fail:["تعذر الإرسال، حاول مرة أخرى","Could not send, please try again"],failx:["تعذر الإرسال","Could not send"],
+again:["🔁 اطلب نفس آخر طلب","🔁 Reorder my last order"],forget:["نسيان بياناتي على هذا الجهاز","Forget my details on this device"],
+lgN:["بإرسال الطلب فأنت توافق على","By sending the order you accept the"],lgT:["الشروط والأحكام","Terms"],lgP:["سياسة الخصوصية","Privacy policy"],lgA:[" و"," and "],
+share:["📤 شارك رابط التتبع","📤 Share the tracking link"],shareTxt:["تابع طلبي من واصل. رقم الطلب: ","Track my Wasel order. Order no.: "],shareNote:[" (آخر 4 أرقام من جوال صاحب الطلب مطلوبة للدخول)"," (the last 4 digits of the orderer's phone are needed)"],copied:["✓ تم نسخ الرابط","✓ Link copied"],copyFail:["انسخ الرابط من هنا:","Copy the link from here:"],
+chk:["تأكد من بياناتك وحاول مرة أخرى","Please check your details and try again"]
+};
+function t(k){var d=T[k];return d?d[LANG==="en"?1:0]:k}
+// [عربي, English]
+var R=[];   // المحلة: القائمة بتيجي من تبويب «المتاجر» في الشيت
+var N=[["حي الملك فهد","Al Malik Fahd"],["حي الملك خالد","Al Malik Khalid"],["حي الريان","Al Rayyan"],["حي الصالحية","Al Salihiyah"],["حي المروج","Al Muruj"],["حي الفيحاء","Al Fayha"],["حي المطار","Al Matar"],["حي المنتزه","Al Muntazah"],["حي النسيم","Al Naseem"],["حي العليا","Al Aliyah"],["حي مريبدة","Muraibidah"],["حي البديعة","Al Badiah"],["حي السلام","Al Salam"],["حي مليحة","Mulaihah"],["حي العيارية","Al Ayariyah"],["حي القادسية","Al Qadisiyah"],["حي المنار","Al Manar"],["حي السلمانية","Al Salmaniyah"],["حي الوفاء","Al Wafa"],["حي الخليج","Al Khaleej"],["حي الصناعية","Al Sinaiyah"],["حي الشبيلي","Al Shubaili"],["حي الشوريمية","Al Shuraimiyah"],["حي الفيضة","Al Fayda"],["حي الوسطى","Al Wusta"]];
+function $(i){return document.getElementById(i)}
+// رابط صفحة التتبّع داخل التطبيق المغلِّف (يبقى العميل داخل واصل ولا يخرج لصفحة جوجل الخام)
+var WRAP="https://script.google.com/macros/s/AKfycbw6vRRRa_9l9K1OvtWcfQXyXBtrCY5wGXSsuSgx0eiUku0smp-Q6TLedPxq1_9blW1T/exec";   // المحلة: لينك النشر
+function trackUrl(no){return WRAP+"?page=track"+(no?"&o="+encodeURIComponent(no):"")}
+$("trk").href=trackUrl("");
+// واتساب واصل: رقم ثابت في الكود (لا يُقبل من الرابط). يُضاف رقم آخر طلب محفوظ إن وُجد
+var WA_NUM="201033242971";
+function waUrl(){var no="";try{var w=JSON.parse(localStorage.getItem("wt")||"null");if(w&&/^[A-Za-z0-9_-]{3,40}$/.test(String(w.no||"")))no=String(w.no)}catch(e){}
+  return "https://wa.me/"+WA_NUM+"?text="+encodeURIComponent(no?t("waMsg2")+no:t("waMsg"))}
+function setWa(){$("wa").href=waUrl()}
+setWa();
+function nz(x){return String(x||"").toLowerCase().replace(/[ً-ٰٟـ]/g,"").replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/\s+/g," ").trim()}
+function fill(id,a,x){var s=$(id),i=s.selectedIndex,cv=s.value,q="";
+  if(id==="pk"&&TGRP)a=a.filter(function(v){return tgOk(v[0])});   /* نوع الطلب (مطاعم/كافيهات/بقالة/صيدلية) */
+  if(id==="pk"&&CATF)a=a.filter(function(v){return inCat(v[0],CATF)});
+  if(id==="pk"){q=nz($("pks").value);
+    if(q)a=a.filter(function(v){return nz(v[0]).indexOf(q)>=0||nz(v[1]).indexOf(q)>=0});
+    var mn=[],ot=[];a.forEach(function(v){(MR.indexOf(v[0])>=0?mn:ot).push(v)});a=mn.concat(ot);
+    var pn=$("pkn"),none=!!q&&!a.length;pn.textContent=none?t("pkNone"):"";pn.classList.toggle("hide",!none)}
+  s.innerHTML="";a.forEach(function(v){var o=document.createElement("option");o.value=v[0];o.textContent=((id==="pk"||id==="pk2")&&MR.indexOf(v[0])>=0?"📋 ":"")+(LANG==="en"?v[1]:v[0])+((id==="pk"||id==="pk2")&&CLOSED[v[0]]?(LANG==="en"?" (closed)":" (مغلق 🔴)"):"");s.appendChild(o)});
+  if(x){var o=document.createElement("option");o.value="x";o.textContent=t("other");s.appendChild(o)}
+  if(id==="pk"){if((cv==="x"&&!(q&&a.length))||(cv&&a.some(function(v){return v[0]===cv})))s.value=cv}
+  else if(i>0&&i<s.options.length)s.selectedIndex=i}
+var OFFER=null,COORD=null,LOCACC=0;
+var CLOSED={},PART={},MR=[],MC={},MCART={},MCUR="",MM={};
+// تصنيفات المطاعم: [المفتاح (نفس اسم التصنيف في الشيت), العربي, English]
+var CATS=[["البرجر والوجبات السريعة", "🍔 برجر ووجبات سريعة", "🍔 Burgers & fast food"], ["البيتزا والباستا", "🍕 بيتزا وباستا", "🍕 Pizza & pasta"], ["المطاعم الشعبية والسعودية", "🍛 أكل شعبي ومصري", "🍛 Egyptian & traditional"], ["المشويات والمأكولات الشرقية", "🍢 مشويات وشرقي", "🍢 Grills & Middle Eastern"], ["الشاورما والسندويتشات", "🌯 شاورما وسندويتشات", "🌯 Shawarma & sandwiches"], ["المطاعم التركية والآسيوية", "🍜 تركي وآسيوي", "🍜 Turkish & Asian"], ["المطاعم والمخابز المتخصصة في الإفطار", "🍳 فطور", "🍳 Breakfast"], ["الحلويات والآيس كريم", "🍰 حلويات وآيس كريم", "🍰 Sweets & ice cream"], ["الكافيهات والقهوة المختصة", "☕ كافيهات وقهوة مختصة", "☕ Cafés & specialty coffee"], ["العصائر والمشروبات", "🥤 عصائر ومشروبات", "🥤 Juices & drinks"], ["الصيدليات", "💊 صيدليات", "💊 Pharmacies"], ["المتاجر العامة والسوبرماركت", "🛒 سوبرماركت ومتاجر", "🛒 Supermarkets & stores"]].concat([["مطاعم","🍽 مطاعم","🍽 Restaurants"],["كافيهات","☕ كافيهات","☕ Cafés"],["فطاير وموالح","🥧 فطاير وموالح","🥧 Pies & savories"],["حلويات","🍰 حلويات","🍰 Sweets"],["مخبوزات","🥖 مخبوزات","🥖 Bakery"],["مشروبات وعصائر","🥤 مشروبات وعصائر","🥤 Drinks & juices"],["أكل بيتي","🍲 أكل بيتي","🍲 Home-cooked"]]);
+var SLOC={};
+var CAT={},CATF="",SCAT={};
+function catsOf(n){var s=SCAT[n];if(s&&s.length)return s;return [CAT[n]||"مطاعم"]}
+/* ===== نوع الطلب بيفلتر قايمة المتاجر: كل زرار بيعرض المتاجر بتاعته بس ===== */
+var TGRP=null;
+var TG={cafe:["الكافيهات والقهوة المختصة","كافيهات"],shop:["المتاجر العامة والسوبرماركت"],ph:["الصيدليات"]};
+function tgOk(n){var cs=catsOf(n),g=TGRP;
+  if(g==="food")return !cs.some(function(c){return TG.cafe.indexOf(c)>=0||TG.shop.indexOf(c)>=0||TG.ph.indexOf(c)>=0});
+  return cs.some(function(c){return TG[g]&&TG[g].indexOf(c)>=0})}
+function catOf(n){return catsOf(n)[0]}
+function inCat(n,k){return catsOf(n).indexOf(k)>=0}
+function catsUi(){
+  var box=$("cats"),have={};
+  R.forEach(function(v){if(TGRP&&!tgOk(v[0]))return;catsOf(v[0]).forEach(function(c){have[c]=1})});
+  var ks=CATS.filter(function(c){return have[c[0]]});
+  box.textContent="";
+  if(ks.length<2){box.classList.add("hide");if(CATF){CATF="";fill("pk",R,1)}return}
+  box.classList.remove("hide");
+  var mk=function(k,label){var b=document.createElement("button");b.type="button";b.textContent=label;b.className=CATF===k?"on":"";
+    b.onclick=function(){CATF=k;fill("pk",R,1);catsUi();$("pk").dispatchEvent(new Event("change"))};box.appendChild(b)};
+  mk("",t("catAll"));ks.forEach(function(c){mk(c[0],LANG==="en"?c[2]:c[1])})}
+function fillDm(){var s=$("dm"),i=s.selectedIndex;s.innerHTML="";
+  [["here",t("dmHere")],["other",t("dmOther")]].forEach(function(v){var o=document.createElement("option");o.value=v[0];o.textContent=v[1];s.appendChild(o)});
+  if(i>0)s.selectedIndex=i}
+function locUi(){var h=$("dm").value==="here";
+  $("here").classList.toggle("hide",!h);$("dlbox").classList.toggle("hide",h);
+  var l=$("lst");
+  if(h&&COORD){l.className="mu ok";l.textContent=t("locOk")+(LOCACC>200?t("locAcc"):"")}
+  else if(!h){l.textContent="";l.className="mu"}}
+function locate(cb){
+  var l=$("lst");l.className="mu";l.textContent=t("locing");
+  if(!navigator.geolocation){COORD=null;l.className="mu bad";l.textContent=t("locFail");cb&&cb(false);return}
+  navigator.geolocation.getCurrentPosition(function(p){
+    COORD=p.coords.latitude.toFixed(6)+","+p.coords.longitude.toFixed(6);LOCACC=p.coords.accuracy||0;locUi();feeUpd();if(farC([p.coords.latitude,p.coords.longitude])){l.className="mu bad";l.textContent=t("outA")}cb&&cb(true)},
+  function(){COORD=null;l.className="mu bad";l.textContent=t("locFail");cb&&cb(false)},
+  {enableHighAccuracy:true,timeout:15000,maximumAge:60000})}
+var FQ=0,FT=0;
+function pickName(){var v=$("pk").value;return v==="x"?$("pko").value:v}
+function feeCoord(){
+  if($("dm").value==="here")return COORD?("https://www.google.com/maps?q="+COORD):"";
+  var v=$("dl").value;return (/(-?\d{1,2}\.\d{2,}),\s*(-?\d{1,3}\.\d{2,})/.test(v)||SHORTL.test(v.trim()))?v:""}
+var SHORTL=/^https?:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|g\.co\/kgs)\//i;   // رابط خرائط جوجل القصير: السيرفر بيطلّع منه الإحداثيات
+function feeUpd(){
+  var b=$("feebox");if(!OFFER||!OFFER.pricing){b.classList.add("hide");return}
+  b.classList.remove("hide");clearTimeout(FT);
+  var link=feeCoord();
+  if(!link){b.textContent=t("feeNeed");return}
+  b.textContent=t("feeWait");var id=++FQ;
+  FT=setTimeout(function(){
+    google.script.run.withSuccessHandler(function(r){
+      if(id!==FQ)return;
+      if(r&&r.dlink&&$("dm").value!=="here"&&SHORTL.test($("dl").value.trim()))$("dl").value=r.dlink;
+      if(!r||!r.ok||!r.active||r.needLoc){b.textContent=t("feeNeed");return}
+      b.textContent=t("feeLbl")+r.fee+t("feeCur")+(r.km>=0?t("feeKm")+r.km+(LANG==="en"?" km)":" كم)"):"")+(r.km<0?" — "+t("feeApprox"):"")
+    }).withFailureHandler(function(){if(id===FQ)b.textContent=t("feeApprox")})
+    .quoteFee({pickup:pickName(),pickupLink:$("pkl").value,hood:"",dlink:link})},500)}
+$("dm").onchange=function(){locUi();feeUpd()};
+["pk","pko","pkl","hood","dl"].forEach(function(i){$(i).addEventListener("change",feeUpd)});
+$("loc").onclick=function(){locate()};
+function showOffer(){
+  var b=$("offer");
+  if(OFFER&&!OFFER.active&&OFFER.soon&&OFFER.soon.fee){var so=OFFER.soon;
+    b.textContent=LANG==="en"?"🎉 Coming soon: from "+so.fromE+" to "+so.toE+" delivery fee only "+so.fee+" EGP (+ the price of your items)"
+      :"🎉 قريبًا: من "+so.from+" لحد "+so.to+" رسوم التوصيل "+so.fee+" جنيه بس (+ قيمة مشترياتك)";
+    b.classList.remove("hide");return}
+  if(!OFFER||!OFFER.active){b.classList.add("hide");return}
+  b.textContent=LANG==="en"
+    ?"🎉 Delivery offer: delivery fee only "+OFFER.fee+" EGP"+(OFFER.until?" until "+OFFER.until:"")+" (+ the price of your items)"
+    :"🎉 عرض على التوصيل: رسوم التوصيل "+OFFER.fee+" جنيه فقط"+(OFFER.until?" حتى "+OFFER.until:"")+" (+ قيمة مشترياتك)";
+  b.classList.remove("hide")}
+/* لافتة الصاروخ: يسحبها، ويهدّى في نص الصفحة ويسيبها ويمشي، وفي الدورة الجاية يزق القديمة بره ويسيب الجديدة */
+var BNW={};
+function bnTxt(i){return t("bn"+(i%3))}
+function bnUi(){BNW={};BNL.tow="";BNL.park=""}
+var BNL={tow:"",park:"",t0:null};
+(function(){
+  var lane=document.querySelector(".lane"),rk=document.querySelector(".rk"),tf=$("flag"),pf=$("pflag");
+  if(!lane||!rk||!tf||!pf)return;
+  var rm=false;try{rm=window.matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){}
+  if(rm)return;
+  var T=13000,TD=4200,TH=4700,TE=6500,GAP=18;
+  var ms=document.createElement("div");ms.className="flag";ms.setAttribute("aria-hidden","true");
+  ms.style.cssText="visibility:hidden;animation:none;transform:none;inset-inline-start:0;top:0";lane.appendChild(ms);
+  function wOf(i){var k=LANG+i;if(!BNW[k]){ms.textContent=bnTxt(i);BNW[k]=ms.offsetWidth||150}return BNW[k]}
+  function frame(now){
+    requestAnimationFrame(frame);
+    if($("spl")){BNL.t0=null;return}
+    if(document.hidden)return;
+    if(BNL.t0===null)BNL.t0=now;
+    var W=lane.clientWidth,Wr=rk.offsetWidth;if(!W||!Wr)return;
+    var el=now-BNL.t0,k=Math.floor(el/T),u=el-k*T,tow=k%3,hasOld=k>0,old=hasOld?(k-1)%3:-1;
+    var wNew=wOf(tow),wOld=hasOld?wOf(old):0;
+    /* الصاروخ والمجموعة (صاروخ + حبل + لافتة) تتوسّط الصفحة لحظة الإفلات */
+    function park(w){return (W-(Wr+GAP+w))/2+Wr+GAP}
+    var sPark=park(wNew),sDrop=sPark-Wr-GAP,S0=W+10,SE=-(Wr+40),sr;
+    if(u<TD){var p=u/TD,x=1-(1-p)*(1-p);sr=S0+(sDrop-S0)*x}
+    else if(u<TH)sr=sDrop;
+    else if(u<TE){var q=(u-TH)/(TE-TH);sr=sDrop+(SE-sDrop)*q*q*q}
+    else sr=SE;
+    var parkIdx=u>=TD?tow:old,op=0,ps=0;
+    if(u>=TD){ps=sPark;op=1}
+    else if(hasOld){
+      /* القديمة تقف في مكانها حتى يلمسها الصاروخ، فيزقّها ويقذفها بره الصفحة */
+      var sp0=park(wOld),c=sp0+wOld,e=sr<c?sr-1.5*(c-sr):c;
+      ps=Math.min(sp0,e-wOld);op=Math.max(0,Math.min(1,(ps+wOld-4)/24))}
+    var tt=bnTxt(tow);if(BNL.tow!==tt){tf.textContent=tt;BNL.tow=tt}
+    if(parkIdx>=0){var pt=bnTxt(parkIdx);if(BNL.park!==pt){pf.textContent=pt;BNL.park=pt}}
+    rk.style.insetInlineStart=sr+"px";
+    rk.classList.toggle("free",u>=TD);
+    pf.style.insetInlineStart=ps+"px";pf.style.opacity=String(op)}
+  requestAnimationFrame(frame)
+})();
+var LG=null;
+function legalUi(){
+  var b=$("lgl");b.textContent="";if(!LG||typeof LG.terms!=="string"||typeof LG.privacy!=="string"||!/^https:\/\//.test(LG.terms)||!/^https:\/\//.test(LG.privacy))return;
+  b.appendChild(document.createTextNode(t("lgN")+" "));
+  [["lgT",LG.terms],["lgP",LG.privacy]].forEach(function(x,i){
+    if(i)b.appendChild(document.createTextNode(t("lgA")));
+    var a=document.createElement("a");a.textContent=t(x[0]);a.href=x[1];a.target="_blank";a.rel="noopener noreferrer";a.style.color="var(--br)";b.appendChild(a)})}
+function applyLang(){
+  document.documentElement.lang=LANG;document.documentElement.dir=LANG==="en"?"ltr":"rtl";
+  document.querySelectorAll("[data-i]").forEach(function(e){e.textContent=t(e.getAttribute("data-i"))});
+  document.querySelectorAll("[data-ph]").forEach(function(e){e.placeholder=t(e.getAttribute("data-ph"))});
+  $("lang").textContent=LANG==="en"?"عربي":"EN";
+  bnUi();legalUi();idUi();fill("pk",R,1);fill("pk2",R,1);sec2Ui();catsUi();fill("hood",N);fillDm();showOffer();setWa();menuBtnUi();if(typeof COORD!=="undefined")locUi();try{loyUi()}catch(e){}}
+$("lang").onclick=function(){LANG=LANG==="en"?"ar":"en";try{localStorage.setItem("wl",LANG)}catch(e){}try{window.top.postMessage({wasel_lang:LANG},"*")}catch(e){}applyLang()};
+applyLang();
+// رابط الاستلام التلقائي: بحث خرائط جوجل عن المكان في المحلة الكبرى، مقرّب لحي العميل (فيظهر أقرب فرع له أولًا)
+/* موقع المتجر الصحيح من تبويب «المتاجر»: أقرب فرع لموقع العميل (لو معروف)، وإلا أول فرع */
+function storeLink(v){var L=SLOC[v];if(!L||!L.length)return "";var b=L[0];
+  var c=COORD?COORD.split(",").map(Number):null;
+  if(c&&L.length>1){var bd=1e9;L.forEach(function(p){var d=Math.pow(p[0]-c[0],2)+Math.pow((p[1]-c[1])*Math.cos(c[0]*Math.PI/180),2);if(d<bd){bd=d;b=p}})}
+  return "https://www.google.com/maps?q="+b[0]+","+b[1]}
+function autoLink(){
+  var l=$("pkl");if(l.dataset.manual)return;
+  var v=$("pk").value;
+  if(v=="x"||/المحلية$/.test(v)){l.value="";return}
+  var sl=storeLink(v);if(sl){l.value=sl;return}
+  var q=v+" المحلة الكبرى";
+  var u="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
+  if(u.length>290)u="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(v+" المحلة الكبرى");
+  l.value=u;
+}
+function autoLink2(){
+  var l=$("pkl2");if(l.dataset.manual)return;
+  var v=$("pk2").value;
+  if(!v||v=="x"||/المحلية$/.test(v)){l.value="";return}
+  var sl=storeLink(v);if(sl){l.value=sl;return}
+  var q=v+" المحلة الكبرى";
+  var u="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
+  if(u.length>290)u="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(v+" المحلة الكبرى");
+  l.value=u;
+}
+$("pkl").oninput=function(){this.dataset.manual=this.value?"1":""};
+$("pkl2").oninput=function(){this.dataset.manual=this.value?"1":""};
+$("hood").onchange=function(){autoLink();autoLink2()};
+$("pk").onchange=function(){$("pko").classList.toggle("hide",this.value!="x");$("pkl").dataset.manual="";autoLink();menuBtnUi()};
+function jget(k){try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}}
+function jset(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function setSel(id,v){var s=$(id);for(var i=0;i<s.options.length;i++){if(s.options[i].value===v){s.selectedIndex=i;return true}}return false}
+var CHG=false;
+function idUi(){
+  var p=jget("wp"),ok=!!(p&&typeof p.name==="string"&&p.name.trim().length>0&&/^\d{8,15}$/.test(String(p.phone||"").replace(/\D/g,""))&&$("name").value.trim()&&$("phone").value.trim()&&!CHG);
+  $("wb").classList.toggle("hide",!ok);$("idbox").classList.toggle("hide",ok);topUi();
+  if(ok){$("wbt").textContent=t("wb")+String($("name").value).trim().slice(0,40);$("wbc").textContent=t("wbc")}}
+$("wbc").onclick=function(){CHG=true;idUi();$("name").focus()};
+function renderMem(){
+  var lo=jget("wlo"),p=jget("wp"),b=$("again");idUi();
+  if(lo&&lo.items){b.textContent=t("again")+(lo.pkn?" · "+lo.pkn:"");b.classList.remove("hide")}else b.classList.add("hide");
+  $("forget").classList.toggle("hide",!(lo||p))}
+function prefill(){
+  var p=jget("wp");
+  if(p){if(p.name)$("name").value=p.name;if(p.phone)$("phone").value=p.phone;if(p.hood)setSel("hood",p.hood);if(p.type)setSel("type",p.type)}
+  renderMem()}
+$("again").onclick=function(){
+  var lo=jget("wlo");if(!lo)return;
+  if(lo.type)setSel("type",lo.type);
+  if(lo.sel&&lo.sel!=="x"&&setSel("pk",lo.sel)){$("pko").classList.add("hide");$("pko").value=""}
+  else{setSel("pk","x");$("pko").classList.remove("hide");$("pko").value=lo.pkn||""}
+  if(lo.hood)setSel("hood",lo.hood);
+  $("items").value=lo.items||"";$("dt").value=lo.dt||"";$("nt").value=lo.nt||"";
+  $("pkl").dataset.manual="";autoLink();
+  if(lo.sel==="x"&&lo.pkl){$("pkl").value=lo.pkl;$("pkl").dataset.manual="1"}
+  $("msg").textContent="";$("items").focus()};
+$("forget").onclick=function(){
+  try{localStorage.removeItem("wp");localStorage.removeItem("wlo")}catch(e){}
+  ["name","phone","pko","items","dt","nt"].forEach(function(i){$(i).value=""});CHG=false;renderMem()};
+function copyTxt(s,cb){try{var ta=document.createElement("textarea");ta.value=s;ta.style.cssText="position:fixed;opacity:0";document.body.appendChild(ta);ta.select();var ok=document.execCommand("copy");document.body.removeChild(ta);cb(ok)}catch(e){cb(false)}}
+function shareLink(url,no,note){
+  var txt=t("shareTxt")+no;
+  if(navigator.share){try{navigator.share({title:"واصل",text:txt+t("shareNote"),url:url}).catch(function(){})}catch(e){}return}
+  copyTxt(url,function(ok){
+    if(ok){note.textContent=t("copied");return}
+    note.textContent=t("copyFail");var i=document.createElement("input");i.readOnly=true;i.value=url;i.dir="ltr";i.onfocus=function(){this.select()};note.appendChild(i)})}
+$("pks").oninput=function(){fill("pk",R,1);$("pk").dispatchEvent(new Event("change"))};
+/* ===== نطاق الخدمة: المحلة الكبرى فقط ===== */
+var SVC_C=[30.9697,31.1663],SVC_KM=8;
+function coordOf(l){var m=/(-?\d{1,2}\.\d{2,}),\s*(-?\d{1,3}\.\d{2,})/.exec(String(l||""));return m?[parseFloat(m[1]),parseFloat(m[2])]:null}
+function farC(c){var r=Math.PI/180,dLa=(c[0]-SVC_C[0])*r,dLn=(c[1]-SVC_C[1])*r,
+  x=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(SVC_C[0]*r)*Math.cos(c[0]*r)*Math.sin(dLn/2)*Math.sin(dLn/2);
+  return 2*6371*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))>SVC_KM}
+/* ===== نقاط الولاء ===== */
+var LK="";try{LK=localStorage.getItem("wlk")||"";if(!/^[a-f0-9]{32}$/.test(LK)){var ab=new Uint8Array(16);(window.crypto||window.msCrypto).getRandomValues(ab);LK=Array.from(ab).map(function(b){return ("0"+b.toString(16)).slice(-2)}).join("");localStorage.setItem("wlk",LK)}}catch(e){LK=""}
+var LOYI=null,LOYQ=0,LOYP="";
+function topUi(){$("top").classList.toggle("hide",$("wb").classList.contains("hide")&&$("loy").classList.contains("hide"))}
+function loyUi(){
+  var b=$("loy");if(!LOYI||!LOYI.ok||!LOYI.on){b.classList.add("hide");topUi();return}
+  b.classList.remove("hide");
+  var p=LOYI.pts,n=LOYI.need;
+  $("loyt").textContent=p>=n?t("loyFull"):t("loyPts").replace("{p}",p).replace("{n}",n).replace("{r}",n-p);
+  $("loyb").style.width=Math.min(100,Math.round(p/n*100))+"%";
+  $("loyr").classList.toggle("hide",p<n);
+  $("loyc").disabled=!LOYI.can;if(!LOYI.can)$("loyc").checked=false;
+  $("loyrt").textContent=LOYI.can?t("loyUse"):t("loyDev");topUi()}
+function loyGet(){
+  var ph=$("phone").value.trim();
+  if(ph.length<9){LOYI=null;LOYP="";loyUi();return}
+  if(ph===LOYP&&LOYI)return;
+  LOYP=ph;var id=++LOYQ;
+  google.script.run.withSuccessHandler(function(r){if(id!==LOYQ)return;LOYI=r;loyUi()}).withFailureHandler(function(){}).loyaltyInfo({phone:ph,lk:LK})}
+$("phone").addEventListener("change",loyGet);$("phone").addEventListener("blur",loyGet);
+prefill();
+setTimeout(loyGet,900);
+autoLink();
+$("go").onclick=function(){
+  if($("dm").value==="here"&&!COORD){
+    $("go").disabled=true;
+    locate(function(ok){$("go").disabled=false;
+      if(ok)$("go").onclick();
+      else{$("dm").value="other";locUi();$("lst").className="mu bad";$("lst").textContent=t("locFail");$("msg").style.color="#dc2626";$("msg").textContent=t("locNeed")}});
+    return}
+  send()};
+function send(){
+  if(!$("pkl").dataset.manual){autoLink();if(SEC2)autoLink2()}   // لينك موقع المتجر يتحسب للمكان المختار وقت الإرسال
+  var selVal=$("pk").value,pk=selVal=="x"?$("pko").value:selVal,pl=$("pkl").value;
+  if(/https?:\/\//.test(pk)){
+    var um=pk.match(/https?:\/\/\S+/)[0],mm=/\/maps\/place\/([^\/?#\s]+)/.exec(pk);
+    if(!pl)pl=um;
+    var nm=pk.replace(/https?:\/\/\S+/g,"").trim();
+    if(!nm&&mm){try{nm=decodeURIComponent(mm[1].replace(/\+/g," "))}catch(e){}}
+    pk=nm||"مطعم/متجر (حسب الرابط)";
+  }
+  if(isRB()&&!$("rno").value.trim()&&!$("rname").value.trim()&&!RIMG){var mm0=$("msg");mm0.style.color="";mm0.textContent=t("rbNeed");return}
+  var o={name:$("name").value,phone:$("phone").value,type:$("type").value,
+    pickup:pk,pickupLink:pl,
+    items:$("items").value,hood:"",dtext:$("dt").value,dlink:($("dm").value==="here"&&COORD)?("https://www.google.com/maps?q="+COORD):$("dl").value,
+    pay:$("pay").value,notes:$("nt").value,website:$("website").value};
+  if(isRB()){o.rno=$("rno").value;o.rname=$("rname").value;if(RIMG)o.rimg=RIMG}
+  if(DIMG)o.dimg=DIMG;
+  if(SEC2){var s2=$("pk2").value;o.second={pickup:s2==="x"?$("pko2").value:s2,pickupLink:$("pkl2").value,items:$("items2").value}}
+  var rc=$("refc").value.trim().toUpperCase();if(rc)o.ref=rc;
+  if($("schc").checked){var sc=schVal();if(!sc){var mm1=$("msg");mm1.style.color="#dc2626";mm1.textContent=t("schBad");return}o.sched=sc}
+  o.lk=LK;o.redeem=!!(LOYI&&LOYI.can&&$("loyc").checked);
+  var m=$("msg");m.style.color="";
+  var dc=coordOf(o.dlink);
+  if(!dc&&SHORTL.test(String(o.dlink||"").trim())&&!send.rs){   // رابط قصير: نجيب إحداثياته من السيرفر ونكمل الإرسال
+    m.textContent=t("sending");$("go").disabled=true;
+    google.script.run.withSuccessHandler(function(r){$("go").disabled=false;
+      if(r&&r.dlink){$("dl").value=r.dlink;send.rs=1;try{send()}finally{send.rs=0}}
+      else{m.style.color="#dc2626";m.textContent=t("locNeed2")}})
+    .withFailureHandler(function(){$("go").disabled=false;m.style.color="#dc2626";m.textContent=t("locNeed2")})
+    .quoteFee({dlink:o.dlink});return}
+  if(!dc){m.style.color="#dc2626";m.textContent=t("locNeed2");return}
+  if(farC(dc)){m.style.color="#b45309";m.textContent=t("outA");return}
+  m.textContent=t("sending");$("go").disabled=true;
+  google.script.run.withSuccessHandler(function(r){
+    $("go").disabled=false;
+    if(r.ok){m.textContent=t("got")+(r.no?t("num")+r.no:"")+t("soon");
+      var ln=document.createElement("small");ln.style.display="block";ln.textContent=r.free?t("loyFree"):t("loyNote");m.appendChild(ln);
+      $("loyc").checked=false;LOYP="";setTimeout(loyGet,2500);
+      jset("wp",{name:o.name,phone:o.phone,hood:o.hood,type:o.type});
+      jset("wlo",{type:o.type,sel:selVal,pkn:pk,pkl:selVal=="x"?pl:"",hood:o.hood,items:o.items,dt:o.dtext,nt:o.notes});
+      if(r.no){
+        try{localStorage.setItem("wt",JSON.stringify({no:r.no,p4:String(o.phone).replace(/\D/g,"").slice(-4)}))}catch(e){}setWa();hAdd(r.no,String(o.phone).replace(/\D/g,"").slice(-4));hBtnUi();
+        if(r.url){var tu=trackUrl(r.no);var a=document.createElement("a");a.href=tu;a.target="_top";a.textContent=t("track");a.style.cssText="display:block;margin-top:8px;color:var(--br)";m.appendChild(a);
+          var sb=document.createElement("button");sb.type="button";sb.className="sec";sb.textContent=t("share");var sn=document.createElement("div");sn.className="mu";
+          sb.onclick=function(){shareLink(tu,r.no,sn)};m.appendChild(sb);m.appendChild(sn);
+          var h=document.createElement("small");h.style.display="block";h.textContent=t("need4");m.appendChild(h)}
+                }
+      ["pko","pkl","items","dt","dl","nt","items2","pko2","pkl2"].forEach(function(i){$(i).value=""});DIMG="";try{doorUi()}catch(eD){}$("pkl2").dataset.manual="";SEC2=false;sec2Ui();CHG=false;renderMem();COORD=null;locUi();feeUpd();$("pkl").dataset.manual="";autoLink();
+    }else if(r.closed){appClosedUi(true,r.msg)}
+    else if(r.out){m.style.color="#b45309";m.textContent=t("outA")}
+    else{if($("idbox").classList.contains("hide")){CHG=true;idUi()}m.style.color="#dc2626";m.textContent=LANG==="en"?t("chk")+(r.msg?" ("+r.msg+")":""):(r.msg||t("failx"))}
+  }).withFailureHandler(function(){
+    $("go").disabled=false;m.style.color="#dc2626";m.textContent=t("fail");
+  }).submitOrder(o);
+}
+
+/* ===== التطبيق مقفول من الإدارة (زرار التشغيل والإيقاف): رسالة «هنفتح قريبًا» بدل الطلب ===== */
+function appClosedUi(on,msg){
+  var ov=$("appoff");
+  if(!on){if(ov)ov.remove();return}
+  if(!ov){ov=document.createElement("div");ov.id="appoff";
+    ov.style.cssText="position:fixed;inset:0;z-index:9999;background:#0e4f4c;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:28px;text-align:center;font-family:inherit";
+    document.body.appendChild(ov)}
+  ov.textContent="";
+  var lg=document.createElement("div");lg.style.cssText="width:96px;height:96px;border-radius:26px;background:#fff;display:flex;align-items:center;justify-content:center";
+  lg.innerHTML='<svg width="58" height="58" viewBox="0 0 24 24" aria-hidden="true"><path fill="#0e4f4c" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><circle cx="12" cy="9.4" r="3.2" fill="#f2b544"/></svg>';
+  ov.appendChild(lg);
+  var h=document.createElement("b");h.style.fontSize="30px";h.textContent=LANG==="en"?"Wasel":"واصل";ov.appendChild(h);
+  var p=document.createElement("div");p.style.cssText="font-size:18px;line-height:1.7;max-width:340px";p.textContent=LANG==="en"?"Wasel is opening soon in El-Mahalla 💚 Stay tuned!":(msg||"واصل هتفتح قريبًا 💚");ov.appendChild(p);
+  var a=document.createElement("a");a.href=waUrl();a.target="_blank";a.rel="noopener";a.textContent=LANG==="en"?"Contact us on WhatsApp":"كلّمنا على واتساب";
+  a.style.cssText="margin-top:8px;background:#f2b544;color:#1b1200;font-weight:700;text-decoration:none;border-radius:14px;padding:12px 24px";ov.appendChild(a);
+  var tr=document.createElement("a");tr.href=trackUrl("");tr.target="_top";tr.textContent=LANG==="en"?"Track an existing order":"تتبّع طلب قديم";tr.style.cssText="color:#d5ebe8";ov.appendChild(tr)}
+function appCheck(){try{google.script.run.withSuccessHandler(function(r){if(r&&r.ok)appClosedUi(!r.open,r.msg)}).withFailureHandler(function(){}).appState()}catch(e){}}
+appCheck();setInterval(function(){if(!document.hidden)appCheck()},60000);
+
+/* ===== طلباتي السابقة (محفوظة على هذا الجهاز فقط) ===== */
+var HMAX=30,HR=null;
+function hGet(){var a=jget("wh");return Array.isArray(a)?a.filter(function(x){return x&&/^[A-Za-z0-9_-]{3,40}$/.test(String(x.no||""))&&/^\d{4}$/.test(String(x.p4||""))}).slice(0,HMAX):[]}
+function hHas(a,no){for(var i=0;i<a.length;i++)if(a[i].no.toLowerCase()===String(no).toLowerCase())return i;return -1}
+function hAdd(no,p4){if(!/^[A-Za-z0-9_-]{3,40}$/.test(String(no||""))||!/^\d{4}$/.test(String(p4||"")))return;
+  var a=hGet(),i=hHas(a,no);if(i>=0)a.splice(i,1);a.unshift({no:String(no),p4:String(p4)});jset("wh",a.slice(0,HMAX))}
+function hMigrate(){var w=jget("wt");if(w&&w.no&&w.p4&&hHas(hGet(),w.no)<0)hAdd(w.no,w.p4)}
+function hBtnUi(){}
+function hP4(no){var a=hGet(),i=hHas(a,no);return i>=0?a[i].p4:""}
+function hAgain(it){
+  if($("pks").value){$("pks").value="";fill("pk",R,1)}
+  if(CATF){CATF="";fill("pk",R,1);catsUi()}
+  if(setSel("pk",it.place)){$("pko").classList.add("hide");$("pko").value=""}
+  else{setSel("pk","x");$("pko").classList.remove("hide");$("pko").value=it.place||""}
+  $("items").value=it.items||"";$("pkl").dataset.manual="";autoLink();menuBtnUi();feeUpd();$("msg").textContent="";
+  try{$("items").scrollIntoView({block:"center"})}catch(e){}$("items").focus()}
+function dtDraw(dt,r){
+  dt.textContent="";
+  if(!r||!r.ok){dt.appendChild(mEl("p","mu bad",(r&&r.msg)||t("detFail")));return}
+  dt.appendChild(mEl("h4","",t("detTl")));
+  (r.events||[]).forEach(function(e){var d=mEl("div","ev");d.appendChild(mEl("b","",e.t));d.appendChild(mEl("span","",e.x));dt.appendChild(d)});
+  dt.appendChild(mEl("h4","",t("detChat")));
+  if(!r.chat||!r.chat.length)dt.appendChild(mEl("p","mu",t("detNoChat")));
+  (r.chat||[]).forEach(function(m){var d=mEl("div","cm "+(m.w==="c"?"c":"d"));d.appendChild(mEl("small","",(m.w==="c"?t("detMe"):t("detCr"))+" · "+m.t));d.appendChild(mEl("span","",m.x));dt.appendChild(d)});
+  dt.appendChild(mEl("p","mnote",t("detShot")))}
+function hRender(){
+  var b=$("hbox");b.textContent="";
+  if(!HR){b.appendChild(mEl("p","mu",t("histLoad")));return}
+  if(HR==="fail"){b.appendChild(mEl("p","mu bad",t("histFail")));return}
+  if(!HR.length)b.appendChild(mEl("p","mu",t("histEmpty")));
+  HR.forEach(function(it){
+    var c=mEl("div","hi"),h1=mEl("div","h1");
+    h1.appendChild(mEl("span","",it.place||it.no.replace("orderWASEL-","#")));h1.appendChild(mEl("span","",it.d));c.appendChild(h1);
+    c.appendChild(mEl("div","h2",it.no.replace("orderWASEL-","#")+(it.items?" · "+it.items:"")));
+    var key="s"+String(it.code||"unavailable").replace(/^./,function(x){return x.toUpperCase()});
+    c.appendChild(mEl("span","st"+(it.code==="delivered"?" ok":it.code==="cancelled"?" x":""),t(key)));
+    var more=[];if(it.courier)more.push(t("histBy")+it.courier);if(it.total>0)more.push(it.total+t("histSar"));if(it.rated)more.push(t("histRated"));
+    if(more.length)c.appendChild(mEl("div","h2",more.join(" · ")));
+    var ha=mEl("div","ha"),a=mEl("a","",t("histTrack"));a.href=trackUrl(it.no);a.target="_top";a.rel="noopener";
+    a.onclick=function(){var p=hP4(it.no);if(p)jset("wt",{no:it.no,p4:p})};ha.appendChild(a);
+    var ag=mEl("button","",t("histAgain"));ag.type="button";ag.onclick=function(){hAgain(it)};ha.appendChild(ag);
+    var dtb=mEl("button","",t("histDet"));dtb.type="button";ha.appendChild(dtb);
+    c.appendChild(ha);var dt=mEl("div","dt hide");c.appendChild(dt);
+    dtb.onclick=function(){
+      if(!dt.classList.contains("hide")){dt.classList.add("hide");dtb.textContent=t("histDet");return}
+      dt.classList.remove("hide");dtb.textContent=t("histDetHide");dt.textContent="";dt.appendChild(mEl("p","mu",t("detLoad")));
+      var p=hP4(it.no);
+      if(!p){dt.textContent="";dt.appendChild(mEl("p","mu bad",t("detFail")));return}
+      google.script.run.withSuccessHandler(function(r){dtDraw(dt,r)}).withFailureHandler(function(){dtDraw(dt,null)}).trackOrderDetail(it.no,p)};
+    b.appendChild(c)});
+  if(HR.length)b.appendChild(mEl("p","mnote",t("histNote")));
+  var f=mEl("div","hfind");f.appendChild(mEl("div","mnote",t("histFind")));
+  var r=mEl("div","hr"),n1=mEl("input"),n2=mEl("input"),ad=mEl("button","",t("histAdd")),ms=mEl("div","mnote");
+  n1.placeholder=t("histNo");n1.maxLength=20;n1.setAttribute("inputmode","numeric");n2.placeholder=t("histP4");n2.maxLength=4;n2.setAttribute("inputmode","numeric");ad.type="button";
+  ad.onclick=function(){
+    var v=n1.value.trim(),p4=n2.value.replace(/\D/g,"");
+    if(/^\d{1,6}$/.test(v))v="orderWASEL-"+("0000"+v).slice(-Math.max(4,v.length));
+    if(!/^orderWASEL-\d{3,}$/i.test(v)||p4.length!==4){ms.className="mnote bad";ms.textContent=t("histNotFound");return}
+    ad.disabled=true;ms.className="mnote";ms.textContent=t("histWait");
+    google.script.run.withSuccessHandler(function(x){ad.disabled=false;
+      if(x&&x.ok&&x.list&&x.list.length){hAdd(x.list[0].no,p4);hLoad()}else{ms.className="mnote bad";ms.textContent=(x&&x.ok===false&&x.msg)||t("histNotFound")}})
+    .withFailureHandler(function(){ad.disabled=false;ms.className="mnote bad";ms.textContent=t("histFail")}).trackHistory([{no:v,p4:p4}])};
+  r.appendChild(n1);r.appendChild(n2);r.appendChild(ad);f.appendChild(r);f.appendChild(ms);b.appendChild(f)}
+$("histbtn").onclick=function(){
+  var b=$("hbox");
+  if(!b.classList.contains("hide")){b.classList.add("hide");$("histbtn").textContent=t("histBtn");return}
+  b.classList.remove("hide");$("histbtn").textContent=t("histHide");hLoad()};
+function hLoad(){
+  HR=null;hRender();
+  var l=hGet();
+  if(!l.length){HR=[];hRender();return}
+  google.script.run.withSuccessHandler(function(r){
+    if(!r||!r.ok){HR="fail";hRender();return}
+    if(r.gone&&r.gone.length){var keep=hGet().filter(function(x){return r.gone.indexOf(x.no)<0});jset("wh",keep);hBtnUi()}
+    HR=r.list||[];hRender()}).withFailureHandler(function(){HR="fail";hRender()}).trackHistory(l.map(function(x){return{no:x.no,p4:x.p4}}))}
+
+/* ===== منيو المطعم (للتجربة) ===== */
+function menuBtnUi(){var b=$("menubtn"),v=$("pk").value;
+  if(v&&v!=="x"&&CLOSED[v]){b.textContent=(LANG==="en"?"🔴 Closed now: ":"🔴 مغلق حاليًا: ")+v;b.classList.remove("hide");return}
+  if(v&&v!=="x"&&MR.indexOf(v)>=0){b.textContent=t("menuBtn")+v+rTx(v);b.classList.remove("hide")}else b.classList.add("hide")}
+function mEl(tag,c,x){var e=document.createElement(tag);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function mLines(){var L=[],c=MCART[MCUR]||{};Object.keys(c).forEach(function(k){var o=c[k];if(o.q>0)L.push(o)});return L}
+function mTotal(){var n=0,s=0;mLines().forEach(function(o){n+=o.q;s+=o.q*o.p});return{n:n,s:s}}
+function mPaint(){var r=mTotal(),b=$("mok");
+  b.textContent=t("menuConfirm")+" · "+t("menuCart")+" "+r.n+" · "+r.s+t("menuSar");
+  $("mbar").classList.toggle("hide",false);
+  var c=MCART[MCUR]||{};document.querySelectorAll("#mbody [data-k]").forEach(function(e){var o=c[mKey(e.getAttribute("data-k"),e.getAttribute("data-i"))];
+    if(e.getAttribute("data-r")==="q")e.textContent=o?o.q:0;else e.disabled=!o});
+  document.querySelectorAll("#mbody [data-mb]").forEach(function(e){e.classList.toggle("on",!!MM[e.getAttribute("data-mb")])});
+  document.querySelectorAll("#mbody [data-mi]").forEach(function(e){e.classList.toggle("on",(MM[e.getAttribute("data-mi")]?"1":"0")===e.getAttribute("data-mv"))})}
+function mKey(k,i){return k+(MM[i]?"m":"")}
+function mChg(k,name,price,d){var c=MCART[MCUR]=MCART[MCUR]||{},o=c[k]||{q:0,name:name,p:price};o.q+=d;if(o.q<=0)delete c[k];else c[k]=o;$("mmsg").textContent="";mPaint()}
+function mRender(rest,data){
+  MM={};var body=$("mbody");body.innerHTML="";$("mtitle").textContent=rest+rTx(rest);
+  var tabs=mEl("div","mtabs");body.appendChild(tabs);
+  (data.sections||[]).forEach(function(s,si){
+    var a=mEl("a","",s.sec);a.href="#ms"+si;a.onclick=function(e){e.preventDefault();var h=$("ms"+si);if(h)h.scrollIntoView({behavior:"smooth"})};tabs.appendChild(a);
+    var h=mEl("h3","msec",s.sec);h.id="ms"+si;body.appendChild(h);
+    s.items.forEach(function(it,ii){
+      var row=mEl("div","mit");
+      if(it.img&&/^data:image\/(webp|jpeg);base64,[A-Za-z0-9+\/=]+$/.test(it.img)){var im=mEl("img","mp");im.src=it.img;im.alt=it.n;row.appendChild(im)}
+      else row.appendChild(mEl("div","mn",it.n));
+      var tx=mEl("div","mt");tx.appendChild(mEl("div","nm",it.n));if(it.sub)tx.appendChild(mEl("small","",it.sub));
+      var iid=si+"_"+ii;
+      if(it.meal){var bg=mEl("div","mb","🍟🥤");bg.setAttribute("data-mb",iid);row.appendChild(bg)}
+      if(it.meal){var mm=mEl("div","mm"),b0=mEl("button","",t("mealNo")),b1=mEl("button","",t("mealYes")+" +"+it.meal[0]);
+        b0.type="button";b1.type="button";b0.setAttribute("data-mi",iid);b0.setAttribute("data-mv","0");b1.setAttribute("data-mi",iid);b1.setAttribute("data-mv","1");
+        b0.onclick=function(){MM[iid]=0;mPaint()};b1.onclick=function(){MM[iid]=1;mPaint()};mm.appendChild(b0);mm.appendChild(b1);tx.appendChild(mm);
+        if(it.meal[1])tx.appendChild(mEl("small","mu",it.meal[1]))}
+      it.v.forEach(function(v,vi){
+        var k=iid+"_"+vi,line=mEl("div","mv");
+        var l=mEl("div","");if(v[0])l.appendChild(mEl("span","mu",v[0]+"  "));var pr=mEl("b","",v[1]+t("menuSar"));l.appendChild(pr);if(v[2]>v[1]){l.appendChild(mEl("s","",v[2]+t("menuSar")));l.appendChild(mEl("span","hot","🔥 "+(LANG==="en"?"Offer":"عرض")))}line.appendChild(l);
+        var q=mEl("div","mq"),mi=mEl("button","","−"),pl=mEl("button","","+"),cn=mEl("span","","0");
+        function ml(){return MM[iid]&&it.meal?1:0}
+        function nm(){return it.n+(v[0]?" - "+v[0]:"")+(ml()?t("mealTag"):"")}
+        function pc(){return Math.round((v[1]+(ml()?it.meal[0]:0))*100)/100}
+        mi.type="button";pl.type="button";mi.setAttribute("data-k",k);cn.setAttribute("data-k",k);mi.setAttribute("data-i",iid);cn.setAttribute("data-i",iid);cn.setAttribute("data-r","q");mi.disabled=true;
+        mi.setAttribute("aria-label","−");pl.setAttribute("aria-label","+");
+        mi.onclick=function(){mChg(mKey(k,iid),nm(),pc(),-1)};pl.onclick=function(){mChg(mKey(k,iid),nm(),pc(),1)};
+        q.appendChild(mi);q.appendChild(cn);q.appendChild(pl);line.appendChild(q);tx.appendChild(line)});
+      row.appendChild(tx);body.appendChild(row)})});
+  mPaint()}
+function mOpen(rest){
+  MCUR=rest;$("msheet").classList.remove("hide");$("mmsg").textContent="";
+  $("mtitle").textContent=rest+rTx(rest);$("mbody").innerHTML="";$("mbody").appendChild(mEl("p","mu",t("menuLoad")));$("mbar").classList.add("hide");
+  if(MC[rest]){mRender(rest,MC[rest]);return}
+  google.script.run.withSuccessHandler(function(r){
+    if(MCUR!==rest)return;
+    if(r&&r.ok&&r.closed){CLOSED[rest]=1;fill("pk",R,1);$("pk").value=rest;$("mbody").innerHTML="";$("mbody").appendChild(mEl("p","mu bad",LANG==="en"?"This restaurant is closed now. Please try later.":"هذا المطعم مغلق حاليًا. جرّب لاحقًا."));return}
+    if(!r||!r.ok||!r.sections||!r.sections.length){$("mbody").innerHTML="";$("mbody").appendChild(mEl("p","mu bad",t("menuFail")));return}
+    MC[rest]=r;mRender(rest,r)}).withFailureHandler(function(){$("mbody").innerHTML="";$("mbody").appendChild(mEl("p","mu bad",t("menuFail")))}).getMenu(rest)}
+function mClose(){$("msheet").classList.add("hide")}
+$("menubtn").onclick=function(){var v=$("pk").value;if(v&&v!=="x"){MTGT="items";mOpen(v)}};
+$("mclose").onclick=mClose;
+document.addEventListener("keydown",function(e){if(e.key==="Escape")mClose()});
+$("mok").onclick=function(){
+  var L=mLines(),r=mTotal();
+  if(!L.length){$("mmsg").className="mu bad";$("mmsg").textContent=t("menuEmpty");return}
+  var txt=MCUR+": "+L.map(function(o){return o.q+" × "+o.name}).join(" ، ")+" | "+t("menuTot")+r.s+t("menuSar");
+  if(txt.length>590){$("mmsg").className="mu bad";$("mmsg").textContent=t("menuLong");return}
+  $(MTGT).value=txt;mClose();try{$(MTGT).scrollIntoView({block:"center"})}catch(e){}};
+function menuInit(){google.script.run.withSuccessHandler(function(r){
+  if(!r||!r.ok||!r.rests)return;
+  MR=r.rests;RATE=(r.rate&&typeof r.rate==="object")?r.rate:{};BUSY={};(r.busy||[]).forEach(function(n){BUSY[n]=1});CLOSED={};(r.closed||[]).forEach(function(n){CLOSED[n]=1});CAT=(r.cat&&typeof r.cat==="object")?r.cat:{};
+  // المطاعم الشريكة المسجّلة معنا تظهر في أول القائمة (وما كان منها غير موجود في القائمة الثابتة يُضاف)
+  var have={};R.forEach(function(x){have[x[0]]=1});
+  var all=(r.partner||[]).slice();   // كل المطاعم الشريكة تظهر، حتى اللي لسه ما ضافتش منيو (يكتب العميل طلبه بيده)
+  var add=[];all.forEach(function(n){PART[n]=1;if(!have[n])add.push([n,n])});
+  var cur=$("pk").value;
+  if(add.length)R=add.concat(R);
+  fill("pk",R,1);fill("pk2",R,1);catsUi();
+  if(cur&&cur!=="x"&&$("pk").querySelector('option[value="'+cur.replace(/"/g,"")+'"]'))$("pk").value=cur;
+  menuBtnUi();sec2Ui()}).getMenu("")}
+/* ===== المتاجر من تبويب «المتاجر» في الشيت (المفعّلة بس)، وبعدها المطاعم الشريكة ===== */
+function storesInit(){
+  try{google.script.run.withSuccessHandler(function(r){
+    if(r&&r.ok&&r.list&&r.list.length){
+      R=r.list.map(function(s){return [s[0],s[1]||s[0]]});SCAT={};SLOGO={};
+      r.list.forEach(function(s){SCAT[s[0]]=s[3]||[];if(s[2])SLOGO[s[0]]=s[2];if(s[4]&&s[4].length)SLOC[s[0]]=s[4]});autoLink();
+      fill("pk",R,1);fill("pk2",R,1);catsUi()}
+    menuInit()}).withFailureHandler(function(){menuInit()}).storeList()}catch(e){menuInit()}}
+/* ===== مكان ثانٍ (طلب من مكانين برقم واحد) ===== */
+var SEC2=false,MTGT="items";
+function menuBtn2Ui(){var b=$("menubtn2"),v=$("pk2").value;
+  if(v&&v!=="x"&&CLOSED[v]){b.textContent=(LANG==="en"?"🔴 Closed now: ":"🔴 مغلق حاليًا: ")+v;b.classList.remove("hide");return}
+  if(v&&v!=="x"&&MR.indexOf(v)>=0){b.textContent=t("menuBtn")+v+rTx(v);b.classList.remove("hide")}else b.classList.add("hide")}
+function sec2Ui(){
+  $("sec2").classList.toggle("hide",!SEC2);
+  $("add2").classList.toggle("hide",SEC2||!(OFFER&&OFFER.multi));
+  if(OFFER&&OFFER.extra)$("fee2").textContent=t("ex2")+OFFER.extra+(LANG==="en"?" EGP":" جنيه");
+  $("pko2").classList.toggle("hide",$("pk2").value!=="x");menuBtn2Ui()}
+$("add2").onclick=function(){SEC2=true;sec2Ui();$("pkl2").dataset.manual="";autoLink2()};
+$("rm2").onclick=function(){SEC2=false;$("items2").value="";$("pkl2").value="";$("pkl2").dataset.manual="";sec2Ui()};
+$("pk2").onchange=function(){sec2Ui();$("pkl2").dataset.manual="";autoLink2()};
+$("menubtn2").onclick=function(){var v=$("pk2").value;if(v&&v!=="x"){MTGT="items2";mOpen(v)}};
+storesInit();
+hMigrate();hBtnUi();
+// لافتة العرض: تظهر فقط أثناء فترة العرض
+google.script.run.withSuccessHandler(function(o){OFFER=o;showOffer();feeUpd();sec2Ui()}).getOffer();
+try{google.script.run.withSuccessHandler(function(r){LG=r;legalUi()}).withFailureHandler(function(){}).legalLinks()}catch(e){}
+/* لغة التطبيق من الغلاف (?lang=en أو ar) */
+try{google.script.url.getLocation(function(l){var g=l&&l.parameter&&l.parameter.lang;if((g==="en"||g==="ar")&&g!==LANG){LANG=g;try{localStorage.setItem("wl",g)}catch(e){}applyLang()}})}catch(e){}
+/* مقدمة الفتح: تُكتب الرسالة بهدوء كأنها بداية فيلم، وتظهر مرة واحدة لكل جلسة (وتُخفى لمن يفضّل تقليل الحركة) */
+(function(){
+  var sp=$("spl");if(!sp)return;
+  function fin(){try{document.body.style.overflow=""}catch(e){}sp.parentNode&&sp.parentNode.removeChild(sp)}
+  var seen=false;try{seen=sessionStorage.getItem("wsp")==="1"}catch(e){}
+  var rm=false;try{rm=window.matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){}
+  if(seen||rm){fin();return}
+  try{sessionStorage.setItem("wsp","1")}catch(e){}
+  document.body.style.overflow="hidden";
+  var TXT=[
+    ["أهلًا بك في واصل 👋","Welcome to Wasel 👋"],
+    ["من أي مطعم في المحلة الكبرى… لحد بابك.","From any restaurant in El-Mahalla… to your door."],
+    ["💰 سعر المطعم الحقيقي بدون زيادة.","💰 The restaurant's real price, no markup."],
+    ["🧾 رسوم توصيل واضحة بلا مفاجآت.","🧾 A clear delivery fee, no surprises."],
+    ["📸 تتبّع طلبك وفاتورته خطوة بخطوة.","📸 Track your order and invoice step by step."],
+    ["⚠️ تنبيه: راجع عنوان التسليم ورقم جوالك قبل إرسال الطلب.","⚠️ Note: please double-check your address and phone number before sending."],
+    ["📞 خليك قريب من جوالك… المندوب هيتواصل معاك.","📞 Keep your phone close… the courier will contact you."],
+    ["⏳ لو الصفحة اتأخرت ثواني، استنّى… بتحمل على مهلها.","⏳ If the page takes a few seconds, please wait… it is loading."],
+    ["🚀 واصل… دايمًا متواصل معاك","🚀 Wasel… always connected with you"]];
+  var SOUND=true;try{SOUND=localStorage.getItem("wss")!=="0"}catch(e){}
+  var AC=null,NB=null,done=false,stop=false,wrap=$("spt"),k=$("spk"),m=$("spm"),bar=$("spi"),cur=document.createElement("span");
+  cur.className="cur";
+  try{var C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C()}catch(e){}
+  function ok(){return !!(AC&&AC.state==="running")}
+  /* نقرة خفيفة دافئة (ضوضاء قصيرة مفلترة) بدل النغمة الحادة، وصوت ختام هادئ */
+  function noise(){
+    if(NB)return NB;
+    var n=Math.floor(AC.sampleRate*0.05),b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0);
+    for(var i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);
+    NB=b;return b}
+  function tick(){
+    if(!SOUND||!ok())return;
+    try{var s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();
+      s.buffer=noise();f.type="lowpass";f.frequency.value=800+Math.random()*400;g.gain.value=.22;
+      s.connect(f);f.connect(g);g.connect(AC.destination);s.start()}catch(e){}}
+  function chime(){
+    if(!SOUND||!ok())return;
+    try{[523.25,783.99].forEach(function(fr,i){var o=AC.createOscillator(),g=AC.createGain(),n=AC.currentTime+i*.16;
+      o.type="sine";o.frequency.value=fr;g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(.05,n+.03);g.gain.exponentialRampToValueAtTime(.0001,n+1.1);
+      o.connect(g);g.connect(AC.destination);o.start(n);o.stop(n+1.15)})}catch(e){}}
+  function mUi(){m.textContent=!SOUND?t("spOff"):ok()?t("spOn"):t("spTap")}
+  function unlock(){try{if(AC&&AC.state==="suspended")AC.resume().then(mUi)}catch(e){}mUi()}
+  k.textContent=t("spSkip");mUi();
+  sp.addEventListener("pointerdown",unlock);sp.addEventListener("keydown",unlock);
+  m.onclick=function(e){e.stopPropagation();SOUND=!SOUND;try{localStorage.setItem("wss",SOUND?"1":"0")}catch(x){}unlock();mUi()};
+  function close(){if(done)return;done=true;stop=true;sp.classList.add("out");setTimeout(fin,750)}
+  k.onclick=function(e){e.stopPropagation();close()};
+  var li=0;
+  function line(){
+    if(stop)return;
+    if(li>=TXT.length){bar.style.width="100%";chime();setTimeout(close,1300);return}
+    var txt=Array.from(TXT[li][LANG==="en"?1:0]),d=document.createElement("div");d.className="l"+(li?"":" t");wrap.appendChild(d);
+    var tn=document.createTextNode("");d.appendChild(tn);d.appendChild(cur);
+    var i=0;bar.style.width=Math.round(li/TXT.length*100)+"%";
+    (function ch(){
+      if(stop)return;
+      if(i<txt.length){i++;tn.nodeValue=txt.slice(0,i).join("");if(txt[i-1]!==" ")tick();setTimeout(ch,li?48:75)}
+      else{li++;setTimeout(line,li===1?800:550)}
+    })()}
+  setTimeout(line,500);
+})();
+</script>
+<script>
+/* شكل التطبيق حسب اختيار العميل (رجل/امرأة): يُحفظ على هذا الجهاز فقط ولا يُرسل للسيرفر */
+(function(){
+var d=document.documentElement,g=document.getElementById("gbox");if(!g)return;
+var TX={ar:{h:"✨ نخصّص شكل التطبيق ليك",s:"اختار، والاختيار بيتحفظ على جهازك بس.",m:"👨 رجل / ولد",f:"👩 امرأة / بنت",c:"🎨 غيّر مودك"},en:{h:"✨ Personalize the app look",s:"Your choice is saved on this device only.",m:"👨 Man / boy",f:"👩 Woman / girl",c:"🎨 Change your look"}};
+function get(){try{return localStorage.getItem("wgd")||""}catch(e){return ""}}
+function ui(){var t=TX[d.lang==="en"?"en":"ar"];g.querySelector(".gh").textContent=t.h;g.querySelector(".gs").textContent=t.s;document.getElementById("gm").textContent=t.m;document.getElementById("gf").textContent=t.f;var c=document.getElementById("gchg");c.textContent=(d.lang!=="en"&&get()==="f")?"🎨 غيّري مودك":t.c;c.classList.toggle("hide",!get())}
+function apply(v){try{if(v)localStorage.setItem("wgd",v);else localStorage.removeItem("wgd")}catch(e){}d.classList.toggle("pk",v==="f");g.classList.toggle("hide",!!v);ui()}
+function set(v){if(window.waselGender){window.waselGender(v);return}var prev=get(),e=d.lang==="en";apply(v);
+  if(window.waselToast)waselToast(v==="f"?(e?"✓ Pink look on":"✓ اتحوّل للون الوردي"):(e?"✓ Wasel green look on":"✓ اتحوّل للون واصل الأخضر"),e?"↩ Undo":"↩ تراجع",function(){apply(prev);if(!prev){try{g.scrollIntoView({block:"center"})}catch(x){}}})}
+document.getElementById("gm").onclick=function(){set("m")};document.getElementById("gf").onclick=function(){set("f")};
+document.getElementById("gchg").onclick=function(){g.classList.remove("hide");try{g.scrollIntoView({block:"center"})}catch(e){}};
+var l=document.getElementById("lang");if(l)l.addEventListener("click",function(){setTimeout(ui,0)});
+document.addEventListener("waselgender",function(){g.classList.toggle("hide",!!get());ui()});
+g.classList.toggle("hide",!!get());ui();
+})();
+</script><script>
+/* ===== اختيار بالأيقونات بدل القوائم: نوع الطلب + الحي + فتح المنيو تلقائي ===== */
+(function(){
+function $i(x){return document.getElementById(x)}
+function en(){return document.documentElement.lang==="en"}
+var ty=$i("type"),hd=$i("hood");if(!ty||!hd)return;
+/* 1) نوع الطلب: الأيقونة بتختار نفس خيارات القائمة الأصلية (اللي بتروح للسيرفر زي ما هي) */
+var TT=[["🍔","مطاعم","Restaurants",0],["☕","كافيهات","Cafés",3],["🛒","بقالة","Grocery",4],["💊","صيدلية","Pharmacy",5],["📦","سلم واستلم","Pick up & drop",1],["➕","أخرى","Other",2]];
+var TSEL=-1,tw=document.createElement("div");tw.className="wtiles";ty.parentNode.insertBefore(tw,ty);ty.classList.add("hide");
+function tPaint(){tw.textContent="";if(TSEL<0){for(var k=0;k<TT.length;k++){if(TT[k][3]===ty.selectedIndex){TSEL=k;break}}}
+  TT.forEach(function(x,i){var b=document.createElement("button");b.type="button";b.className="wtile"+(i===TSEL?" on":"");
+    var ic=document.createElement("i");ic.textContent=x[0];b.appendChild(ic);b.appendChild(document.createTextNode(en()?x[2]:x[1]));
+    b.onclick=function(){TSEL=i;ty.selectedIndex=x[3];ty.dispatchEvent(new Event("change"));tPaint()};tw.appendChild(b)})}
+ty.addEventListener("change",function(){if(TSEL<0||TT[TSEL][3]!==ty.selectedIndex){TSEL=-1;tPaint()}});
+try{new MutationObserver(function(){tPaint()}).observe(document.documentElement,{attributes:true,attributeFilter:["lang"]})}catch(e){}
+/* 3) لو المطعم الشريك عنده منيو: المنيو بيفتح لوحده عشان يختار بـ ➕ و ➖ بدل الكتابة */
+var pk=$i("pk");if(pk)pk.addEventListener("change",function(){var v=pk.value;try{if(v&&v!=="x"&&MR.indexOf(v)>=0&&!CLOSED[v]&&!$i("items").value.trim()){MTGT="items";mOpen(v)}}catch(e){}});
+tPaint();
+})();
+</script>
+<script>
+/* ===== أيقونة «عروضنا»: بتقرا العرض من السيرفر (getOffer) وتعرضه، وعليها علامة لما يكون فيه عرض ===== */
+(function(){
+function $o(i){return document.getElementById(i)}
+function en(){return document.documentElement.lang==="en"}
+var open=false;
+function list(){var L=[];try{var O=OFFER;if(O&&O.active&&O.fee)L.push(en()?["🛵","Delivery only "+O.fee+" EGP",O.until?"Until "+O.until:"Any order inside El-Mahalla"]:["🛵","التوصيل "+O.fee+" جنيه بس",O.until?"لحد "+O.until+" · أي طلب داخل المحلة الكبرى":"أي طلب داخل المحلة الكبرى"]);
+  else if(O&&O.soon&&O.soon.fee){var so=O.soon;L.push(en()?["🛵","Coming soon: delivery only "+so.fee+" EGP","From "+so.fromE+" to "+so.toE]:["🛵","قريبًا: التوصيل "+so.fee+" جنيه بس","من "+so.from+" لحد "+so.to])}}catch(e){}return L}
+function ui(){var L=list(),b=$o("ofbtn");if(!b)return;
+  $o("oftx").textContent=en()?"🎁 Our offers":"🎁 عروضنا";
+  b.classList.toggle("dim",!L.length);
+  $o("obdg").textContent=String(L.length);$o("obdg").classList.toggle("hide",!L.length);
+  $o("onew").textContent=en()?"New":"جديد";$o("onew").classList.toggle("hide",!L.length);
+  $o("ofh").textContent=en()?"🎁 Wasel offers":"🎁 عروض واصل";
+  var l=$o("ofl");l.textContent="";
+  (L.length?L:[en()?["🙂","No offers right now","When we launch a new offer you'll see a red mark on the icon"]:["🙂","مفيش عروض دلوقتي","أول ما ننزل عرض جديد هتلاقي علامة حمرا على الأيقونة"]]).forEach(function(x){
+    var d=document.createElement("div");d.className="ofi";var i=document.createElement("span");i.className="ic";i.textContent=x[0];
+    var t=document.createElement("div"),bb=document.createElement("b");bb.textContent=x[1];var sm=document.createElement("small");sm.textContent=x[2];t.appendChild(bb);t.appendChild(sm);d.appendChild(i);d.appendChild(t);l.appendChild(d)});
+  $o("ofbox").classList.toggle("hide",!open)}
+$o("ofbtn").onclick=function(){open=!open;ui();if(open)try{$o("ofbox").scrollIntoView({block:"nearest",behavior:"smooth"})}catch(e){}};
+var l=$o("lang");if(l)l.addEventListener("click",function(){setTimeout(ui,0)});
+var _so=window.showOffer;if(typeof _so==="function")window.showOffer=function(){var r=_so.apply(this,arguments);ui();return r};
+ui();setTimeout(ui,1500);setTimeout(ui,4000);
+})();
+</script>
+<script>
+/* ===== التقييم والزحمة في زرار المنيو + كود الدعوة + الطلب المجدول ===== */
+(function(){
+function $q(i){return document.getElementById(i)}
+function tzParts(ms){var f=new Intl.DateTimeFormat("en-GB",{timeZone:WTZ,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).formatToParts(new Date(ms)),o={};f.forEach(function(p){o[p.type]=p.value});if(o.hour==="24")o.hour="00";return o}
+function dayStr(off){var p=tzParts(Date.now()+off*86400000);return p.year+"/"+p.month+"/"+p.day}
+function fillSch(){var d=$q("schd"),tt=$q("scht"),dv=d.value,tv=tt.value;d.textContent="";
+  [["0",t("schT")],["1",t("schTm")]].forEach(function(x){var o=document.createElement("option");o.value=x[0];o.textContent=x[1];d.appendChild(o)});if(dv)d.value=dv;
+  tt.textContent="";var now=tzParts(Date.now()),nm=(+now.hour)*60+(+now.minute)+60;
+  for(var m=0;m<1440;m+=30){if(d.value==="0"&&m<nm)continue;var o=document.createElement("option"),hh=("0"+Math.floor(m/60)).slice(-2)+":"+("0"+m%60).slice(-2);o.value=hh;o.textContent=hh;tt.appendChild(o)}
+  if(tv)tt.value=tv;$q("scht0").textContent=t("schC");$q("schm").textContent=t("schH")}
+window.schVal=function(){var d=$q("schd").value,tv=$q("scht").value;if(!tv)return "";return dayStr(d==="1"?1:0)+" "+tv};
+$q("schc").onchange=function(){var on=this.checked;$q("schb").classList.toggle("hide",!on);$q("schb").style.display=on?"flex":"none";$q("schm").classList.toggle("hide",!on);if(on)fillSch()};
+$q("schb").style.display="none";$q("schd").onchange=fillSch;
+function refUi(){$q("refl").textContent=t("refL");$q("refc").placeholder="W1234ABC";var b=$q("loyref");
+  try{if(LOYI&&LOYI.ok&&LOYI.on&&LOYI.ref){b.textContent="";var s=document.createElement("b");s.textContent=t("refMy");b.appendChild(s);var c=document.createElement("b");c.dir="ltr";c.textContent=LOYI.ref;c.style.letterSpacing="1px";b.appendChild(c);
+    var bt=document.createElement("button");bt.type="button";bt.textContent=t("refCp");bt.style.cssText="width:auto;margin:0 8px;padding:4px 12px;font-size:13px;display:inline-block";
+    bt.onclick=function(){var v=LOYI.ref;function ok(){bt.textContent=t("refOk")}try{navigator.clipboard.writeText(v).then(ok,function(){})}catch(e){}};b.appendChild(bt);
+    var h=document.createElement("div");h.style.cssText="font-size:12.5px;opacity:.9;margin-top:4px";h.textContent=t("refH").replace("{p}",LOYI.refPts||10);b.appendChild(h);b.classList.remove("hide")}else b.classList.add("hide")}catch(e){}}
+var _l=window.loyUi;if(typeof _l==="function")window.loyUi=function(){var x=_l.apply(this,arguments);refUi();return x};
+var l=$q("lang");if(l)l.addEventListener("click",function(){setTimeout(function(){refUi();if($q("schc").checked)fillSch();else{$q("scht0").textContent=t("schC")}},0)});
+$q("scht0").textContent=t("schC");refUi();
+})();
+</script>
+<script>
+/* «سلم و استلم»: بيانات الطلب الجاهز من تطبيق المطعم (رقم الطلب / الاسم / صورة الفاتورة) */
+var RIMG="";
+function isRB(){return /سلم/.test(document.getElementById("type").value)}
+(function(){
+function $r(i){return document.getElementById(i)}
+function ui(){$r("rbox").classList.toggle("hide",!isRB());$r("rimgb").textContent=t(RIMG?"rbChg":"rbPick");$r("rimgs").textContent=RIMG?t("rbReady"):""}
+$r("type").addEventListener("change",ui);
+$r("rimgb").onclick=function(){$r("rimgf").click()};
+$r("rimgf").onchange=function(){var f=this.files&&this.files[0];if(!f||!/^image\//.test(f.type))return;
+  var u=URL.createObjectURL(f),im=new Image();
+  im.onload=function(){try{var sc=Math.min(1,1000/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement("canvas");c.width=Math.round(im.naturalWidth*sc);c.height=Math.round(im.naturalHeight*sc);
+    var g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);
+    var d=c.toDataURL("image/jpeg",.7);if(d.length>600000)d=c.toDataURL("image/jpeg",.5);
+    RIMG=d.length<=700000?d:"";if(!RIMG)$r("rimgs").textContent=t("rbBad");else ui()}catch(e){RIMG="";$r("rimgs").textContent=t("rbBad")}URL.revokeObjectURL(u)};
+  im.onerror=function(){URL.revokeObjectURL(u);RIMG="";$r("rimgs").textContent=t("rbBad")};im.src=u};
+var l=$r("lang");if(l)l.addEventListener("click",function(){setTimeout(ui,0)});
+setTimeout(ui,0);
+})();
+</script><script>
+/* ===== صورة باب البيت (اختياري): بتتصغّر وتتبعت مع الطلب، والمندوب بيشوفها مع موقع التسليم ===== */
+var DIMG="";
+function doorUi(){var b=document.getElementById("doorb"),s=document.getElementById("doors");if(!b)return;b.textContent=t(DIMG?"doorChg":"doorPick");s.textContent=DIMG?t("doorReady"):""}
+(function(){
+function $d(i){return document.getElementById(i)}
+if(!$d("doorb"))return;
+$d("doorb").onclick=function(){$d("doorf").click()};
+$d("doorf").onchange=function(){var f=this.files&&this.files[0];if(!f||!/^image\//.test(f.type))return;
+  var u=URL.createObjectURL(f),im=new Image();
+  im.onload=function(){try{var sc=Math.min(1,1000/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement("canvas");c.width=Math.round(im.naturalWidth*sc);c.height=Math.round(im.naturalHeight*sc);
+    var g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);
+    var d=c.toDataURL("image/jpeg",.7);if(d.length>600000)d=c.toDataURL("image/jpeg",.5);
+    DIMG=d.length<=700000?d:"";if(!DIMG)$d("doors").textContent=t("doorBad");else doorUi()}catch(e){DIMG="";$d("doors").textContent=t("doorBad")}URL.revokeObjectURL(u)};
+  im.onerror=function(){URL.revokeObjectURL(u);DIMG="";$d("doors").textContent=t("doorBad")};im.src=u;this.value=""};
+var l=$d("lang");if(l)l.addEventListener("click",function(){setTimeout(doorUi,0)});
+setTimeout(doorUi,0);
+})();
+</script>
+<script>
+/* ===== القائمة الجانبية ☰ للعميل (إضافة فقط: الأزرار الأصلية زي ما هي وبتشتغل من جوه القائمة) ===== */
+(function(){
+var CT={trk:["📍 تتبّع طلبي","📍 Track my order"],hist:["📋 طلباتي السابقة","📋 My past orders"],again:["🔁 اطلب نفس آخر طلب","🔁 Repeat last order"],of:["🎁 عروضنا","🎁 Our offers"],wa:["💬 الدعم (واتساب)","💬 Support (WhatsApp)"],nw:["جديد","New"],
+ hi:["أهلًا بك 👋","Welcome 👋"],last:["🚚 طلبك الأخير ","🚚 Your last order "],go:["تتبّع ›","Track ›"]};
+function ct(k){return CT[k][LANG==="en"?1:0]}
+var D=$("cdw"),DIM=$("cdim");
+try{$("ctop").appendChild($("top"))}catch(e){}
+try{D.appendChild($("lgl"))}catch(e){}   /* الشروط والخصوصية جوه القائمة */
+function isOpen(){return D.classList.contains("open")}
+function vis(id){var e=$(id);return e&&!e.classList.contains("hide")}
+function newOf(){return vis("onew")||vis("obdg")}
+function labels(){
+  document.querySelectorAll("[data-cm]").forEach(function(e){e.textContent=ct(e.getAttribute("data-cm"))});
+  var th=document.querySelector("header .thm:not(.gnd)"),gn=document.querySelector("header .gnd");
+  $("cthm").textContent=th?(th.textContent+" "+(th.title||"")):"";$("cthm").parentNode.classList.toggle("hide",!th);
+  $("cgnd").textContent=gn?gn.textContent:"";$("cgnd").parentNode.classList.toggle("hide",!gn);
+  $("clang").textContent="🌐 "+($("lang").textContent==="EN"?"English":"عربي");
+  D.querySelector('[data-c="again"]').classList.toggle("hide",!vis("again"));
+  D.querySelector('[data-c="wa"]').classList.toggle("hide",!$("wa").getAttribute("href"));
+  var nw=newOf();$("cofn").textContent=ct("nw");$("cofn").classList.toggle("hide",!nw);
+  $("cmdot").textContent=nw?"1":"";$("cmdot").classList.toggle("hide",!nw);
+  var w=vis("wb")?($("wbt").textContent||""):"";$("cnm").textContent=w||ct("hi");
+  var t=null;try{t=JSON.parse(localStorage.getItem("wt")||"null")}catch(e){}
+  var a=$("ctrk");
+  if(t&&t.no){a.textContent="";a.appendChild(document.createTextNode(ct("last")+"#"+String(t.no).replace(/^orderWASEL-/i,"")));var b=document.createElement("b");b.textContent=ct("go");a.appendChild(b);a.href=$("trk").href;a.classList.remove("hide")}else a.classList.add("hide")}
+function open(){labels();D.classList.add("open");D.setAttribute("aria-hidden","false");DIM.classList.remove("hide")}
+function close(){D.classList.remove("open");D.setAttribute("aria-hidden","true");DIM.classList.add("hide")}
+function showBox(id){setTimeout(function(){var x=$(id);if(x&&!x.classList.contains("hide"))x.scrollIntoView({behavior:"smooth",block:"start"})},200)}
+$("cmb").onclick=function(){isOpen()?close():open()};$("cx").onclick=close;DIM.onclick=close;
+D.querySelectorAll("[data-c]").forEach(function(b){b.onclick=function(){
+  var c=b.getAttribute("data-c");
+  if(c==="trk"){close();$("trk").click();return}
+  if(c==="hist"){close();$("histbtn").click();showBox("hbox");return}
+  if(c==="again"){close();$("again").click();return}
+  if(c==="of"){close();$("ofbtn").click();showBox("ofbox");setTimeout(labels,300);return}
+  if(c==="wa"){close();$("wa").click();return}
+  if(c==="thm"){var th=document.querySelector("header .thm:not(.gnd)");if(th)th.click();setTimeout(labels,50);return}
+  if(c==="gnd"){var gn=document.querySelector("header .gnd");if(gn)gn.click();setTimeout(labels,50);return}
+  if(c==="lang"){$("lang").click();setTimeout(labels,80)}}});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&isOpen())close()});
+["onew","obdg","wb","again"].forEach(function(id){var e=$(id);if(e)new MutationObserver(function(){labels()}).observe(e,{attributes:true,attributeFilter:["class"]})});
+setTimeout(labels,0);setTimeout(labels,1500);setTimeout(labels,4000);
+})();
+</script>
+<script>
+/* ===== نوع الطلب يغيّر الأماكن اللي تحت: مطاعم / كافيهات / بقالة / صيدلية بيعرضوا أماكنهم بس، و«سلم واستلم» و«أخرى» بيفتحوا خانة يكتب فيها المكان بنفسه ===== */
+(function(){
+var FOOD=["البرجر والوجبات السريعة","البيتزا والباستا","المطاعم الشعبية والسعودية","المشويات والمأكولات الشرقية","الشاورما والسندويتشات","المطاعم التركية والآسيوية","المطاعم والمخابز المتخصصة في الإفطار","الحلويات والآيس كريم"];
+var BY={0:FOOD,3:["الكافيهات والقهوة المختصة","العصائر والمشروبات","الحلويات والآيس كريم"],4:["المتاجر العامة والسوبرماركت"],5:["الصيدليات"]};
+var FREE={1:1,2:1};   // سلم واستلم + أخرى: المكان بيتكتب يدوي
+var ALW=null,ty=document.getElementById("type");
+function set(){var i=ty.selectedIndex;ALW=null;if(BY[i]){ALW={};BY[i].forEach(function(c){ALW[c]=1})}}
+function okStore(v){if(!ALW)return true;var cs=catsOf(v[0]);for(var j=0;j<cs.length;j++)if(ALW[cs[j]])return true;return false}
+var F0=fill;fill=function(id,a,x){if(id==="pk"&&ALW&&a)a=a.filter(okStore);return F0(id,a,x)};
+var C0=catsUi;catsUi=function(){var keep=CATS;try{if(ALW)CATS=keep.filter(function(c){return ALW[c[0]]});C0()}finally{CATS=keep}};
+function apply(){
+  set();
+  if(CATF&&ALW&&!ALW[CATF])CATF="";
+  var pk=document.getElementById("pk");
+  if(FREE[ty.selectedIndex]){CATF="";fill("pk",R,1);catsUi();document.getElementById("cats").classList.add("hide");pk.value="x";pk.dispatchEvent(new Event("change"));pk.classList.add("hide");document.getElementById("pks").classList.add("hide");var pm=document.getElementById("pkm");if(pm)pm.classList.add("hide");setTimeout(function(){try{document.getElementById("pko").focus()}catch(e){}},50)}
+  else{pk.classList.remove("hide");document.getElementById("pks").classList.remove("hide");var pm2=document.getElementById("pkm");if(pm2)pm2.classList.remove("hide");fill("pk",R,1);catsUi();if(pk.value==="x"&&pk.options.length>1){pk.selectedIndex=0}pk.dispatchEvent(new Event("change"))}
+}
+ty.addEventListener("change",apply);
+set();
+})();
+</script><script>
+/* ===== أزرار نوع الطلب: بتغيّر قايمة المتاجر تحت، و«أخرى» بتفتح خانة تكتب فيها اسم المكان ===== */
+(function(){
+var MAP={0:"food",3:"cafe",4:"shop",5:"ph"};   /* رقم الاختيار في قايمة النوع ← مجموعة المتاجر. سلم واستلم وأخرى: كل المتاجر */
+function apply(){
+  var ty=document.getElementById("type"),i=ty.selectedIndex,pk=document.getElementById("pk"),pko=document.getElementById("pko");
+  TGRP=MAP[i]||null;CATF="";
+  try{fill("pk",R,1);catsUi()}catch(e){}
+  var onlyOther=pk.options.length===1&&pk.options[0].value==="x";
+  if(i===2||onlyOther){pk.value="x";pko.classList.remove("hide");pk.dispatchEvent(new Event("change"));try{pko.focus()}catch(e){}}
+  else{if(pk.value==="x"&&!pko.value.trim()&&pk.options.length>1){pk.selectedIndex=0;pk.dispatchEvent(new Event("change"))}}
+  try{feeUpd()}catch(e){}}
+document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&e.target.closest(".wtile");if(b)setTimeout(apply,0)});
+})();
+</script>
+<div id="uosh" class="hide" role="dialog" aria-modal="true"><div class="uow">
+<div class="uohero"><button id="uox" type="button" aria-label="close">✕</button><div class="uoht" id="uott">👀 وش الجديد؟</div><div class="uohs" id="uosub"></div><span class="uocnt" id="uocnt"></span></div>
+<div id="uofh" class="uosec hide"><b id="uofl"></b><button type="button" id="uofs" class="uofnx"></button></div>
+<div id="uofeat" class="uofeat"></div>
+<div id="uoch" class="uoch"></div>
+<div id="uol" class="uogrid"></div>
+<p class="uonote" id="uonote"></p></div></div>
+<div id="uodt" aria-hidden="true"><div id="uodc"></div></div>
+<style>
+#uosh{position:fixed;inset:0;z-index:70;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch}
+#uosh.hide{display:none!important}
+.uow{max-width:560px;margin:0 auto;padding-bottom:24px;color:var(--tx)}
+.uohero{position:relative;background:linear-gradient(135deg,#0e4f4c,#14706b);color:#fff;padding:18px 16px 20px;border-radius:0 0 22px 22px}
+.uohero button{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.18)!important;border:0!important;color:#fff!important;width:36px!important;height:36px;border-radius:50%!important;padding:0!important;margin:0!important;font-size:16px;box-shadow:none!important}
+[dir=ltr] .uohero button{left:auto;right:12px}
+.uoht{font-size:24px;font-weight:900}.uohs{opacity:.85;font-size:13px}
+.uocnt{display:inline-block;margin-top:8px;background:rgba(255,255,255,.16);border-radius:999px;padding:3px 12px;font-size:12px;font-weight:700}
+.uocnt:empty{display:none}
+.uosec{display:flex;justify-content:space-between;align-items:center;padding:14px 14px 4px;font-weight:800}
+.uosec.hide{display:none!important}.uosec span{color:var(--br);font-size:12px;font-weight:700}
+.uofnx{width:auto!important;margin:0!important;padding:6px 14px!important;border:0!important;border-radius:999px!important;background:var(--br)!important;color:#fff!important;font-size:13px;font-weight:800;cursor:pointer}
+.uofeat{display:flex;gap:10px;overflow-x:auto;padding:4px 14px 10px;scrollbar-width:none;scroll-snap-type:x mandatory}
+.uofeat::-webkit-scrollbar,.uoch::-webkit-scrollbar{display:none}
+.uofc{flex:none;width:260px;height:160px;border-radius:20px;overflow:hidden;position:relative;color:#fff;cursor:pointer;scroll-snap-align:start;background:linear-gradient(135deg,#14706b,#0e4f4c)}
+.uofc img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.uofc .ov{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.78),rgba(0,0,0,0) 62%)}
+.uofc .tx{position:absolute;bottom:0;right:0;left:0;padding:10px 12px}
+.uofc .nm{font-size:12px;opacity:.95;display:flex;gap:6px;align-items:center}
+.uofc .ti{font-weight:800;font-size:15px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.uopr{position:absolute;top:10px;left:10px;background:#ff6b2c;color:#fff;border-radius:12px;padding:3px 10px;font-weight:900;font-size:14px;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+[dir=ltr] .uopr{left:auto;right:10px}
+.uoch{display:flex;gap:7px;overflow-x:auto;padding:8px 14px 10px;scrollbar-width:none}
+.uoch.hide{display:none!important}
+.uoch button{flex:none;width:auto!important;margin:0!important;padding:5px 13px!important;border-radius:999px!important;border:1px solid var(--ln)!important;background:var(--card)!important;color:var(--tx)!important;font-size:13px;font-weight:700;box-shadow:none!important}
+.uoch button.on{background:var(--br)!important;color:#fff!important;border-color:var(--br)!important}
+.uogrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px 6px}
+.uoc{background:var(--card);border-radius:18px;overflow:hidden;border:1px solid var(--ln);position:relative;cursor:pointer;display:flex;flex-direction:column}
+.uoim{height:104px;position:relative;background:linear-gradient(135deg,var(--br2),#cfe3e0)}
+.uoim img{width:100%;height:100%;object-fit:cover;display:block}
+.uoc .uopr{font-size:12px;padding:2px 8px;top:8px;left:8px}
+.uolg{width:34px;height:34px;border-radius:50%;flex:none;overflow:hidden;background:#fff;display:grid;place-items:center;font-weight:900;color:#0e4f4c;font-size:14px;border:2px solid var(--card);box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.uolg img{width:100%;height:100%;object-fit:cover}
+.uoim .uolg{position:absolute;bottom:-15px;right:10px}
+[dir=ltr] .uoim .uolg{right:auto;left:10px}
+.uobd{padding:18px 10px 10px;display:flex;flex-direction:column;gap:2px;flex:1}
+.uost{font-size:11px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uoti{font-weight:800;font-size:13.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:36px}
+.uoft{display:flex;justify-content:space-between;align-items:center;gap:4px;margin-top:auto;padding-top:6px}
+.uoprice{color:#ff6b2c;font-weight:900;font-size:14px}
+.uoleft{font-size:11px;color:var(--mu);background:var(--br2);border-radius:999px;padding:1px 8px;white-space:nowrap}
+.uomsg{color:var(--mu);text-align:center;padding:30px 10px;grid-column:1/-1}
+.uonote{color:var(--mu);font-size:12px;text-align:center;margin:10px 16px 0}
+#uodt{position:fixed;inset:0;z-index:71;background:var(--bg);overflow-y:auto;transform:translateX(105%);transition:transform .25s,visibility 0s .25s;visibility:hidden}
+[dir=ltr] #uodt{transform:translateX(-105%)}
+#uodt.open{transform:none;visibility:visible;transition:transform .25s}
+#uodc{max-width:560px;margin:0 auto;color:var(--tx)}
+.uodimg{height:240px;position:relative;background:linear-gradient(135deg,#14706b,#0e4f4c)}
+.uodimg img{width:100%;height:100%;object-fit:cover;display:block}
+.uodback{position:absolute;top:12px;right:12px;width:38px!important;height:38px;border-radius:50%!important;background:rgba(0,0,0,.4)!important;color:#fff!important;border:0!important;padding:0!important;margin:0!important;font-size:22px;box-shadow:none!important}
+[dir=ltr] .uodback{right:auto;left:12px;transform:scaleX(-1)}
+.uodbody{background:var(--bg);border-radius:24px 24px 0 0;margin-top:-22px;position:relative;padding:18px 16px 28px;display:grid;gap:12px}
+.uodh{display:flex;gap:10px;align-items:center}.uodh .uolg{width:50px;height:50px;font-size:20px;border:1px solid var(--ln)}
+.uodh b{font-size:16px;display:block}.uodh small{color:var(--mu)}
+.uodti{font-size:20px;font-weight:900;line-height:1.4}
+.uodprice{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.uodprice .p{font-size:28px;font-weight:900;color:#ff6b2c}
+.uodbox{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:12px 14px;font-size:14px;line-height:1.8;white-space:pre-line}
+.uodk{color:var(--mu);font-size:12px;display:block}
+.uodd{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.uodd .uodbox{padding:10px 6px;white-space:normal}.uodd b{display:block;font-size:15px}
+.uoqty{display:flex;align-items:center;justify-content:space-between;background:var(--card,#fff);border:1px solid rgba(0,0,0,.08);border-radius:16px;padding:8px 12px;margin:0 0 10px}.uoqty b{font-size:16px}.uoqty .w{display:flex;align-items:center;gap:14px}.uoqty button{width:42px!important;height:42px!important;min-width:0!important;padding:0!important;margin:0!important;border-radius:50%!important;border:0!important;background:var(--br)!important;color:#fff!important;font-size:22px;font-weight:900;line-height:1}.uoqty button:disabled{opacity:.35}.uoqty .n{font-size:22px;font-weight:900;min-width:28px;text-align:center}
+.uogo{background:var(--br)!important;color:#fff!important;border:0!important;border-radius:16px!important;padding:14px!important;font-weight:900;font-size:17px;width:100%!important;margin:0!important;box-shadow:0 8px 18px rgba(14,79,76,.3)!important}
+.uotrust{font-size:12px;color:var(--mu);display:flex;gap:6px}
+.uodsrc{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mu);gap:8px}
+.uorp{background:transparent!important;border:0!important;color:var(--mu)!important;font-size:12px;text-decoration:underline;width:auto!important;padding:2px!important;margin:0!important;box-shadow:none!important}
+</style>
+<script>
+/* ===== «وش الجديد؟ 👀» (ملف Offers.gs): إضافة فقط، مش بتغيّر أي حاجة في الطلب ===== */
+(function(){
+var UT={t:["👀 وش الجديد؟","👀 What's new?"],sub:["أحدث عروض مطاعم ومحلات المحلة الكبرى","Latest offers in El-Mahalla"],cnt:["🔥 {n} عرض شغال النهارده","🔥 {n} offers live today"],
+ feat:["⭐ عروض مميزة","⭐ Featured"],swipe:["المزيد ←","More →"],all:["الكل","All"],from:["يبدأ","Starts"],to:["ينتهي","Ends"],rem:["باقي","Left"],
+ go:["🛵 اطلبه مع واصل","🛵 Order with Wasel"],rp:["العرض مش متاح؟","Offer not available?"],rpd:["شكرًا، اتشال العرض ✅","Thanks, offer removed ✅"],
+ left0:["آخر يوم","Last day"],day1:["يوم","1 day"],day2:["يومين","2 days"],days:[" أيام"," days"],
+ none:["مفيش عروض دلوقتي، ارجع بعدين 🙏","No offers right now, check back later 🙏"],ld:["جارٍ التحميل...","Loading..."],
+ note:["حسب إعلان المحل، ويؤكَّد عند الطلب. لو العرض مش موجود هنبلّغك قبل ما تدفع أي حاجة.","As announced by the store, confirmed when ordering. If it's not available we'll tell you before you pay anything."],
+ ofn:["🔥 عرض: ","🔥 Offer: "],ofq:["🔢 العدد: ","🔢 Qty: "],qty:["العدد","Quantity"],ofs:["🏪 المتجر: ","🏪 Store: "],ofd:["📝 التفاصيل: ","📝 Details: "],ofp:["💰 السعر: ","💰 Price: "],ofe:["⏳ ينتهي: ","⏳ Ends: "],nw:["جديد","New"],dt:["تفاصيل العرض","Offer details"],
+ viaIg:["📷 المصدر: إنستجرام ","📷 Source: Instagram of "],viaWeb:["🌐 المصدر: الموقع الرسمي","🌐 Source: official website"],lim:["🔥 لفترة محدودة","🔥 Limited time"]};
+var CI={"مطاعم":"🍔 ","كافيهات":"☕ ","حلويات ومخابز":"🍩 ","سوبر ماركت":"🛒 ","إلكترونيات":"📱 ","محلات":"🛍️ ","أخرى":"✨ "};
+function ut(k){return UT[k][LANG==="en"?1:0]}
+var L=null,CAT="",sh=$("uosh"),box=$("uol");
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function lbl(){$("uobt").textContent=ut("t");$("uott").textContent=ut("t");$("uosub").textContent=ut("sub");$("uonote").textContent=ut("note");
+  $("uocnt").textContent=L&&L.length?ut("cnt").replace("{n}",L.length):"";
+  var n=L&&L.length;$("uon").textContent=ut("nw");$("uon").classList.toggle("hide",!n)}
+function load(cb){try{google.script.run.withSuccessHandler(function(r){L=(r&&r.ok&&r.list)||[];lbl();cb&&cb()}).withFailureHandler(function(){L=L||[];cb&&cb()}).offersList()}catch(e){L=[];cb&&cb()}}
+function ch(o){return (o.store||"؟").replace(/^(مطعم|كافيه|مقهى|أسواق|صيدليات)\s+/,"").charAt(0)}
+function logoEl(o,cls){var lg=el("div",cls||"uolg");if(o.logo){var im=el("img");im.src=o.logo;im.alt="";im.loading="lazy";im.onerror=function(){lg.textContent=ch(o)};lg.appendChild(im)}else lg.textContent=ch(o);return lg}
+function img(src,cls){var im=el("img",cls);im.src=src;im.alt="";im.loading="lazy";im.onerror=function(){im.remove()};return im}
+function leftTx(o){if(o.left<=0)return ut("left0");if(o.left===1)return ut("day1");if(o.left===2)return ut("day2");return o.left+ut("days")}
+function fd(d){var m=String(d||"").split("-");if(m.length!==3)return d||"";var M=LANG==="en"?["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]:["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];return parseInt(m[2],10)+" "+M[parseInt(m[1],10)-1]}
+function pick(o,q){
+  close();
+  var ty=$("type"),pk=$("pk"),done=false;
+  function has(){for(var i=0;i<pk.options.length;i++)if(pk.options[i].value===o.pick)return true;return false}
+  if(o.pick){
+    if(!has()){ty.selectedIndex=0;ty.dispatchEvent(new Event("change"))}
+    if(!has()){ty.selectedIndex=3;ty.dispatchEvent(new Event("change"))}
+    if(has()){pk.value=o.pick;done=true}}
+  if(!done){for(var j=0;j<pk.options.length;j++)if(pk.options[j].value==="x"){pk.value="x";$("pko").value=o.store;break}}
+  pk.dispatchEvent(new Event("change"));
+  var it=$("items"),tag=ut("ofn")+o.title;q=Math.max(1,Math.min(10,q||1));
+  var pre=[ut("ofq"),ut("ofs"),ut("ofd"),ut("ofp"),ut("ofe")],cur=it.value?it.value.split("\n"):[],at=cur.indexOf(tag);
+  if(at>=0){var en=at+1;while(en<cur.length&&pre.some(function(x){return cur[en].indexOf(x)===0}))en++;cur.splice(at,en-at)}
+  var ln=[tag];
+  if(q>1)ln.push(ut("ofq")+q);
+  if(o.store)ln.push(ut("ofs")+o.store);
+  var dt=String(o.details||"").replace(/\s*\n+\s*/g," ، ").trim();if(dt&&dt!==o.title)ln.push(ut("ofd")+dt);
+  if(o.price){var pt=String(o.price),pn=pt.replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)}).match(/(\d+(?:\.\d+)?)\s*(?:ر\.?\s*س|جنيه|SAR)/i);
+    if(q>1&&pn){var tot=Math.round(parseFloat(pn[1])*q*100)/100;ln.push(ut("ofp")+pt+" × "+q+" = "+tot+" ج.م")}
+    else ln.push(ut("ofp")+pt)}
+  if(o.ends)ln.push(ut("ofe")+o.ends);
+  if(at>=0)Array.prototype.splice.apply(cur,[at,0].concat(ln));else cur=cur.concat(ln);
+  it.value=cur.join("\n");
+  it.rows=Math.max(it.rows||3,Math.min(12,cur.length+1));
+  setTimeout(function(){pk.scrollIntoView({behavior:"smooth",block:"center"})},150)}
+function chips(){var c=$("uoch");c.textContent="";if(!L||!L.length){c.classList.add("hide");return}
+  var have={};L.forEach(function(o){have[o.cat||"أخرى"]=1});var cats=Object.keys(have);
+  if(cats.length<2){c.classList.add("hide");CAT="";return}c.classList.remove("hide");
+  if(CAT&&!have[CAT])CAT="";
+  [""].concat(cats).forEach(function(k){var b=el("button",k===CAT?"on":"",k?(CI[k]||"")+k:ut("all"));b.type="button";b.onclick=function(){CAT=k;draw()};c.appendChild(b)})}
+function feat(){var f=$("uofeat");f.textContent="";
+  var A=(L||[]).filter(function(o){return o.img&&o.price}).slice(0,6);
+  $("uofh").classList.toggle("hide",A.length<2);if(A.length<2)return;
+  $("uofl").textContent=ut("feat");$("uofs").textContent=ut("swipe");
+  $("uofs").onclick=function(){var w=(f.firstElementChild?f.firstElementChild.offsetWidth+10:200),rtl=getComputedStyle(f).direction==="rtl",x=Math.abs(f.scrollLeft),mx=f.scrollWidth-f.clientWidth;
+    if(x>=mx-5)f.scrollTo({left:0,behavior:"smooth"});else f.scrollBy({left:rtl?-w:w,behavior:"smooth"})};
+  A.forEach(function(o){var c=el("div","uofc");c.appendChild(img(o.img,"bg"));c.appendChild(el("div","ov"));
+    c.appendChild(el("span","uopr",o.price));
+    var tx=el("div","tx"),nm=el("div","nm");nm.appendChild(logoEl(o));nm.appendChild(el("span",null,o.store));tx.appendChild(nm);tx.appendChild(el("div","ti",o.title));c.appendChild(tx);
+    c.onclick=function(){dOpen(o)};f.appendChild(c)})}
+function draw(){
+  box.textContent="";chips();feat();
+  if(L===null){box.appendChild(el("div","uomsg",ut("ld")));return}
+  var A=L.filter(function(o){return !CAT||(o.cat||"أخرى")===CAT});
+  if(!A.length){box.appendChild(el("div","uomsg",ut("none")));return}
+  A.forEach(function(o){
+    var c=el("div","uoc"),im=el("div","uoim");
+    if(o.img)im.appendChild(img(o.img));
+    im.appendChild(logoEl(o));c.appendChild(im);
+    if(o.price)c.appendChild(el("span","uopr",o.price));
+    var bd=el("div","uobd");bd.appendChild(el("div","uost",o.store));bd.appendChild(el("div","uoti",o.title));
+    var ft=el("div","uoft");ft.appendChild(el("span","uoprice",o.price||""));ft.appendChild(el("span","uoleft","⏳ "+leftTx(o)));bd.appendChild(ft);c.appendChild(bd);
+    c.onclick=function(){dOpen(o)};box.appendChild(c)})}
+var DT=$("uodt"),DC=$("uodc");
+function dClose(){DT.classList.remove("open");DT.setAttribute("aria-hidden","true")}
+function dOpen(o){
+  DC.textContent="";
+  var top=el("div","uodimg");if(o.img)top.appendChild(img(o.img));var bk=el("button","uodback","›");bk.type="button";bk.onclick=dClose;top.appendChild(bk);DC.appendChild(top);
+  var b=el("div","uodbody");
+  var h=el("div","uodh");h.appendChild(logoEl(o));var hn=el("div");hn.appendChild(el("b",null,o.store));hn.appendChild(el("small",null,(CI[o.cat]||"")+(o.cat||"")));h.appendChild(hn);b.appendChild(h);
+  b.appendChild(el("div","uodti",o.title));
+  var pr=el("div","uodprice");if(o.price)pr.appendChild(el("span","p",o.price));pr.appendChild(el("span","uoleft",ut("lim")));b.appendChild(pr);
+  if(o.details&&o.details!==o.title){var bx=el("div","uodbox");bx.appendChild(el("span","uodk",ut("dt")));bx.appendChild(document.createTextNode(o.details));b.appendChild(bx)}
+  var dd=el("div","uodd");[[ut("from"),fd(o.start)],[ut("to"),fd(o.ends)],[ut("rem"),leftTx(o)]].forEach(function(p){var x=el("div","uodbox");x.appendChild(el("span","uodk",p[0]));x.appendChild(el("b",null,p[1]||"—"));dd.appendChild(x)});b.appendChild(dd);
+  var Q=1,qw=el("div","uoqty"),qb=el("div","w"),qm=el("button",null,"➖"),qn=el("span","n","1"),qp=el("button",null,"➕");qm.type=qp.type="button";
+  function qs(){qn.textContent=Q;qm.disabled=Q<=1;qp.disabled=Q>=10}qm.onclick=function(){if(Q>1){Q--;qs()}};qp.onclick=function(){if(Q<10){Q++;qs()}};qs();
+  qb.appendChild(qm);qb.appendChild(qn);qb.appendChild(qp);qw.appendChild(el("b",null,ut("qty")));qw.appendChild(qb);b.appendChild(qw);
+  var go=el("button","uogo",ut("go"));go.type="button";go.onclick=function(){dClose();pick(o,Q)};b.appendChild(go);
+  var tr=el("div","uotrust");tr.appendChild(el("span",null,"✅"));tr.appendChild(el("span",null,ut("note")));b.appendChild(tr);
+  var src=el("div","uodsrc");src.appendChild(el("span",null,o.via==="ig"?ut("viaIg")+o.store:ut("viaWeb")));
+  var rp=el("button","uorp",ut("rp"));rp.type="button";rp.onclick=function(){rp.disabled=true;try{google.script.run.offerReport(o.id,"customer")}catch(x){}rp.textContent=ut("rpd");
+    L=L.filter(function(x){return x.id!==o.id});setTimeout(function(){dClose();draw();lbl()},1200)};src.appendChild(rp);b.appendChild(src);
+  DC.appendChild(b);
+  DT.classList.add("open");DT.setAttribute("aria-hidden","false");DT.scrollTop=0}
+function open(){var dw=$("cdw");if(dw&&dw.classList.contains("open")){dw.classList.remove("open");dw.setAttribute("aria-hidden","true");var dm=$("cdim");if(dm)dm.classList.add("hide")}
+  sh.classList.remove("hide");sh.scrollTop=0;draw();load(function(){lbl();draw()})}
+function close(){dClose();sh.classList.add("hide")}
+$("uob").onclick=open;$("uox").onclick=close;
+document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;if(DT.classList.contains("open"))dClose();else if(!sh.classList.contains("hide"))close()});
+var lb=$("lang");if(lb)lb.addEventListener("click",function(){setTimeout(function(){lbl();if(!sh.classList.contains("hide"))draw()},100)});
+lbl();setTimeout(function(){load()},2500);
+})();
+</script>
+<script>
+/* ===== فودافون كاش (ملف VfCash.gs): الاختيار بيظهر بس لو رقم محفظة واصل متحط ===== */
+(function(){
+  var VFT=["📱 فودافون كاش: لما المندوب يوصلك، هيظهرلك في صفحة التتبع رقم محفظة واصل والمبلغ بالظبط. حوّل وارفع صورة التحويل، والمندوب هيسلّمك الطلب.","📱 Vodafone Cash: when the courier arrives, the tracking page shows Wasel's wallet number and the exact amount. Transfer, upload the screenshot, and the courier hands you the order."];
+  function ui(){var p=document.getElementById("pay"),w=/فودافون/.test(p.value),n=document.getElementById("vfn"),c=document.getElementById("cashn");
+    n.textContent=VFT[(typeof LANG!=="undefined"&&LANG==="en")?1:0];n.classList.toggle("hide",!w);if(c)c.classList.toggle("hide",w)}
+  try{google.script.run.withSuccessHandler(function(c){if(!c||!c.on)return;var p=document.getElementById("pay");
+    if([].some.call(p.options,function(o){return /فودافون/.test(o.value)}))return;
+    var o=document.createElement("option");o.value="فودافون كاش - VODAFONE CASH";o.textContent="📱 فودافون كاش - Vodafone Cash";p.appendChild(o);
+    p.addEventListener("change",ui);ui()}).withFailureHandler(function(){}).vfConfig()}catch(e){}
+})();
+</script>
+</body></html>
