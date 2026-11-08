@@ -44,6 +44,21 @@ function show(first){
   if(first)perm();else pick("اختار المدينة");
   document.body.appendChild(o)}
 window.WCITY={open:function(){show(false)}};
+/* تصحيح المدينة: أول ما العميل يحدد موقعه (أو موقع المندوب يشتغل) ويطلع في المدينة التانية، يظهرله شريط يتنقل بيه */
+var WARNED=false;
+function banner(k){if(WARNED||!document.body)return;try{if(sessionStorage.getItem("wcity_nb")===k)return}catch(e){}WARNED=true;
+  var o=el("div","position:fixed;top:8px;left:8px;right:8px;z-index:2147482000;background:#f2b544;color:#1b1200;border-radius:16px;padding:12px 14px;box-shadow:0 6px 20px rgba(0,0,0,.3);direction:rtl;font-family:inherit;display:flex;flex-direction:column;gap:8px");o.id="wcity_nb";
+  var t=el("div","font-weight:800;font-size:15px","📍 شكلك في "+C[k].n+" مش "+C[ME].n+"!");
+  var row=el("div","display:flex;gap:8px");
+  var a=el("button","flex:1;border:0;border-radius:12px;padding:10px;background:#0e4f4c;color:#fff;font:inherit;font-weight:800","🔄 افتح واصل "+C[k].n);a.type="button";a.onclick=function(){go(k)};
+  var x=el("button","border:0;border-radius:12px;padding:10px 14px;background:rgba(0,0,0,.08);color:#1b1200;font:inherit","✕");x.type="button";x.setAttribute("aria-label","إخفاء");
+  x.onclick=function(){o.remove();try{sessionStorage.setItem("wcity_nb",k)}catch(e){}};
+  row.appendChild(a);row.appendChild(x);o.appendChild(t);o.appendChild(row);document.body.appendChild(o)}
+function chk(p){try{if(document.getElementById("wcity"))return;var la=p.coords.latitude,ln=p.coords.longitude;
+  for(var k in C)if(k!==ME&&km(la,ln,C[k].la,C[k].ln)<=C[k].km){banner(k);return}}catch(e){}}
+try{var G=navigator.geolocation;if(G){var gc=G.getCurrentPosition.bind(G),wp=G.watchPosition.bind(G);
+  G.getCurrentPosition=function(s,e,o){return gc(function(p){chk(p);if(s)s(p)},e,o)};
+  G.watchPosition=function(s,e,o){return wp(function(p){chk(p);if(s)s(p)},e,o)}}}catch(e){}
 document.addEventListener("DOMContentLoaded",function(){
   if(!g())show(true);
   // زرار «🌍 غيّر المدينة» في القايمة ☰
