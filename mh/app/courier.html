@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head>
+<!-- صفحة سريعة على GitHub: نفس ملف Courier.html في Apps Script + bridge.js -->
+<script src="../bridge.js"></script>
+<script>
+/* ===== واصل: تطبيق واحد لكل المدن (عنيزة / المحلة). الاختيار بيتحفظ على الجهاز ===== */
+(function(){
+var ME="mhl",K="wcity",BASE="/wasel/";
+var C={unz:{n:"عنيزة",s:"السعودية · بالريال",f:"🇸🇦",la:26.0875,ln:43.9942,km:40,p:BASE+"app/"},mhl:{n:"المحلة الكبرى",s:"مصر · بالجنيه",f:"🇪🇬",la:30.9697,ln:31.1663,km:25,p:BASE+"mh/app/"}};
+function g(){try{return localStorage.getItem(K)}catch(e){return null}}
+function sv(v){try{localStorage.setItem(K,v)}catch(e){}}
+var page=location.pathname.split("/").pop()||"customer.html",c=g();
+// اللي كان بيستخدم واصل عنيزة قبل كده: يفضل على عنيزة من غير ما نسأله
+if(!c&&ME==="unz"){try{if(localStorage.getItem("wp")||localStorage.getItem("wc")||localStorage.getItem("wt")){c="unz";sv(c)}}catch(e){}}
+if(c&&c!==ME&&C[c]){location.replace(C[c].p+page+location.search);return}
+function go(v){sv(v);if(v!==ME)location.replace(C[v].p+page+location.search);else{var o=document.getElementById("wcity");if(o)o.remove()}}
+function km(a,b,c2,d){var r=Math.PI/180,x=(c2-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c2*r)*Math.sin(y/2)*Math.sin(y/2);return 12742*Math.asin(Math.sqrt(h))}
+function el(t,css,tx){var e=document.createElement(t);if(css)e.style.cssText=css;if(tx!=null)e.textContent=tx;return e}
+function show(first){
+  var o=document.getElementById("wcity");if(o)o.remove();
+  o=el("div","position:fixed;inset:0;z-index:2147483000;background:#0e4f4c;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;font-family:inherit;direction:rtl");o.id="wcity";
+  var box=el("div","width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px;align-items:stretch");o.appendChild(box);
+  function perm(){box.textContent="";
+    box.appendChild(el("div","font-size:60px","📍"));
+    box.appendChild(el("b","font-size:22px","علشان نوصّلك أسرع"));
+    box.appendChild(el("div","color:#d5ebe8;font-size:15px","واصل محتاج موقعك علشان يفتحلك مدينتك على طول، ويحسب رسوم التوصيل صح."));
+    var a=el("button","border:0;border-radius:16px;padding:14px;background:#f2b544;color:#1b1200;font:inherit;font-weight:800;font-size:17px;margin-top:6px","سماح بالموقع");a.type="button";
+    var st=el("div","color:#d5ebe8;font-size:14px;min-height:1.4em");
+    a.onclick=function(){a.disabled=true;st.textContent="بنحدد مدينتك...";
+      if(!navigator.geolocation){pick("مقدرناش نحدد موقعك، اختار مدينتك");return}
+      navigator.geolocation.getCurrentPosition(function(p){var la=p.coords.latitude,ln=p.coords.longitude,hit=null;
+          for(var k in C)if(km(la,ln,C[k].la,C[k].ln)<=C[k].km){hit=k;break}
+          if(hit)go(hit);else pick("إنت بره عنيزة والمحلة، اختار المدينة")},
+        function(){pick("الموقع مقفول، اختار مدينتك")},{enableHighAccuracy:false,timeout:12000,maximumAge:600000})};
+    var b=el("button","border:0;background:none;color:#d5ebe8;font:inherit;text-decoration:underline;font-size:14px","أختار المدينة بنفسي");b.type="button";b.onclick=function(){pick("اختار مدينتك")};
+    box.appendChild(a);box.appendChild(st);box.appendChild(b)}
+  function pick(why){box.textContent="";
+    box.appendChild(el("b","font-size:22px","إنت في أنهي مدينة؟"));box.appendChild(el("div","color:#d5ebe8;font-size:14px",why));
+    ["unz","mhl"].forEach(function(k){var x=C[k],bt=el("button","display:flex;align-items:center;gap:12px;border:0;border-radius:18px;padding:14px;background:#fff;color:#0e4f4c;font:inherit;text-align:right;cursor:pointer");bt.type="button";
+      bt.appendChild(el("span","font-size:34px",x.f));var t=el("span");t.appendChild(el("b","display:block;font-size:18px",x.n));t.appendChild(el("small","color:#4f6260",x.s));bt.appendChild(t);
+      bt.onclick=function(){go(k)};box.appendChild(bt)});
+    box.appendChild(el("div","color:#a9d3cf;font-size:12px","اختيارك بيتحفظ، وتقدر تغيّره من ☰ «🌍 غيّر المدينة»"));
+    if(!first){var x=el("button","border:0;background:none;color:#d5ebe8;font:inherit;text-decoration:underline","رجوع");x.type="button";x.onclick=function(){o.remove()};box.appendChild(x)}}
+  if(first)perm();else pick("اختار المدينة");
+  document.body.appendChild(o)}
+window.WCITY={open:function(){show(false)}};
+document.addEventListener("DOMContentLoaded",function(){
+  if(!g())show(true);
+  // زرار «🌍 غيّر المدينة» في القايمة ☰
+  try{var dw=document.getElementById("cdw")||document.getElementById("dw"),ref=dw&&(dw.querySelector('[data-c="lang"]')||dw.querySelector("#shfb"));
+    if(dw){var b=document.createElement("button");b.type="button";b.textContent="🌍 غيّر المدينة ("+C[ME].n+")";b.onclick=function(){show(false)};
+      if(ref&&ref.parentNode)ref.parentNode.insertBefore(b,ref.nextSibling);else dw.appendChild(b)}}catch(e){}
+});
+})();
+</script>
+<link rel="icon" href="../../icon.svg" type="image/svg+xml">
+<title>واصل - المندوب (المحلة)</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<script>/* وضع العرض: فاتح افتراضيًا، والعميل يختار الغامق بزر ☀️/🌙 ويُحفظ على جهازه، ومع كل تغيير زر «تراجع» */
+(function(){var d=document.documentElement;try{if(localStorage.getItem("wth")==="dark")d.classList.add("dk");if(localStorage.getItem("wgd")==="f")d.classList.add("pk")}catch(e){}
+var TT=0;function en(){return d.lang==="en"}
+window.waselToast=function(msg,undoTxt,undo){var t=document.getElementById("wtoast");if(!t){t=document.createElement("div");t.id="wtoast";t.setAttribute("role","status");document.body.appendChild(t)}
+t.textContent="";var s=document.createElement("span");s.textContent=msg;t.appendChild(s);
+if(undo){var u=document.createElement("button");u.type="button";u.textContent=undoTxt;u.onclick=function(){clearTimeout(TT);t.className="";undo()};t.appendChild(u)}
+t.className="on";clearTimeout(TT);TT=setTimeout(function(){t.className=""},6000)};
+document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
+var b=document.createElement("button");b.type="button";b.className="thm";
+function ui(){var k=d.classList.contains("dk");b.textContent=k?"☀️":"🌙";b.title=k?(en()?"Light mode":"الوضع الفاتح"):(en()?"Dark mode":"الوضع الداكن");b.setAttribute("aria-label",b.title)}
+function setDk(k){d.classList.toggle("dk",k);try{localStorage.setItem("wth",k?"dark":"light")}catch(e){}ui()}
+b.onclick=function(){var was=d.classList.contains("dk");setDk(!was);
+ waselToast(!was?(en()?"✓ Dark mode on":"✓ اتحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ اتحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
+var l=h.querySelector("#lang");if(l&&l.parentNode)l.parentNode.insertBefore(b,l);else h.appendChild(b)})})();
+</script>
+<script>/* زر «غيّر مودك / غيّري مودك»: يبدّل شكل التطبيق بين الأخضر والبينك، ويتحفظ على الجهاز بس (مش بيتبعت للسيرفر)، ومعاه «تراجع» */
+(function(){var d=document.documentElement;
+function en(){return d.lang==="en"}
+function get(){try{return localStorage.getItem("wgd")||""}catch(e){return ""}}
+function lbl(b){var f=get()==="f",t=en()?"🎨 Change your look":(f?"🎨 غيّري مودك":"🎨 غيّر مودك");b.textContent=t;b.title=t;b.setAttribute("aria-label",t)}
+window.waselGender=function(v,silent){var prev=get();try{if(v)localStorage.setItem("wgd",v);else localStorage.removeItem("wgd")}catch(e){}
+ d.classList.toggle("pk",v==="f");Array.prototype.forEach.call(document.querySelectorAll(".gnd"),lbl);
+ try{document.dispatchEvent(new CustomEvent("waselgender",{detail:{v:v,prev:prev}}))}catch(e){}
+ if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ اتحوّل للون البينك"):(en()?"✓ Wasel green look on":"✓ اتحوّل للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
+document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
+ var b=document.createElement("button");b.type="button";b.className="thm gnd";lbl(b);
+ b.onclick=function(){window.waselGender(get()==="f"?"m":"f")};
+ var t=h.querySelector(".thm");if(t&&t.parentNode)t.parentNode.insertBefore(b,t);else h.appendChild(b);
+ var l=document.getElementById("lang");if(l)l.addEventListener("click",function(){setTimeout(function(){lbl(b)},0)})})})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f6f6;--card:#fff;--tx:#12211f;--mu:#4f6260;--br:#0e4f4c;--br2:#e1eeec;--ln:#dde5e3}
+html.dk{--bg:#0d1413;--card:#16201f;--tx:#e8f0ee;--mu:#9bb0ab;--br:#5cc8bb;--br2:#1f3331;--ln:#273533}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;line-height:1.6}
+header{background:#0e4f4c;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+header .brand{display:flex;align-items:center;gap:10px}header .brand svg{width:44px;height:44px;flex:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}header b{font-size:20px}header small{display:block;color:#a9d3cf}header button{width:auto;margin:0 0 0 6px;padding:8px 12px;background:#fff;color:#0e4f4c;font-size:14px;border-radius:12px}
+[dir=rtl] header button{margin:0 6px 0 0}
+main{max-width:640px;margin:0 auto;padding:12px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:20px;padding:16px;margin-bottom:12px}
+h2{font-size:18px;margin:6px 0 10px}label{display:block;color:var(--mu);font-size:14px;margin-bottom:4px}
+input,textarea,select{width:100%;padding:12px;border:1px solid var(--ln);border-radius:12px;background:var(--bg);color:var(--tx);font:inherit}
+button{width:100%;margin-top:10px;padding:12px;border:0;border-radius:14px;cursor:pointer;background:var(--br);color:#fff;font:inherit;font-weight:700;font-size:16px}
+button.sec{background:var(--br2);color:var(--br)}button:disabled{opacity:.6}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:700;background:#fde68a;color:#78350f}
+.tag.m{background:#bae6fd;color:#075985}.tag.w{background:#ddd6fe;color:#4c1d95}
+.row{margin:6px 0}.row b{color:var(--mu);font-weight:600;font-size:14px;display:block}
+a{color:var(--br);font-weight:700}.hide{display:none!important}#msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(86vw,380px);text-align:center;z-index:9000;background:#111827;color:#fff;border:2px solid #2dd4bf;border-radius:16px;padding:18px 16px;font-weight:700;font-size:17px;line-height:1.7;box-shadow:0 10px 40px rgba(0,0,0,.55);cursor:pointer;animation:msgin .18s ease-out}@keyframes msgin{from{opacity:0;transform:translate(-50%,-44%)}to{opacity:1;transform:translate(-50%,-50%)}}#msg:empty{display:none}#msg.err{background:#b91c1c;border-color:#fecaca;color:#fff}.err{color:#dc2626}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.st b{display:block;font-size:24px;color:var(--br)}.st span{font-size:12px;color:var(--mu)}.bal{margin-top:10px;font-size:18px;font-weight:700;text-align:center}.bal.neg{color:#dc2626}.bal.pos{color:#15803d}.sub{color:var(--mu);font-size:13px;text-align:center;margin-top:4px}
+.stars{font-size:34px;text-align:center;letter-spacing:6px;direction:ltr;cursor:pointer;color:var(--ln)}.stars span.on{color:#f59e0b}.fee{font-size:20px;color:var(--br);font-weight:700}.muted{color:var(--mu);text-align:center;padding:18px}
+.chatL{max-height:230px;overflow:auto;border:1px solid var(--ln);border-radius:10px;padding:8px;background:var(--bg);margin-top:8px}
+.chatL .b{display:block;width:fit-content;max-width:82%;padding:6px 10px;border-radius:12px;margin:4px 0;word-wrap:break-word;background:var(--ln);color:var(--tx)}
+.chatL .b.me{background:var(--br);color:#fff;margin-inline-start:auto}.chatL .b small{display:block;opacity:.7;font-size:11px}
+:where(html.dk) .chatL .b.me{color:#06201d}
+.qr{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.qr button{width:auto;margin:0;padding:6px 10px;font-size:13px;background:var(--ln);color:var(--tx);font-weight:600}
+.chatR{display:flex;gap:8px;margin-top:6px}.chatR input{flex:1}.chatR button{width:auto;margin:0;padding:0 18px}
+a.nav{display:block;text-align:center;text-decoration:none;margin-top:12px;padding:13px;border-radius:14px;background:#1d4ed8;color:#fff;font-weight:700;font-size:16px}
+#alertBar{position:sticky;top:0;z-index:9;background:#f59e0b;color:#3b2300;font-weight:700;text-align:center;padding:10px;display:none;font-size:17px}
+#alertBar.on{display:block;animation:pulse 1s 3}@keyframes pulse{50%{background:#fbbf24}}
+#sndHint{display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:27;box-shadow:0 2px 10px rgba(0,0,0,.3);background:#fef3c7;color:#78350f;border:1px solid #fcd34d;border-radius:10px;padding:8px 12px;text-align:center;font-weight:700;cursor:pointer}
+header button#snd{padding:6px 10px;font-size:16px}
+textarea{resize:vertical}select{margin-top:8px}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.tools button{margin:0;padding:10px 4px;font-size:14px}
+button.on{background:#15803d}button.off{background:#dc2626}
+#duesBar{border-radius:10px;padding:8px 12px;margin-bottom:12px;text-align:center;font-weight:700;border:1px solid}#duesBar.blk{background:#fee2e2;color:#7f1d1d;border-color:#fca5a5}#duesBar.wrn{background:#fef3c7;color:#78350f;border-color:#fcd34d}
+#locBar{padding:10px 12px}#locBar b{display:block}
+#offBar{background:#fee2e2;color:#7f1d1d;border:1px solid #fca5a5;border-radius:10px;padding:8px 12px;margin-bottom:12px;text-align:center;font-weight:700}
+.ok{color:#15803d;font-weight:700}
+.grid.g4{grid-template-columns:repeat(2,1fr)}.dayh{display:flex;justify-content:space-between;gap:8px;background:var(--bg);border-radius:8px;padding:6px 10px;margin-top:12px;font-weight:700;font-size:14px}.dayh span:last-child{color:var(--br)}.hrow{display:flex;justify-content:space-between;gap:8px;border-top:1px solid var(--ln);padding:8px 0}.hrow small{display:block;color:var(--mu)}.hrow .am{text-align:end;white-space:nowrap;color:var(--br);font-weight:700}
+.dbtn{width:auto;margin:6px 0 0;padding:4px 12px;border:1px solid var(--ln);border-radius:99px;background:var(--bg);color:var(--tx);font-size:13px;font-weight:700}
+.dpan{margin:0 0 8px;padding:10px;border-radius:10px;background:var(--bg);border:1px solid var(--ln);font-size:13.5px}
+.dpan h4{margin:8px 0 4px;font-size:13.5px}.dpan h4:first-child{margin-top:0}
+.dpan .ev{display:flex;gap:8px;padding:3px 0;border-bottom:1px dashed var(--ln)}.dpan .ev b{flex:none;color:var(--mu);font-weight:600;min-width:78px;direction:ltr;text-align:start}
+.dpan .cm{padding:6px 10px;border-radius:10px;margin:4px 0;max-width:88%;overflow-wrap:anywhere}
+.dpan .cm.d{background:#d1fae5;color:#064e3b;margin-inline-start:auto}.dpan .cm.c{background:var(--ln);color:var(--tx)}
+.dpan .cm small{display:block;color:var(--mu);font-size:11.5px}
+.wait{background:#fef3c7;color:#78350f;border:1px solid #fcd34d;border-radius:10px;padding:10px;margin-top:10px;text-align:center;font-weight:700}
+.wait .wtm{font-size:22px;direction:ltr;display:inline-block;margin:0 6px}.wait .sub{color:#78350f}
+#fab{position:fixed;right:0;top:58%;width:auto;margin:0;padding:12px 10px 12px 14px;border-radius:14px 0 0 14px;font-size:22px;line-height:1;z-index:25;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+.bdg{position:absolute;top:-8px;left:-4px;min-width:20px;height:20px;border-radius:10px;background:#dc2626;color:#fff;font-size:12px;line-height:20px;text-align:center;padding:0 5px}
+#dim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:28}
+#dw{position:fixed;top:0;bottom:0;right:0;width:min(400px,92vw);background:var(--card);z-index:30;transform:translateX(105%);transition:transform .25s,visibility 0s .25s;display:flex;flex-direction:column;box-shadow:-4px 0 18px rgba(0,0,0,.3);visibility:hidden}
+#dw.open{transform:none;visibility:visible;transition:transform .25s}
+.dwh{display:flex;justify-content:space-between;align-items:center;background:#0e4f4c;color:#fff;padding:12px 14px}.dwh button{width:auto;margin:0;padding:4px 12px;background:rgba(255,255,255,.2);color:#fff}
+.dwtabs{display:flex;border-bottom:1px solid var(--ln)}.dwtabs button{flex:1;margin:0;border-radius:0;background:transparent;color:var(--mu);padding:12px 4px;font-size:15px}.dwtabs button.on{color:var(--br);box-shadow:inset 0 -3px 0 var(--br)}
+.dwtabs .bdg,.qr .bdg{position:static;display:inline-block;margin-inline-start:6px;vertical-align:middle}
+.pane{flex:1;min-height:0;display:flex;flex-direction:column;padding:10px}.pane .chatL{flex:1;max-height:none;min-height:120px}.pane a.nav{margin-top:10px}
+.qr button.on{background:var(--br);color:#fff}
+.regbtn{display:block;padding:11px 14px;border:2px solid var(--br);border-radius:14px;color:var(--br);font-weight:700;text-decoration:none;text-align:center}
+.tools button#walbtn{grid-column:1/-1}.wmini{color:var(--mu);font-size:12.5px;display:block}.wnote{color:var(--mu);font-size:12.5px;margin-top:6px;line-height:1.5}#walbox .row span{overflow-wrap:anywhere}
+.rsx{margin:8px 0;padding:8px 12px;border-radius:10px;font-weight:700;background:#fef3c7;color:#78350f}.rsx.a{background:#e0f2fe;color:#075985}.rsx.r{background:#dcfce7;color:#14532d}.rsx.x{background:#fee2e2;color:#7f1d1d}
+:where(html.dk) button{color:#06201d}:where(html.dk) #onbtn,:where(html.dk) .dwh button{color:#fff}:where(html.dk) header button{color:#0e4f4c}:where(html.dk) .qr button.on{color:#06201d}
+
+:root{color-scheme:light}html.dk{color-scheme:dark}
+header .thm{width:auto!important;flex:none;margin:0 6px!important;padding:6px 10px!important;border-radius:12px!important;background:rgba(255,255,255,.15)!important;color:#fff!important;border:1px solid rgba(255,255,255,.35)!important;font-size:16px!important;line-height:1.2!important;cursor:pointer;box-shadow:none!important}
+header>.thm:last-child{margin-inline-start:auto!important}
+#wtoast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:9500;display:flex;align-items:center;gap:12px;max-width:92vw;padding:10px 12px 10px 16px;border-radius:16px;background:#12211f;color:#fff;font-weight:700;font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.35);transition:opacity .2s,transform .2s}
+#wtoast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#wtoast button{width:auto!important;margin:0!important;padding:8px 14px!important;border:0!important;border-radius:12px!important;background:#f2b544!important;color:#3b2300!important;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+/* كلام أوضح: خط عريض في التطبيق كله، مع عمق خفيف للعناوين */
+body{font-weight:700}
+h1,h2,h3,h4,b,strong,.big,label,input,select,textarea,button,small{font-weight:700}
+input::placeholder,textarea::placeholder{font-weight:600}
+header b,.hero .big,.brand b{text-shadow:0 2px 4px rgba(0,0,0,.3)}
+h1,h2,h3,.big,.ch{text-shadow:0 1px 1px rgba(0,0,0,.1)}
+html.dk h1,html.dk h2,html.dk h3,html.dk .big,html.dk .ch{text-shadow:0 1px 2px rgba(0,0,0,.6)}
+/* الخانات متظللة: أخضر واصل افتراضيًا، ووردي لما العميل يختار 👩 */
+:root{--fld:#e7f2f0;--fldb:#b9d6d1}
+html.dk{--fld:#13302d;--fldb:#24524c}
+html.pk{--fld:#fdeef6;--fldb:#f5c2dc}
+html.pk.dk{--fld:#3a1729;--fldb:#6b2a4c}
+input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea{background-color:var(--fld)!important;border-color:var(--fldb)!important}
+input:not([type=checkbox]):not([type=radio]):not([type=file]):focus,select:focus,textarea:focus{outline:2px solid var(--br);outline-offset:1px}
+
+/* ===== شكل واحد لكل صفحات واصل: خلفية ملوّنة، كروت بإطار، عناوين الخانات بالأخضر (وبالبينك للبنات) ===== */
+:root{--pg:#e4efed;--pg2:#cfe3df;--sh:rgba(14,79,76,.14);--br3:#14635f}
+html.dk{--pg:#0a1514;--pg2:#11302c;--sh:rgba(0,0,0,.45);--br3:#3fa99d}
+body{background:linear-gradient(180deg,var(--pg2) 0,var(--pg) 320px) var(--pg);background-attachment:fixed}
+header{box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.card{border:2px solid var(--fldb)!important;box-shadow:0 8px 22px var(--sh)}
+.card{overflow:hidden}
+.card>h2:first-child{margin:-16px -16px 12px;padding:14px 16px;background:linear-gradient(135deg,var(--br),var(--br3));color:#fff;font-size:21px;text-shadow:0 2px 4px rgba(0,0,0,.25)}
+html.dk .card>h2:first-child{color:#06201d;text-shadow:none}
+main label:not(.chk):not(.lr):not(.mu):not(:has(input)){display:inline-block;width:auto;margin:14px 0 6px;font-size:14.5px;padding:4px 14px;border-radius:10px;background:linear-gradient(135deg,var(--br),var(--br3));color:#fff!important;font-weight:700;box-shadow:0 3px 8px var(--sh);text-shadow:0 1px 2px rgba(0,0,0,.2)}
+html.dk main label:not(.chk):not(.lr):not(.mu):not(:has(input)){color:#06201d!important;text-shadow:none}
+button:active{transform:scale(.97)}
+@keyframes wrise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+main>*{animation:wrise .45s ease both}
+main>*:nth-child(2){animation-delay:.06s}main>*:nth-child(3){animation-delay:.12s}main>*:nth-child(n+4){animation-delay:.18s}
+@media(prefers-reduced-motion:reduce){main>*{animation:none}}
+
+/* زر «غيّر مودك» في الهيدر */
+header .gnd{font-size:13px!important;padding:6px 9px!important;white-space:nowrap}
+header>.gnd{margin-inline-start:auto!important}header>.gnd+.thm{margin-inline-start:6px!important}
+@media(max-width:380px){header .gnd{font-size:11.5px!important;padding:5px 7px!important}}
+html.pk #lang{color:#9d174d!important}
+html.pk .dwh,html.pk .cspl{background:#9d174d!important}
+@media(max-width:520px){
+header{gap:6px!important;padding-inline:10px!important}
+header>div:first-child,header .brand{min-width:0;flex:1 1 auto}
+header>svg+div{min-width:0;flex:1 1 auto}header .clock{font-size:13px}
+header b{font-size:17px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+header small{font-size:11.5px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header>svg,header .brand>svg{width:36px!important;height:36px!important}
+header .thm{padding:5px 8px!important;margin:0 3px!important}
+header .gnd{font-size:12px!important;padding:5px 7px!important}
+header #lang{padding:6px 10px!important;margin:0 3px!important}
+}
+
+/* ===== وضع البينك كامل في كل الصفحات (مش الخانات بس) ===== */
+html.pk{--br:#be185d;--br2:#fce7f3;--c1:#be185d;--fld:#fdeef6;--fldb:#f5c2dc;--pg:#fbe9f2;--pg2:#f6d0e3;--sh:rgba(157,23,77,.14);--br3:#9d174d}
+html.pk.dk{--br:#f472b6;--br2:#3b1427;--c1:#f472b6;--fld:#3a1729;--fldb:#6b2a4c;--pg:#1c0d15;--pg2:#331526;--sh:rgba(0,0,0,.45);--br3:#ec4899}
+html.pk header{background:#9d174d!important}
+html.pk header small{color:#fbcfe8!important}
+html.pk header svg [fill="#0e4f4c"]{fill:#9d174d}html.pk header svg [stroke="#0e4f4c"]{stroke:#9d174d}
+html.pk header button:not(.thm){color:#9d174d!important}
+.rsx.inv{background:var(--fld)!important;border:1px dashed var(--fldb)!important;color:var(--tx)!important}.rsx.inv b{letter-spacing:1px;unicode-bidi:isolate}
+
+/* ===== القائمة الجانبية ☰: الصفحة الأساسية للطلبات فقط، وكل الباقي في القائمة ===== */
+#mbtn{font-size:20px!important;padding:6px 12px!important;position:relative}
+#mbtn .mdot{position:absolute;top:-4px;left:-4px;min-width:18px;height:18px;border-radius:99px;background:#dc2626;color:#fff;font-size:11px;line-height:18px;text-align:center;padding:0 4px}
+body.cin header #snd,body.cin header #lang,body.cin header #out,body.cin header .thm,body.cin header .gnd{display:none!important}
+body.cin #app>.tools{display:none!important}
+body:not(.cin) header #onbtn{display:none!important}
+body.cin:not(.hasmine) #fab{display:none!important}
+header #onbtn{width:auto!important;margin:0 6px!important;padding:7px 12px!important;border-radius:99px!important;font-size:13px!important;color:#fff!important;white-space:nowrap}
+#mdim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40}
+#mdw{position:fixed;top:0;bottom:0;right:0;width:min(300px,86vw);background:var(--card);z-index:41;transform:translateX(105%);transition:transform .25s,visibility 0s .25s;visibility:hidden;overflow-y:auto;box-shadow:-6px 0 20px rgba(0,0,0,.3)}
+[dir=ltr] #mdw{right:auto;left:0;transform:translateX(-105%)}
+#mdw.open{transform:none;visibility:visible;transition:transform .25s}
+.mdh{background:#0e4f4c;color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}.mdh b{font-size:17px}
+.mdh button{width:auto!important;margin:0!important;padding:4px 12px!important;background:rgba(255,255,255,.18)!important;color:#fff!important;border-radius:10px!important}
+html.pk .mdh{background:#9d174d}
+#mstat{padding:10px 10px 0}#mstat .card{margin:0;box-shadow:none;border:1px solid var(--ln)}
+#mloc{padding:8px 10px 0}#mloc .card{margin:0;box-shadow:none;border:1px solid var(--ln)}
+.mlist{padding:6px 0 30px}
+.mlist button{display:flex;justify-content:space-between;align-items:center;width:100%!important;margin:0!important;border-radius:0!important;background:transparent!important;color:var(--tx)!important;box-shadow:none!important;text-align:start;padding:13px 16px!important;font-size:15.5px!important;border-bottom:1px solid var(--ln)!important}
+.mlist button.mred{color:#dc2626!important}
+.mlist .bdg{position:static;background:#dc2626;color:#fff;border-radius:99px;font-size:12px;padding:0 8px}
+#mban{position:fixed;top:10px;left:10px;right:10px;z-index:45;background:#dc2626;color:#fff;border-radius:16px;padding:12px 14px;font-weight:700;font-size:15px;box-shadow:0 8px 22px rgba(0,0,0,.35);display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;animation:msgin .2s ease-out}
+#mban span{background:#fff;color:#dc2626;border-radius:10px;padding:4px 12px;font-size:14px;white-space:nowrap}
+#mlocGo{width:100%;margin:8px 0 0}
+#mdw #lgl{margin:0!important;padding:14px 16px 30px;text-align:start!important;line-height:1.9}
+
+/* ===== رسالة توجيه المندوب بعد قبول الطلب ===== */
+#gdim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9100;display:flex;align-items:center;justify-content:center;padding:16px}
+#gbox{background:var(--card);color:var(--tx);border-radius:22px;max-width:380px;width:100%;padding:18px 18px 14px;box-shadow:0 14px 40px rgba(0,0,0,.4);border-top:6px solid #f2b544;line-height:1.75;animation:msgin .2s ease-out}
+#gbox .gh{font-weight:700;font-size:17px;color:var(--br);margin-bottom:8px}
+#gbox .gl{display:flex;gap:8px;margin:6px 0;font-size:15px}#gbox .gl>span{font-size:18px}
+#gbox .gf{margin-top:8px;font-weight:700;text-align:center}
+#gbox button{width:100%;margin:12px 0 0}
+.gpin{background:rgba(242,181,68,.14);border:1px solid #f2b544;border-radius:12px;padding:8px 12px;font-weight:700;font-size:14px;margin-bottom:8px;text-align:center}
+</style></head><body>
+<header><div class="brand"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="18" fill="#fff"/><g transform="translate(2 -3.55) scale(.3)"><path fill="#0e4f4c" d="M13.26,54.00 L42.97,158.00 L85.58,158.00 L100.00,131.44 L114.42,158.00 L157.03,158.00 L186.74,54.00 L155.54,54.00 L133.66,130.57 L100.00,68.56 L66.34,130.57 L44.46,54.00 Z"/><path fill="#0e4f4c" d="M67.315185546875 188.0H64.409912109375L62.824462890625 181.23486328125Q62.533935546875 180.03955078125 62.334716796875 178.736328125Q62.135498046875 179.82373046875 62.010986328125 180.392333984375Q61.886474609375 180.9609375 60.242919921875 188.0H57.337646484375L54.324462890625 176.30419921875H56.806396484375L58.499755859375 183.85791015625L58.881591796875 185.68408203125Q59.114013671875 184.5302734375 59.333984375 183.480224609375Q59.553955078125 182.43017578125 60.989990234375 176.30419921875H63.729248046875L65.206787109375 182.52978515625Q65.381103515625 183.22705078125 65.796142578125 185.68408203125L66.003662109375 184.72119140625L66.443603515625 182.81201171875L67.854736328125 176.30419921875H70.336669921875Z M85.758056640625 188.0 84.720458984375 185.01171875H80.262939453125L79.225341796875 188.0H76.776611328125L81.043212890625 176.30419921875H83.931884765625L88.181884765625 188.0ZM82.487548828125 178.10546875 82.437744140625 178.2880859375Q82.354736328125 178.5869140625 82.238525390625 178.96875Q82.122314453125 179.3505859375 80.810791015625 183.1689453125H84.172607421875L83.018798828125 179.80712890625L82.661865234375 178.67822265625Z M105.304931640625 184.6298828125Q105.304931640625 186.34814453125 104.03076171875 187.257080078125Q102.756591796875 188.166015625 100.291259765625 188.166015625Q98.041748046875 188.166015625 96.763427734375 187.369140625Q95.485107421875 186.572265625 95.119873046875 184.95361328125L97.485595703125 184.5634765625Q97.726318359375 185.4931640625 98.423583984375 185.912353515625Q99.120849609375 186.33154296875 100.357666015625 186.33154296875Q102.922607421875 186.33154296875 102.922607421875 184.77099609375Q102.922607421875 184.27294921875 102.6279296875 183.94921875Q102.333251953125 183.62548828125 101.7978515625 183.40966796875Q101.262451171875 183.19384765625 99.743408203125 182.88671875Q98.431884765625 182.57958984375 97.917236328125 182.392822265625Q97.402587890625 182.2060546875 96.987548828125 181.952880859375Q96.572509765625 181.69970703125 96.281982421875 181.3427734375Q95.991455078125 180.98583984375 95.82958984375 180.50439453125Q95.667724609375 180.02294921875 95.667724609375 179.400390625Q95.667724609375 177.81494140625 96.85888671875 176.972412109375Q98.050048828125 176.1298828125 100.324462890625 176.1298828125Q102.499267578125 176.1298828125 103.5908203125 176.810546875Q104.682373046875 177.4912109375 104.997802734375 179.06005859375L102.623779296875 179.3837890625Q102.441162109375 178.62841796875 101.880859375 178.24658203125Q101.320556640625 177.86474609375 100.274658203125 177.86474609375Q98.050048828125 177.86474609375 98.050048828125 179.25927734375Q98.050048828125 179.7158203125 98.28662109375 180.00634765625Q98.523193359375 180.296875 98.988037109375 180.500244140625Q99.452880859375 180.70361328125 100.872314453125 181.0107421875Q102.557373046875 181.36767578125 103.28369140625 181.670654296875Q104.010009765625 181.9736328125 104.433349609375 182.376220703125Q104.856689453125 182.77880859375 105.080810546875 183.339111328125Q105.304931640625 183.8994140625 105.304931640625 184.6298828125Z M113.106201171875 188.0V176.30419921875H122.303466796875V178.19677734375H115.554931640625V181.13525390625H121.797119140625V183.02783203125H115.554931640625V186.107421875H122.643798828125V188.0Z M130.445068359375 188.0V176.30419921875H132.893798828125V186.107421875H139.169189453125V188.0Z"/><g transform="translate(62.8 42.25) scale(3.1)"><path fill="#fff" stroke="#fff" stroke-width="3" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><path fill="#f2b544" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><circle cx="12" cy="9.4" r="3.2" fill="#fff"/></g></g></svg><div><b>واصل WASEL</b><small id="who"></small></div></div><div><button id="snd" class="hide">🔔</button><button id="lang">EN</button><button id="out" class="hide" data-i="logout"></button><button id="mbtn" class="hide" aria-label="menu">☰<span id="mdot" class="mdot hide"></span><span id="shdot" class="hide"></span></button></div></header>
+<div id="alertBar"></div>
+<main>
+<div id="login" class="card"><h2 data-i="loginT"></h2><label data-i="code"></label>
+<input id="code" type="password" autocomplete="off" data-ph="codeP">
+<button id="in" data-i="login"></button><div id="lmsg" class="err" style="margin-top:8px"></div>
+<div id="regBox" class="hide" style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--ln);text-align:center"><div data-i="regQ" style="margin-bottom:8px;color:var(--mu);font-size:14px"></div><a id="regLink" class="regbtn" target="_blank" rel="noopener noreferrer" data-i="regGo"></a></div></div>
+<div id="app" class="hide"><div id="sndHint"></div><div id="msg"></div><div id="stat" class="card"></div>
+<div class="tools"><button id="onbtn" class="on"></button><button id="histbtn" class="sec" data-i="histB"></button><button id="walbtn" class="sec" data-i="walB"></button></div>
+<div id="offBar" class="hide" data-i="offBar"></div>
+<div id="duesBar" class="hide"></div>
+<div id="locBar" class="card hide"></div>
+<div id="walbox" class="card hide"></div>
+<div id="histbox" class="card hide"></div>
+<div id="rwrap" class="hide"><h2 data-i="rateH"></h2><div id="rate"></div></div>
+<h2 data-i="mineH"></h2><div id="mine"></div>
+<h2 data-i="availH"></h2><div id="avail"></div></div>
+</main>
+<div id="lgl" style="text-align:center;margin:8px 12px 80px;font-size:13px;color:var(--mu)"></div>
+<button id="fab" class="hide" aria-label="chat">💬<span id="fabn" class="bdg hide"></span></button>
+<div id="dim" class="hide"></div>
+<aside id="dw" aria-hidden="true">
+<div class="dwh"><b data-i="dwT"></b><button id="dwx">✕</button></div>
+<div class="dwtabs"><button id="tbA"></button><button id="tbC"></button></div>
+<div id="pA" class="pane"><div class="sub" data-i="supN"></div>
+<div id="alist" class="chatL"></div>
+<div class="chatR"><input id="ain" maxlength="300" data-ph="supP"><button id="asend" data-i="chatSend"></button></div>
+<div id="aerr" class="err"></div>
+<a id="supwa" class="nav hide" target="_blank" rel="noopener noreferrer" data-i="supWa"></a></div>
+<div id="pC" class="pane hide"><div id="ochips" class="qr"></div><div id="cnone" class="muted hide" data-i="chatNone"></div>
+<div id="cbox" class="hide" style="display:flex;flex-direction:column;flex:1;min-height:0"><div class="sub" data-i="chatN"></div>
+<div id="clist" class="chatL"></div><div id="cqr" class="qr"></div>
+<div class="chatR"><input id="cin" maxlength="300" data-ph="chatPh"><button id="csend" data-i="chatSend"></button></div><div id="cerr" class="err"></div></div></div>
+</aside>
+<div id="mdim" class="hide"></div>
+<aside id="mdw" aria-hidden="true"><div class="mdh"><b id="mname"></b><button id="mx">✕</button></div>
+<div id="mstat"></div><div id="mloc"></div>
+<div class="mlist">
+<button data-go="shf" id="shfb"><span id="shft">🗓 شيفتاتي</span><span id="shfn" class="bdg hide"></span></button>
+<button data-go="hist"><span data-m="hist"></span></button>
+<button data-go="wal"><span data-m="wal"></span></button>
+<button data-go="chat"><span data-m="chat"></span><span id="mchn" class="bdg hide"></span></button>
+<button data-go="snd"><span data-m="snd"></span><span id="msnd"></span></button>
+<button data-go="thm"><span id="mthm"></span></button>
+<button data-go="gnd"><span id="mgnd"></span></button>
+<button data-go="lang"><span id="mlang"></span></button>
+<button data-go="loc" id="mlocI" class="hide"><span data-m="locI"></span><small style="color:#15803d">✅</small></button>
+<button data-go="out" class="mred"><span data-m="out"></span></button>
+</div></aside>
+<div id="mban" class="hide"></div>
+<script>
+var LANG="ar";try{LANG=localStorage.getItem("wl")||"ar"}catch(e){}
+var T={
+lgN:["الشروط والسياسات:","Terms and policies:"],lgT:["شروط المندوب","Courier terms"],lgP:["خصوصية المندوب","Courier privacy"],lgS:[" · "," · "],
+page:["صفحة المندوب","Courier page"],courierN:["المندوب: ","Courier: "],logout:["خروج","Log out"],loginT:["دخول المندوب","Courier login"],regQ:["ما عندك حساب مندوب؟","Don't have a courier account?"],regGo:["🪪 سجّل كمندوب جديد","🪪 Register as a new courier"],code:["رمز الدخول","Login code"],
+codeP:["الرمز الذي أعطتك إياه الإدارة","The code given to you by admin"],login:["دخول","Log in"],rateH:["قيّم العميل","Rate the customer"],mineH:["طلباتي الحالية","My current orders"],availH:["طلبات متاحة","Available orders"],
+st_new:["جديد","New"],st_acc:["مقبول","Accepted"],st_way:["في الطريق","On the way"],
+pickFrom:["الاستلام من","Pickup from"],itemsK:["محتويات الطلب","Order items"],destK:["التسليم إلى","Deliver to"],payK:["الدفع","Payment"],notesK:["ملاحظات","Notes"],
+feeK:["أجر المندوب","Your fee"],sar:[" جنيه"," EGP"],phoneK:["جوال العميل","Customer phone"],openLoc:["افتح الموقع","Open location"],
+accept:["قبول الطلب","Accept order"],place:["المطعم/المتجر","the restaurant/store"],
+arrQ1:["وصلت إلى ","Have you arrived at "],arrQ2:["؟","?"],arrBtn:["وصلت موقع الاستلام","I arrived at the pickup location"],
+rejectB:["رفض الطلب","Reject order"],pinL:["🔐 كود التسليم من العميل","🔐 Delivery code from the customer"],pinP:["4 أرقام","4 digits"],pinNeed:["اكتب كود التسليم (4 أرقام) اللي مع العميل","Enter the 4-digit delivery code the customer has"],rjPick:["اختر سبب الرفض","Choose a reason"],rjNote:["اكتب السبب (إجباري لو اخترت أخرى)","Write the reason (required for Other)"],rjGo:["تأكيد الرفض","Confirm rejection"],rjNeed:["اختر سبب الرفض","Choose a reason for rejecting"],rjNeedN:["اكتب سبب الرفض","Write the reason for rejecting"],confRej:["رفض هذا الطلب؟ سيختفي من قائمتك ويُحسب من رفضك اليومي.","Reject this order? It will disappear from your list and count toward your daily rejections."],rejInfo:["قبل أن تقبل: يمكنك رفض طلبين فقط يوميًا. المتبقي لك اليوم: ","Decide before accepting: you can reject only 2 orders per day. Left today: "],
+invH:["فاتورة الطلب","Order invoice"],invAmt:["قيمة الطلب (جنيه)","Order amount (SAR)"],invEx:["مثال: 45.50","e.g. 45.50"],photoInv:["صوّر الفاتورة","Take invoice photo"],
+upInv:["رفع الفاتورة","Upload invoice"],needAmt:["اكتب قيمة الطلب","Enter the order amount"],needPhoto:["صوّر الفاتورة أولًا","Take the invoice photo first"],
+pickQ:["استلمت الطلب؟","Did you pick up the order?"],pickBtn:["تم استلام الطلب من ","Order picked up from "],
+goBtn:["في الطريق للتسليم","On the way to deliver"],kidTag:["📍 المكان الثاني للطلب ","📍 Second place of order "],mainK:["🍱 طلب من مكانين: لازم تستلم المكانين قبل التوصيل (المكان الثاني ظاهر لك كطلب تابع)","🍱 Two-place order: pick up both places before delivering (the second place shows as a linked order)"],kidGo:["تم استلام هذا المكان ✓ ابدأ التوصيل من الطلب الرئيسي ","This place is picked up ✓ start delivery from the main order "],dstBtn:["وصلت موقع التسليم","I arrived at the delivery location"],
+delH:["تسليم الطلب","Deliver the order"],gotAmt:["المبلغ المستلم من العميل (جنيه)","Amount received from customer (SAR)"],
+gotBtn:["استلمت المبلغ وسلّمت الطلب","I received the money and delivered"],lessThan:["المبلغ أقل من المطلوب: ","Amount is less than required: "],
+confDel1:["تأكيد استلام ","Confirm receiving "],confDel2:[" جنيه وتسليم الطلب؟"," EGP and delivering the order?"],
+ref:["رقم العملية (أو ارفع صورة الحوالة)","Transfer reference (or upload a transfer photo)"],refP:["رقم الحوالة","Transfer number"],
+photoTr:["صوّر الحوالة (اختياري إن كتبت الرقم)","Take transfer photo (optional if you typed the number)"],
+trBtn:["تأكدت من وصول الحوالة وسلّمت الطلب","Transfer confirmed and order delivered"],needRef:["اكتب رقم العملية أو ارفع صورة الحوالة","Enter the transfer reference or upload a photo"],
+confTr:["تأكيد وصول الحوالة وتسليم الطلب؟","Confirm the transfer arrived and the order is delivered?"],
+why:["سبب عدم استلام المبلغ","Why was the money not received"],whyP:["مثال: العميل رفض الدفع","e.g. customer refused to pay"],
+unpaidBtn:["سلّمت ولم أستلم المبلغ","Delivered, money not received"],unpaidConf:["تأكيد: سلّمت ولم أستلم المبلغ","Confirm: delivered, money not received"],needWhy:["اكتب سبب عدم استلام المبلغ","Enter why the money was not received"],
+billInv:["قيمة الفاتورة","Invoice amount"],billFee:["رسوم التوصيل على العميل","Customer delivery fee"],billTot:["المطلوب تحصيله من العميل (","To collect from customer ("],cashW:["كاش","cash"],trW:["حوالة","transfer"],
+tipK:["إكرامية من العميل (لك كاملة)","Customer tip (all yours)"],
+rateQ:["كيف كان تعامل العميل؟","How was the customer?"],rateNote:["ملاحظة (اختياري)","Note (optional)"],rateNoteP:["مثال: ملتزم / تأخر في الرد","e.g. polite / slow to respond"],
+rateSend:["إرسال التقييم","Send rating"],skip:["تخطي","Skip"],pickStars:["اختر عدد النجوم","Choose the number of stars"],
+sDel:["تم التسليم","Delivered"],sToday:["اليوم","Today"],sRej:["مرفوض / ملغي","Rejected / cancelled"],
+owe:["مبلغ مطلوب تسليمه: ","Amount to hand over: "],due:["لك عند التطبيق: ","The app owes you: "],even:["رصيدك متسوٍّ: 0 جنيه","Your balance is settled: 0 EGP"],
+avgT:["تقييم العملاء لك: ★ ","Customer rating of you: ★ "],ratings:[" تقييم"," ratings"],tipsT:["إكراميات العملاء: ","Customer tips: "],tipsE:[" جنيه (لك كاملة)"," EGP (all yours)"],
+earned:["إجمالي أجرك من الطلبات المسلَّمة: ","Your total fees from delivered orders: "],
+chatN:["المحادثات محفوظة وتراجعها الإدارة. لا تشارك أرقامًا أو حسابات تواصل.","Chats are saved and reviewed by admin. Do not share phone numbers or contact accounts."],
+noMsg:["لا توجد رسائل بعد","No messages yet"],chatPh:["اكتب رسالة...","Type a message..."],chatSend:["إرسال","Send"],
+q1:["وصلت","I have arrived"],q2:["أنا عند الباب","I am at the door"],q3:["لم أجدك، حدّد موقعك بدقة","I can't find you, please give your exact location"],
+q4:["أنا خارج لك الآن","I am coming out now"],q5:["انتظرني دقيقة","Please wait a minute"],q6:["الموقع صحيح على الخريطة","The map location is correct"],
+navP:["📍 توجّه إلى ","📍 Go to "],navD:["📍 توجّه إلى العميل","📍 Go to the customer"],newOrd:["🔔 طلب جديد متاح!","🔔 New order available!"],newOrds:["🔔 طلبات جديدة متاحة: ","🔔 New orders available: "],sndHint:["🔕 اضغط هنا لتفعيل صوت التنبيه","🔕 Tap here to enable the alert sound"],
+noMine:["لا توجد طلبات معك الآن","You have no orders now"],noAvail:["لا توجد طلبات متاحة الآن","No orders available now"],
+photoOk:["✓ تم التقاط الصورة","✓ Photo captured"],retake:["إعادة التصوير","Retake"],prep:["جارٍ تجهيز الصورة...","Preparing photo..."],photoBad:["تعذر قراءة الصورة، أعد الالتقاط","Could not read the photo, retake it"],
+doing:["جارٍ التنفيذ...","Working..."],fixing:["📍 جارٍ تحديد موقعك بدقة...","📍 Getting your exact location..."],done:["تم","Done"],noExec:["تعذر التنفيذ","Could not complete"],noExec2:["تعذر التنفيذ، حاول مرة أخرى","Could not complete, try again"],
+onB:["🟢 متاح","🟢 Available"],offB:["🔴 غير متاح","🔴 Unavailable"],offBar:["🔕 أنت غير متاح: لن تظهر لك طلبات جديدة (طلباتك الحالية تبقى ظاهرة).","🔕 You are unavailable: new orders are hidden (your current orders stay visible)."],
+histB:["📊 أرباحي","📊 My earnings"],duesBlk:["🛑 الطلبات الجديدة موقوفة: عليك %o جنيه مطلوب تسليمها (الحد %l). سلّم المبلغ للإدارة وستُفتح لك الطلبات فورًا.","🛑 New orders paused: you have %o EGP to hand over (limit %l). Hand the cash to admin and orders reopen right away."],duesWrn:["⚠️ عليك %o جنيه مطلوب تسليمها من حد %l. سلّم المبلغ قريبًا حتى لا تتوقف الطلبات.","⚠️ You have %o EGP to hand over of the %l limit. Hand it over soon so orders do not pause."],busyMsg:["عندك طلب جارٍ. أنهِه أولًا لتظهر لك طلبات جديدة.","You have an active order. Finish it first to see new orders."],histT:["📊 أرباحي وسجلي","📊 My earnings & history"],loading:["جارٍ التحميل...","Loading..."],
+hToday:["اليوم","Today"],hPrev:["الشهر الماضي","Last month"],hCanc:["طلبات ملغية هذا الشهر: ","Cancelled this month: "],hDayT:["مجموع اليوم: ","Day total: "],h7:["آخر 7 أيام","Last 7 days"],hMonth:["هذا الشهر","This month"],hOrd:[" طلب"," orders"],hTipIn:["منها إكراميات ","incl. tips "],hNoOrd:["لا توجد طلبات مسلَّمة بعد","No delivered orders yet"],hUnpaid:["بدون تحصيل","not collected"],hTipW:["إكرامية ","tip "],hNote:["الأجر + الإكراميات للطلبات المسلَّمة. رصيدك مع التطبيق يظهر في الأعلى.","Fee + tips for delivered orders. Your balance with the app is shown above."],
+supT:["🆘 خدمة العملاء","🆘 Customer support"],supN:["اكتب مشكلتك أو سؤالك وتصل الإدارة فورًا، وردّها يظهر هنا.","Write your problem or question; admin gets it right away and replies here."],supP:["اكتب رسالتك للإدارة...","Write your message to admin..."],supWa:["💬 تواصل واتساب مع خدمة العملاء","💬 WhatsApp customer support"],supNeed:["اكتب رسالتك أولًا","Write your message first"],dwT:["💬 المحادثات","💬 Messages"],tabA:["الإدارة","Admin"],tabC:["العميل","Customer"],chatNone:["لا توجد طلبات فيها محادثة الآن. تظهر محادثة العميل بعد قبولك الطلب.","No order with an open chat right now. The customer chat opens once you accept an order."],chatOpen:["💬 محادثة العميل","💬 Chat with customer"],newAdm:["💬 رسالة جديدة من الإدارة","💬 New message from admin"],newCust:["💬 رسالة جديدة من العميل","💬 New message from the customer"],
+rpB:["⚠️ بلّغ عن مشكلة في هذا الطلب","⚠️ Report a problem with this order"],rkPick:["اختر المشكلة...","Choose the problem..."],rpNote:["تفاصيل (اختياري)","Details (optional)"],rpNoteP:["مثال: الحي مختلف عن الخريطة","e.g. the district differs from the map"],rpSend:["إرسال البلاغ للإدارة","Send report to admin"],rpPick:["اختر نوع المشكلة","Choose the problem type"],rpOk:["✓ تم إرسال بلاغك للإدارة","✓ Your report was sent to admin"],
+rk0:["العميل لا يرد","Customer not answering"],rk1:["العنوان أو الموقع غير واضح","Address or location unclear"],rk2:["المطعم مغلق أو الطلب غير متوفر","Restaurant closed or order unavailable"],rk3:["مشكلة في الدفع","Payment problem"],rk4:["مشكلة في الفاتورة","Invoice problem"],rk5:["أخرى","Other"],
+waitL:["⏱ بانتظار العميل منذ","⏱ Waiting for the customer for"],waitH:["جرّب رسالة «أنا عند الباب» في المحادثة. بعد 5 دقائق يظهر زر إبلاغ الإدارة.","Try the \"I am at the door\" message in the chat. After 5 minutes a button to alert admin appears."],noAns:["🚨 العميل لا يرد، بلّغ الإدارة","🚨 Customer not answering, alert admin"],noAnsOk:["✓ تم إبلاغ الإدارة، انتظر تعليماتها","✓ Admin was alerted, wait for instructions"],
+rsNo:["🍽 مطعم شريك: لم يرد على الطلب بعد","🍽 Partner restaurant: has not responded yet"],rsInv:["🧾 رقم فاتورة المطعم: ","🧾 Restaurant invoice no.: "],rsAcc:["🍽 المطعم قبل الطلب · جاهز بعد حوالي ","🍽 Restaurant accepted · ready in about "],rsMin:[" د"," min"],rsNow:["🍽 المطعم قبل الطلب، ومن المفروض يكون جاهزًا الآن","🍽 Restaurant accepted; it should be ready now"],rsRdy:["✅ المطعم جاهز: الطلب جاهز للاستلام","✅ Restaurant ready: the order is ready for pickup"],rsRej:["⚠️ المطعم اعتذر عن الطلب، تواصل مع الإدارة","⚠️ The restaurant declined the order, contact support"],
+noUpd:["تعذر التحديث، تأكد من الإنترنت","Could not refresh, check your internet"],noConn:["تعذر الاتصال","Connection failed"],hDet:["🧾 التفاصيل","🧾 Details"],hDetHide:["إخفاء التفاصيل","Hide details"],dLoad:["جارٍ تحميل التفاصيل…","Loading details…"],dTl:["سير الطلب","Order timeline"],dChat:["المحادثة","Chat"],dNoChat:["لا توجد محادثة على هذا الطلب.","No chat on this order."],dMe:["أنت","You"],dCu:["العميل","Customer"],dShot:["تقدر تعمل لقطة شاشة لهذه التفاصيل وتبعتها للإدارة عند الطلب.","You can screenshot these details and send them to support if asked."],
+locH:["📍 مشاركة موقعك","📍 Share your location"],locAsk:["لو وافقت، يظهر موقعك للإدارة طول ما أنت متاح، ويظهر للعميل فقط من لما تقبل طلبه لحد التسليم. الموقع يتحدث والصفحة مفتوحة، ولا نحفظ سجل لمسارك، ويتوقف فورًا لو بقيت غير متاح أو خرجت.","If you agree, admin can see your location while you are available, and the customer sees it only from the moment you accept their order until delivery. It updates while this page is open, no route history is kept, and it stops right away when you go unavailable or log out."],
+locYes:["أوافق وأشارك موقعي","I agree, share my location"],locOn:["✅ مشاركة الموقع تعمل","✅ Location sharing is on"],locLast:[" · آخر إرسال "," · last sent "],
+locDen:["⚠️ الموقع مرفوض: فعّل إذن الموقع لهذا الموقع من إعدادات المتصفح ثم حدّث الصفحة","⚠️ Location is blocked: allow location for this site in the browser settings, then refresh"],locBad:["⚠️ تعذر تحديد موقعك الآن (تأكد من تشغيل GPS)","⚠️ Could not get your location (make sure GPS is on)"],
+locWait:["⏳ جارٍ تحديد موقعك...","⏳ Getting your location..."],locSlow:["لو طوّل: 1) شغّل الموقع (GPS) من إعدادات الموبايل. 2) اسمح للمتصفح بالموقع لما يسألك (ولو رفضت قبل كده: من إعدادات المتصفح ← الموقع ← اسمح). 3) افتح الرابط من Chrome أو Safari مش من جوه واتساب أو تليجرام. 4) اطلع جنب شباك أو برا المبنى.","If it takes long: 1) Turn on Location (GPS) in phone settings. 2) Allow location for the browser (if you blocked it before: browser settings → Location → Allow). 3) Open the link in Chrome or Safari, not inside WhatsApp or Telegram. 4) Move near a window or outside."],locRetry:["🔄 حاول تاني","🔄 Try again"],locStop:["إيقاف مشاركة الموقع","Stop sharing"],locKeep:["خلّي الشاشة مفتوحة أثناء التوصيل حتى يستمر التحديث.","Keep the screen on during delivery so updates continue."],locNo:["جهازك أو متصفحك لا يدعم الموقع","Your device or browser does not support location"],
+locReqT:["مشاركة الموقع إلزامية لاستقبال الطلبات: تظهر لك الطلبات وتقدر تقبلها بعد ما موقعك يوصل للإدارة.","Location sharing is required to receive orders: orders appear and you can accept them once your location reaches admin."],locNeed:["📍 فعّل مشاركة الموقع لتظهر لك الطلبات المتاحة","📍 Turn on location sharing to see available orders"],
+walB:["💰 محفظتي","💰 My wallet"],walT:["💰 محفظتي","💰 My wallet"],walPos:["أجورك من الطلبات المحوّلة (المبلغ عند التطبيق)","Your fees from transfer orders (money held by the app)"],walNeg:["مبالغ مطلوب تسليمها من الطلبات الكاش","Amounts to hand over from cash orders"],walSet:["تسويات مع الإدارة","Settlements with admin"],walEq:["رصيدك الآن","Your balance now"],
+walNote:["في الطلب الكاش: المبلغ كله معك وتحتفظ بأجرك، والمبلغ المطلوب تسليمه بيتحسب في رصيدك. في الحوالة: المبلغ يصل للتطبيق ويُضاف أجرك لرصيدك.","Cash order: you hold all the money and keep your fee; the amount to hand over is counted in your balance. Transfer order: the app receives the money and your fee is added to your balance."],
+walAcc:["🏦 بيانات حسابك لتحويل مستحقاتك","🏦 Your account for payouts"],walHolder:["اسم صاحب الحساب (كما في البنك)","Account holder name (as in the bank)"],walHolderP:["مثال: أحمد محمد علي","e.g. Ahmed Mohammed Ali"],walIban:["الآيبان (IBAN)","IBAN"],walStc:["رقم فودافون كاش (اختياري)","Vodafone Cash number (optional)"],walKeep:["اتركه فارغًا ليبقى المحفوظ","Leave empty to keep the saved one"],
+walSave:["حفظ بيانات الحساب","Save account details"],walEdit:["تعديل بيانات الحساب","Edit account details"],walSaved:["✓ تم حفظ بيانات حسابك","✓ Your account details were saved"],walPriv:["بياناتك تُستخدم لتحويل مستحقاتك فقط وتظهر للإدارة فقط. لا نعرض الرقم كاملًا هنا.","Your details are used only to pay you and are visible to admin only. The full number is never shown here."],
+walList:["آخر الحركات","Recent activity"],walNone:["لا توجد حركات بعد","No activity yet"],walNoPay:["لم يُستلم المبلغ: بدون أجر","Money not received: no fee"],walCashN:["كاش: المبلغ معك وتحتفظ بأجرك","Cash: you hold the money and keep your fee"],walTrN:["حوالة: المبلغ عند التطبيق ويُضاف أجرك لرصيدك","Transfer: the app holds the money and your fee is added to your balance"],walSettle:["تسوية مع الإدارة","Settlement with admin"],walIn:["سلّمت مبلغًا للإدارة","You handed money to admin"],walOut:["استلمت مبلغًا من التطبيق","You received money from the app"]
+};
+var M={"كود التسليم غلط، اطلبه من العميل":"Wrong delivery code, ask the customer for it","محاولات كثيرة لكود التسليم، حاول بعد 10 دقائق أو كلّم الإدارة":"Too many wrong delivery codes, try again in 10 minutes or contact admin","تعذر التحقق من موقعك الآن، حاول مرة ثانية":"Could not verify your location now, try again","موقع الاستلام غير محدد على الخريطة عندنا. تم إبلاغ الإدارة لتحديده، حاول بعد قليل":"The pickup place is not pinned on our map yet. The admin was notified, try again shortly",
+"اختر تقييم الخدمة وتقييم المندوب (من 1 إلى 5 نجوم)":"Choose 1 to 5 stars","اختر من 1 إلى 5 نجوم":"Choose 1 to 5 stars",
+"اكتب رقم العملية أو ارفع صورة الحوالة":"Enter the transfer reference or upload a photo","اكتب سبب عدم استلام المبلغ":"Enter why the money was not received",
+"اكتب مبلغ الفاتورة (من 1 إلى 20000 جنيه)":"Enter the invoice amount (1 to 20000 EGP)","الطلب غير متاح الآن":"Order not available now","الطلب غير موجود":"Order not found",
+"النظام مشغول، حاول بعد لحظات":"System busy, try again in a moment","تعذر رفع صورة الحوالة، أعد المحاولة":"Could not upload the transfer photo, try again",
+"تم تقييم هذا العميل سابقًا":"This customer was already rated","حالة غير صحيحة":"Invalid status","سبقك مندوب آخر لهذا الطلب":"Another courier took this order",
+"سجّل استلام الطلب من المطعم/المتجر أولًا":"Record picking up the order first","صوّر الفاتورة وارفعها":"Take a photo of the invoice and upload it","غير متاح":"Not available",
+"لا يمكن التراجع الآن":"Cannot withdraw now","لا يمكن التراجع بعد تسجيل الوصول والفاتورة، تواصل مع الإدارة":"Cannot withdraw after arrival/invoice, contact admin",
+"لا يمكن تغيير الحالة الآن":"Cannot change the status now","هذا الطلب لا يحتاج فاتورة":"This order needs no invoice","هذا الطلب ليس لك":"This order is not yours",
+"هذه الخطوة غير متاحة الآن، حدّث الصفحة":"This step isn't available now, refresh the page","يمكن التقييم بعد التسليم":"You can rate after delivery",
+"محاولات كثيرة، حاول بعد 10 دقائق":"Too many attempts, try again in 10 minutes","الرمز غير صحيح":"Incorrect code","ارفع الفاتورة أولًا":"Upload the invoice first",
+"لا يمكن مشاركة أرقام أو حسابات تواصل. استخدم المحادثة هنا":"Phone numbers and contact accounts cannot be shared. Use this chat","انتظر لحظة قبل إرسال رسالة أخرى":"Wait a moment before sending another message","وصلت للحد الأقصى من الرسائل لهذا الطلب":"Message limit reached for this order","المحادثة غير متاحة الآن":"Chat is not available now","اكتب رسالة":"Type a message",
+"أرسلت بلاغًا قبل قليل، انتظر دقيقتين":"You sent a report a moment ago, wait two minutes","اختر نوع المشكلة":"Choose the problem type","اكتب تفاصيل المشكلة":"Write the problem details","لا يمكن الإبلاغ عن هذا الطلب الآن":"Cannot report this order now","انتظر دقيقة قبل إرسال رسالة أخرى":"Wait a minute before sending another message","اكتب رسالتك":"Write your message","وصلت للحد الأقصى من الرفض اليوم (مرتان فقط)":"You reached today's rejection limit (2 only)","التراجع عن الطلب غير متاح، أبلغ الإدارة عن المشكلة":"Withdrawing is not available, report the problem to admin","عندك طلب لم تُنهِه بعد، أنهِه أولًا ثم اقبل طلبًا جديدًا":"You still have an unfinished order. Finish it first, then accept a new one","موقعك لم يصل للنظام بعد: تأكد أن GPS شغال وصفحتك مفتوحة وانتظر لحظات ثم اضغط مرة ثانية":"Your location has not reached the system yet: make sure GPS is on and this page is open, wait a moment, then tap again",
+"اكتب اسم صاحب الحساب كما في البنك (حروف فقط)":"Enter the account holder name as in the bank (letters only)","الآيبان غير صحيح: يبدأ بـ EG ثم 27 رقمًا":"Invalid IBAN: it starts with EG followed by 27 digits","رقم فودافون كاش لازم يكون موبايل مصري يبدأ بـ 01 (11 رقم)":"Vodafone Cash number must be an Egyptian mobile starting with 01 (11 digits)","اكتب الآيبان أو رقم فودافون كاش على الأقل":"Enter the IBAN or the Vodafone Cash number at least","محاولات كثيرة، حاول بعد ساعة":"Too many attempts, try again in an hour"};
+var SND=true,AC=null,SEEN=null,TT=document.title;
+try{SND=localStorage.getItem("ws")!=="0"}catch(e){}
+function unlock(){try{if(!AC){var C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C()}if(AC&&AC.state==="suspended")AC.resume()}catch(e){}hint()}
+function hint(){var h=$("sndHint");if(!h)return;var bad=SND&&!(AC&&AC.state==="running");h.style.display=bad?"block":"none";h.textContent=t("sndHint")}
+function sndBtn(){$("snd").textContent=SND?"🔔":"🔕"}
+function beep(){
+  try{navigator.vibrate&&navigator.vibrate([500,150,500,150,500,150,500])}catch(e){}
+  if(!SND||!AC||AC.state!=="running")return;
+  try{[0,.3,.6,.9,1.2,1.5].forEach(function(d,i){var o=AC.createOscillator(),g=AC.createGain(),n=AC.currentTime+d;
+    o.type="square";o.frequency.value=i%2?1320:880;g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(.9,n+.02);g.gain.exponentialRampToValueAtTime(.0001,n+.26);
+    o.connect(g);g.connect(AC.destination);o.start(n);o.stop(n+.28)})}catch(e){}}
+function checkNew(r){
+  var nw=0,cur={};
+  (r.available||[]).forEach(function(o){cur[o.no]=1;if(SEEN&&!SEEN[o.no])nw++});
+  SEEN=cur;if(!nw)return;
+  beep();var b=$("alertBar");b.textContent=nw===1?t("newOrd"):t("newOrds")+nw;b.className="on";
+  try{document.title="🔔 "+TT}catch(e){}
+  clearTimeout(checkNew.t);checkNew.t=setTimeout(function(){b.className=""},12000)}
+function navUrl(txt,fb){
+  var m=/https?:\/\/\S+/.exec(txt||"");
+  if(m){var u=m[0],c=/[?&](?:q|query|destination|ll)=(-?\d+\.\d+),(-?\d+\.\d+)/.exec(u);
+    return c?"https://www.google.com/maps/dir/?api=1&destination="+c[1]+","+c[2]:u}
+  var q=String(fb||txt||"").replace(/\s+/g," ").trim();
+  return q?"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q+" المحلة الكبرى"):""}
+function t(k){var d=T[k];return d?d[LANG==="en"?1:0]:k}
+function tm(m){
+  if(LANG!=="en"||!m)return m;
+  if(M[m])return M[m];
+  var r=/^المبلغ المستلم أقل من المطلوب \(([\d.]+) جنيه\)$/.exec(m);if(r)return "Amount received is less than required ("+r[1]+" EGP)";
+  r=/^إشارة الـGPS ضعيفة \(الدقة حوالي (\d+) متر\)\. اطلع لمكان مفتوح وانتظر لحظات ثم اضغط$/.exec(m);if(r)return "Weak GPS signal (accuracy about "+r[1]+" m). Go to an open area, wait a moment, then tap";
+  r=/^أنت تبعد حوالي (\d+) متر عن (موقع الاستلام|موقع التسليم)\. اقترب لمسافة (\d+) أمتار ثم اضغط$/.exec(m);if(r)return "You are about "+r[1]+" m from the "+(r[2]==="موقع الاستلام"?"pickup":"delivery")+" location. Move within "+r[3]+" m, then tap";
+  return m}
+function stT(s){return s==="مقبول"?t("st_acc"):s==="في الطريق"?t("st_way"):s==="جديد"?t("st_new"):s}
+var CODE="",timer=null,busy=false,LAST=null,NAME="";
+var ONLINE=true,SKEW=0,SUP="",HIST=null,REP={},DONE={};
+var REPORT=["العميل لا يرد","العنوان أو الموقع غير واضح","المطعم مغلق أو الطلب غير متوفر","مشكلة في الدفع","مشكلة في الفاتورة","أخرى"];   // نفس القائمة في CourierApp.gs
+var WAIT_SEC=300;   // بعد كم ثانية من الوصول يظهر زر "العميل لا يرد"
+function $(i){return document.getElementById(i)}
+function el(tg,c,x){var e=document.createElement(tg);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function put(p,x){var re=/https?:\/\/\S+/g,last=0,m;
+  while((m=re.exec(x))){if(m.index>last)p.appendChild(document.createTextNode(x.slice(last,m.index)));
+    var a=el("a",null,t("openLoc"));a.href=m[0];a.target="_blank";a.rel="noopener noreferrer";p.appendChild(a);last=m.index+m[0].length}
+  if(last<x.length)p.appendChild(document.createTextNode(x.slice(last)))}
+function row(card,k,v){if(!v)return;var r=el("div","row");r.appendChild(el("b",null,k));var s=el("span");put(s,v);r.appendChild(s);card.appendChild(r)}
+/* أسباب رفض المندوب: القيمة عربي للسيرفر، والعرض حسب اللغة */
+var RJO={no:"",r:"",n:""},RJR=[["المكان بعيد","Too far"],["مشغول بطلب تاني","Busy with another order"],["المطعم مقفول أو زحمة","Restaurant closed or crowded"],["مشكلة في المركبة","Vehicle problem"],["أخرى","Other"]];
+function alertMsg(m){try{if(typeof setMsg==="function"){setMsg(m,1);return}}catch(e){}alert(m)}
+function btn(tx,cls,fn){var b=el("button",cls,tx);b.onclick=function(){fn(b)};return b}
+var editTs=0;
+function touch(){editTs=Date.now()}
+function field(c,label,type,val,ph){
+  var l=el("label",null,label);l.style.marginTop="8px";c.appendChild(l);
+  var i=el("input");i.type=type;if(val!=null)i.value=val;if(ph)i.placeholder=ph;
+  if(type==="number"){i.inputMode="decimal";i.step="0.01"}
+  i.oninput=touch;c.appendChild(i);return i}
+function photo(c,label){
+  var box={data:null};
+  var i=el("input");i.type="file";i.accept="image/*";i.setAttribute("capture","environment");i.style.display="none";
+  var b=el("button","sec","📷 "+label);
+  var pv=el("img");pv.style.cssText="display:none;width:100%;border-radius:10px;margin-top:8px";
+  var st=el("div","sub","");
+  b.onclick=function(){i.click()};
+  i.onchange=function(){touch();st.textContent=t("prep");
+    pickImg(i,function(d){box.data=d;
+      if(d){pv.src=d;pv.style.display="block";st.textContent=t("photoOk");b.textContent="📷 "+t("retake")}
+      else st.textContent=t("photoBad")})};
+  c.appendChild(b);c.appendChild(i);c.appendChild(pv);c.appendChild(st);return box}
+function pickImg(input,cb){
+  var f=input.files&&input.files[0];if(!f){cb(null);return}
+  var fr=new FileReader();
+  fr.onload=function(){var im=new Image();
+    im.onload=function(){var k=Math.min(1,1100/Math.max(im.width,im.height));
+      var cv=document.createElement("canvas");cv.width=Math.round(im.width*k);cv.height=Math.round(im.height*k);
+      cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);cb(cv.toDataURL("image/jpeg",0.6))};
+    im.onerror=function(){cb(null)};im.src=fr.result};
+  fr.onerror=function(){cb(null)};fr.readAsDataURL(f)}
+function tipRow(p,o){if(Number(o.tip)>0){var tp=el("div","row");tp.appendChild(el("b",null,t("tipK")));tp.appendChild(el("span","fee",o.tip+t("sar")));p.appendChild(tp)}}
+function bill(c,o){
+  var b=el("div","card");b.style.background="var(--bg)";
+  var iv=Math.round((Number(o.inv)+Number(o.kidInv||0))*100)/100;
+  if(iv>0){var a=el("div","row");a.appendChild(el("b",null,t("billInv")));a.appendChild(el("span",null,iv+t("sar")));b.appendChild(a)}
+  var tt=el("div","row");tt.appendChild(el("b",null,t("billTot")+(o.isCash?t("cashW"):t("trW"))+")"));tt.appendChild(el("span","fee",o.total+t("sar")));b.appendChild(tt);
+  tipRow(b,o);
+  c.appendChild(b)}
+function stars(){
+  var w=el("div","stars"),cur=0,sp=[];
+  for(var k=1;k<=5;k++)(function(n){var s=el("span",null,"★");s.onclick=function(){cur=n;touch();sp.forEach(function(x,j){x.className=j<n?"on":""})};sp.push(s);w.appendChild(s)})(k);
+  w.get=function(){return cur};return w}
+function rateCard(o){
+    var c=el("div","card");c.appendChild(el("span","tag",o.no));
+  row(c,t("destK"),o.dest);
+  tipRow(c,o);
+  c.appendChild(el("div","sub",t("rateQ")));
+  var st=stars();c.appendChild(st);
+  var nt=field(c,t("rateNote"),"text",null,t("rateNoteP"));
+  c.appendChild(btn(t("rateSend"),"",function(b){
+    if(!st.get()){setMsg(t("pickStars"),1);return}
+    act("courierRateCustomer",o.no,[st.get(),nt.value],b)}));
+  c.appendChild(btn(t("skip"),"sec",function(b){act("courierSkipRate",o.no,[],b)}));
+  return c}
+function qtext(x){return /^@q[1-6]$/.test(x)?t(x.slice(1)):x}
+var FT=new Intl.DateTimeFormat("en-GB",{timeZone:"Africa/Cairo",hour:"2-digit",minute:"2-digit",hour12:false});
+function ft(ms){return ms?FT.format(new Date(ms)):""}
+function fillList(box,list,me){
+  box.textContent="";
+  if(!list||!list.length)box.appendChild(el("div","sub",t("noMsg")));
+  (list||[]).forEach(function(m){
+    var b=el("div","b "+(m.w===me?"me":""));var s=el("span");put(s,qtext(m.x));b.appendChild(s);b.appendChild(el("small",null,typeof m.t==="number"?ft(m.t):m.t));box.appendChild(b)});
+  var n=String((list||[]).length);if(box.getAttribute("data-n")!==n){box.setAttribute("data-n",n);box.scrollTop=box.scrollHeight}}
+/* ===== اللوحة الجانبية: الإدارة + العميل ===== */
+var INB=[],SEENA=null,SEENC={},SEENC0=false,DW={open:false,tab:"a",no:""};
+function getSeenA(){try{var v=localStorage.getItem("wi");if(v!==null)return parseInt(v,10)||0}catch(e){}return SEENA}
+function setSeenA(v){SEENA=v;try{localStorage.setItem("wi",String(v))}catch(e){}}
+function lastA(){var m=0;INB.forEach(function(x){if(x.w==="a"&&x.t>m)m=x.t});return m}
+function unreadA(){var s=getSeenA()||0,n=0;INB.forEach(function(x){if(x.w==="a"&&x.t>s)n++});return n}
+function chatOrders(){return ((LAST&&LAST.mine)||[]).filter(function(o){return o.chatOn})}
+function cc(o){return (o.chat||[]).filter(function(m){return m.w==="c"}).length}
+function custUnread(){var n=0;chatOrders().forEach(function(o){n+=Math.max(0,cc(o)-(SEENC[o.no]||0))});return n}
+function curOrder(){var l=chatOrders(),i;for(i=0;i<l.length;i++)if(l[i].no===DW.no)return l[i];return l[0]||null}
+function markSeen(){
+  if(DW.open&&DW.tab==="a"&&INB.length)setSeenA(lastA());
+  if(DW.open&&DW.tab==="c"){var o=curOrder();if(o)SEENC[o.no]=cc(o)}}
+function ping(tx){
+  beep();var b=$("alertBar");b.textContent=tx;b.className="on";
+  clearTimeout(checkNew.t);checkNew.t=setTimeout(function(){b.className=""},12000)}
+function tabBtn(b,label,n,on){b.textContent=label;if(n)b.appendChild(el("span","bdg",String(n)));b.classList.toggle("on",on)}
+function drawUi(){
+  if(!CODE)return;
+  markSeen();
+  var ua=unreadA(),uc=custUnread(),tot=ua+uc,fb=$("fabn");
+  fb.textContent=String(tot);fb.classList.toggle("hide",!tot);
+  $("fab").classList.toggle("hide",DW.open);
+  $("dim").classList.toggle("hide",!DW.open);
+  $("dw").classList.toggle("open",DW.open);$("dw").setAttribute("aria-hidden",DW.open?"false":"true");
+  tabBtn($("tbA"),t("tabA"),ua,DW.tab==="a");tabBtn($("tbC"),t("tabC"),uc,DW.tab==="c");
+  $("pA").classList.toggle("hide",DW.tab!=="a");$("pC").classList.toggle("hide",DW.tab!=="c");
+  if(!DW.open)return;
+  if(DW.tab==="a")fillList($("alist"),INB,"c");else paneC()}
+function paneC(){
+  var l=chatOrders(),o=curOrder(),ch=$("ochips");
+  if(o)DW.no=o.no;
+  ch.textContent="";
+  if(l.length>1)l.forEach(function(x){
+    var b=el("button",x.no===DW.no?"on":"",x.pickupName||x.no);
+    var u=Math.max(0,cc(x)-(SEENC[x.no]||0));if(u)b.appendChild(el("span","bdg",String(u)));
+    b.onclick=function(){DW.no=x.no;$("clist").setAttribute("data-n","");drawUi()};ch.appendChild(b)});
+  $("cnone").classList.toggle("hide",!!o);$("cbox").classList.toggle("hide",!o);
+  if(!o)return;
+  fillList($("clist"),o.chat,"d");
+  var q=$("cqr");if(q.getAttribute("data-l")!==LANG){q.setAttribute("data-l",LANG);q.textContent="";
+    ["@q1","@q2","@q3","@q5"].forEach(function(k){var b=el("button",null,qtext(k));b.onclick=function(){sendC(k)};q.appendChild(b)})}}
+function openDw(tab,no){
+  DW.open=true;DW.tab=tab||"a";if(no)DW.no=no;
+  $("alist").setAttribute("data-n","");$("clist").setAttribute("data-n","");
+  drawUi();loadInbox()}
+function closeDw(){DW.open=false;drawUi()}
+function loadInbox(){
+  if(!CODE)return;
+  google.script.run.withSuccessHandler(function(r){
+    if(!r||!r.ok)return;
+    var first=getSeenA()===null,prev=unreadA();
+    INB=r.list||[];
+    if(first)setSeenA(lastA());
+    var open=DW.open&&DW.tab==="a";
+    if(!first&&!open&&unreadA()>prev)ping(t("newAdm"));
+    drawUi()}).withFailureHandler(function(){}).courierInbox(CODE)}
+function sendA(){
+  var v=$("ain").value.trim(),e=$("aerr");
+  if(!v){e.textContent=t("supNeed");return}
+  var b=$("asend");b.disabled=true;e.textContent="";
+  google.script.run.withSuccessHandler(function(r){b.disabled=false;
+    if(r&&r.ok){$("ain").value="";INB=r.list||[];setSeenA(lastA());drawUi()}else e.textContent=tm(r&&r.msg)||t("noExec")})
+  .withFailureHandler(function(){b.disabled=false;e.textContent=t("noConn")}).courierInboxSend(CODE,v)}
+function sendC(text){
+  var o=curOrder(),e=$("cerr");if(!o)return;
+  var b=$("csend");b.disabled=true;e.textContent="";
+  google.script.run.withSuccessHandler(function(r){b.disabled=false;
+    if(r&&r.ok){$("cin").value="";o.chat=r.chat;drawUi()}else e.textContent=tm(r&&r.msg)||t("noExec")})
+  .withFailureHandler(function(){b.disabled=false;e.textContent=t("noConn")}).courierChatSend(CODE,o.no,text)}
+function step(c,tx){c.appendChild(el("h2",null,tx))}
+function opt(v,tx){var o=document.createElement("option");o.value=v;o.textContent=tx;return o}
+function reportBox(c,o){
+  var d=REP[o.no]||(REP[o.no]={open:false,k:"",n:""});
+  var box=el("div",d.open?"":"hide");
+  var sel=el("select");sel.appendChild(opt("",t("rkPick")));
+  REPORT.forEach(function(k,i){sel.appendChild(opt(k,t("rk"+i)))});
+  sel.value=d.k;sel.onchange=function(){d.k=sel.value;touch()};box.appendChild(sel);
+  var nt=field(box,t("rpNote"),"text",d.n,t("rpNoteP"));nt.oninput=function(){d.n=nt.value;touch()};
+  box.appendChild(btn(t("rpSend"),"",function(b){
+    if(!sel.value){setMsg(t("rpPick"),1);return}
+    act("courierReport",o.no,[sel.value,nt.value],b,function(){d.open=false;d.k="";d.n="";setMsg(t("rpOk"))})}));
+  c.appendChild(btn(t("rpB"),"sec",function(){d.open=!d.open;box.classList.toggle("hide",!d.open);touch()}));
+  c.appendChild(box)}
+function waitBox(c,o){
+  var w=el("div","wait");w.setAttribute("data-at",String(o.atdestAt-SKEW));
+  w.appendChild(el("span",null,t("waitL")));w.appendChild(el("span","wtm","00:00"));
+  if(DONE[o.no]){w.appendChild(el("div","sub",t("noAnsOk")))}
+  else{
+    w.appendChild(el("div","sub whint",t("waitH")));
+    var b=btn(t("noAns"),"wbtn hide",function(x){act("courierReport",o.no,["العميل لا يرد",""],x,function(){DONE[o.no]=1;setMsg(t("rpOk"))})});
+    b.style.background="#dc2626";w.appendChild(b)}
+  c.appendChild(w)}
+function tickWait(){
+  var ws=document.querySelectorAll(".wait"),now=Date.now();
+  for(var i=0;i<ws.length;i++){
+    var w=ws[i],at=parseInt(w.getAttribute("data-at"),10),sec=Math.max(0,Math.floor((now-at)/1000));
+    var m=Math.floor(sec/60),s2=sec%60;
+    w.querySelector(".wtm").textContent=(m<10?"0":"")+m+":"+(s2<10?"0":"")+s2;
+    var b=w.querySelector(".wbtn"),h=w.querySelector(".whint");
+    if(b&&sec>=WAIT_SEC){b.classList.remove("hide");if(h)h.classList.add("hide")}}}
+setInterval(tickWait,1000);
+function card(o,mine){
+  var c=el("div","card");
+  c.appendChild(el("span","tag "+(o.status==="مقبول"?"m":o.status==="في الطريق"?"w":""),stT(o.status)));
+  c.appendChild(document.createTextNode(" "+o.no));
+  if(o.kid)c.appendChild(el("div","rsx a",t("kidTag")+o.kid));
+  else if(o.kidNo)c.appendChild(el("div","rsx a",t("mainK")));
+  row(c,t("pickFrom"),o.pickup);
+  if(o.rs){var rx=o.rs,rc="rsx",rt2="";
+    if(rx.rst==="جاهز"){rc+=" r";rt2=t("rsRdy")}
+    else if(rx.rst==="مرفوض"){rc+=" x";rt2=t("rsRej")}
+    else if(rx.rst==="مقبول"){rc+=" a";var left=Math.ceil((rx.racc+rx.rmin*60000-(Date.now()+SKEW))/60000);rt2=left>0?t("rsAcc")+left+t("rsMin"):t("rsNow")}
+    else rt2=t("rsNo");
+    c.appendChild(el("div",rc,rt2));
+    if(mine&&rx.rinv){var iv=el("div","rsx inv");iv.appendChild(document.createTextNode(t("rsInv")));var ib=el("b",null,rx.rinv);ib.dir="ltr";iv.appendChild(ib);c.appendChild(iv)}}
+  row(c,t("itemsK"),o.items);row(c,t("destK"),o.dest);
+  row(c,t("payK"),o.pay);row(c,t("notesK"),o.notes);
+  if(!o.kid){var f=el("div","row");f.appendChild(el("b",null,t("feeK")));f.appendChild(el("span","fee",o.fee+t("sar")));c.appendChild(f)}
+  if(!mine){c.appendChild(btn(t("accept"),"",function(b){act("courierAccept",o.no,[],b)}));
+    if(LAST&&LAST.rejLeft>0){var rbx=el("div",RJO.no===o.no?"":"hide");
+      var rsl=document.createElement("select");var r0=document.createElement("option");r0.value="";r0.textContent=t("rjPick");rsl.appendChild(r0);
+      RJR.forEach(function(x){var op=document.createElement("option");op.value=x[0];op.textContent=x[LANG==="en"?1:0];rsl.appendChild(op)});
+      var rin=el("input");rin.maxLength=120;rin.placeholder=t("rjNote");rin.style.marginTop="8px";
+      if(RJO.no===o.no){rsl.value=RJO.r;rin.value=RJO.n}
+      rsl.onchange=function(){RJO.r=rsl.value};rin.oninput=function(){RJO.n=rin.value};
+      rbx.appendChild(rsl);rbx.appendChild(rin);
+      rbx.appendChild(btn(t("rjGo"),"sec",function(b){var w=rsl.value,n=rin.value.trim();
+        if(!w){alertMsg(t("rjNeed"));return}if(w==="أخرى"&&n.length<3){alertMsg(t("rjNeedN"));return}
+        if(confirm(t("confRej")))act("courierReject",o.no,[w,n],b,function(){RJO={no:"",r:"",n:""}})}));
+      c.appendChild(btn(t("rejectB")+" ("+LAST.rejLeft+")","sec",function(){RJO=RJO.no===o.no?{no:"",r:"",n:""}:{no:o.no,r:"",n:""};rbx.classList.toggle("hide",RJO.no!==o.no);rsl.value="";rin.value=""}));
+      c.appendChild(rbx)}
+    return c}
+  var place=o.pickupName||t("place");
+  var g=o.stage;
+  var nv=(g==="accepted"||g==="arrived"||g==="invoiced")?[t("navP")+place,navUrl(o.pickup,o.pickupName)]:(g==="picked"||g==="ontheway"||g==="atdest")?[t("navD"),navUrl(o.dest)]:null;
+  if(nv&&nv[1]){var na=el("a","nav",nv[0]);na.href=nv[1];na.target="_blank";na.rel="noopener noreferrer";c.appendChild(na)}
+  if(g==="accepted"){
+    step(c,t("arrQ1")+place+t("arrQ2"));
+    c.appendChild(btn(t("arrBtn"),"",function(b){act("courierArrived",o.no,[],b)}));
+  }else if(g==="arrived"&&o.needInv){
+    step(c,t("invH"));
+    var amt=field(c,t("invAmt"),"number",null,t("invEx"));
+    var ph=photo(c,t("photoInv"));
+    c.appendChild(btn(t("upInv"),"",function(b){
+      if(!amt.value||!(parseFloat(amt.value)>0)){setMsg(t("needAmt"),1);return}
+      if(!ph.data){setMsg(t("needPhoto"),1);return}
+      act("courierInvoice",o.no,[amt.value,ph.data],b)}));
+  }else if(g==="arrived"||g==="invoiced"){
+    if(g==="invoiced"&&!o.kid)bill(c,o);
+    step(c,t("pickQ"));
+    c.appendChild(btn(t("pickBtn")+place,"",function(b){act("courierPicked",o.no,[],b)}));
+  }else if(g==="picked"){
+    if(o.kid){step(c,t("kidGo")+o.kid)}
+    else{bill(c,o);
+      c.appendChild(btn(t("goBtn"),"",function(b){act("courierSetStatus",o.no,["في الطريق"],b)}))}
+  }else if(g==="ontheway"){
+    bill(c,o);
+    c.appendChild(btn(t("dstBtn"),"",function(b){act("courierAtDest",o.no,[],b)}));
+  }else if(g==="atdest"){
+    bill(c,o);
+    if(o.atdestAt)waitBox(c,o);
+    step(c,t("delH"));
+    var pin=field(c,t("pinL"),"tel",null,t("pinP"));pin.maxLength=4;pin.inputMode="numeric";pin.dir="ltr";
+    function pinOk(){if(!/^\d{4}$/.test(pin.value.trim())){setMsg(t("pinNeed"),1);try{pin.focus()}catch(e){}return false}return true}
+    if(o.isCash){
+      var got=field(c,t("gotAmt"),"number",o.total);
+      c.appendChild(btn(t("gotBtn"),"",function(b){
+        if(!pinOk())return;
+        if(!(parseFloat(got.value)>=parseFloat(o.total))){setMsg(t("lessThan")+o.total+t("sar"),1);return}
+        if(confirm(t("confDel1")+got.value+t("confDel2")))act("courierDeliver",o.no,[got.value,"","",pin.value.trim()],b)}));
+    }else if(o.wallet){
+      /* فودافون كاش: العميل بيحوّل لمحفظة واصل ويرفع الصورة من صفحة التتبع، والمندوب بيتأكد بعينه */
+      var vb=el("div","sub",(LANG==="en"?"📱 Vodafone Cash · amount ":"📱 فودافون كاش · المطلوب ")+o.total+t("sar"));vb.style.fontWeight="800";c.appendChild(vb);
+      c.appendChild(el("div",o.wproof?"sub":"err",o.wproof?(LANG==="en"?"✅ The customer uploaded the transfer screenshot. Check the success message on their phone before handing over.":"✅ العميل رفع صورة التحويل. شوف رسالة «تم التحويل» على موبايله بعينك قبل ما تسلّم."):(LANG==="en"?"⏳ Waiting for the customer to transfer and upload the screenshot from the tracking page.":"⏳ مستني العميل يحوّل ويرفع صورة التحويل من صفحة التتبع.")));
+      c.appendChild(btn(LANG==="en"?"I saw the transfer and delivered":"شفت التحويل وسلّمت الطلب","",function(b){
+        if(!pinOk())return;
+        if(!o.wproof){setMsg(LANG==="en"?"Wait until the customer uploads the transfer screenshot":"استنى لحد ما العميل يرفع صورة التحويل",1);load(true);return}
+        if(confirm(LANG==="en"?"Did you see the transfer success message on the customer's phone?":"شفت رسالة التحويل على موبايل العميل؟"))act("courierDeliver",o.no,["","","",pin.value.trim()],b)}));
+    }else{
+      var rf=field(c,t("ref"),"text",null,t("refP"));
+      var ph2=photo(c,t("photoTr"));
+      c.appendChild(btn(t("trBtn"),"",function(b){
+        if(!pinOk())return;
+        if(rf.value.trim().length<4&&!ph2.data){setMsg(t("needRef"),1);return}
+        if(confirm(t("confTr")))act("courierDeliver",o.no,["",rf.value,ph2.data||"",pin.value.trim()],b)}));
+    }
+    var box=el("div","hide");
+    var why=field(box,t("why"),"text",null,t("whyP"));
+    box.appendChild(btn(t("unpaidConf"),"sec",function(b){
+      if(why.value.trim().length<3){setMsg(t("needWhy"),1);return}
+      act("courierDeliverUnpaid",o.no,[why.value],b)}));
+    c.appendChild(btn(t("unpaidBtn"),"sec",function(b){box.classList.toggle("hide");touch()}));
+    c.appendChild(box);
+  }
+  reportBox(c,o);
+  return c}
+function setMsg(tx,bad){$("msg").className=bad?"err":"";$("msg").textContent=tx}
+function showStats(s){
+  var c=$("stat");c.textContent="";if(!s)return;
+  var g=el("div","grid");
+  [[t("sDel"),s.delivered],[t("sToday"),s.deliveredToday],[t("sRej"),s.rejected]].forEach(function(x){
+    var b=el("div","st");b.appendChild(el("b",null,String(x[1])));b.appendChild(el("span",null,x[0]));g.appendChild(b)});
+  c.appendChild(g);
+  var v=s.balance,tx=v<0?t("owe")+Math.abs(v)+t("sar"):v>0?t("due")+v+t("sar"):t("even");
+  c.appendChild(el("div","bal "+(v<0?"neg":v>0?"pos":""),tx));
+  if(s.avg>0)c.appendChild(el("div","sub",t("avgT")+s.avg+" ("+s.rcnt+t("ratings")+")"));
+  if(s.tips>0)c.appendChild(el("div","sub",t("tipsT")+s.tips+t("tipsE")));
+  c.appendChild(el("div","sub",t("earned")+s.earned+t("sar")));
+}
+function onUi(){var b=$("onbtn");b.textContent=ONLINE?t("onB"):t("offB");b.className=ONLINE?"on":"off";$("offBar").classList.toggle("hide",ONLINE)}
+function dayLabel(k){var p=String(k).split("/");return p.length===3?p[2]+"/"+p[1]+"/"+p[0]:String(k)}
+function showHist(h){
+  var b=$("histbox");b.textContent="";b.appendChild(el("h2",null,t("histT")));
+  if(!h){b.appendChild(el("div","muted",t("loading")));return}
+  var g=el("div","grid"+(h.prev?" g4":""));
+  var cards=[[t("hToday"),h.today],[t("h7"),h.week],[t("hMonth"),h.month]];
+  if(h.prev)cards.push([t("hPrev"),h.prev]);
+  cards.forEach(function(x){
+    var c=el("div","st");c.appendChild(el("b",null,String(x[1].total)));c.appendChild(el("span",null,x[0]));
+    c.appendChild(el("div","sub",x[1].n+t("hOrd")));
+    if(x[1].tips>0)c.appendChild(el("div","sub",t("hTipIn")+x[1].tips));
+    g.appendChild(c)});
+  b.appendChild(g);
+  if(h.cancelled>0)b.appendChild(el("div","sub",t("hCanc")+h.cancelled));
+  b.appendChild(el("div","sub",t("hNote")));
+  if(!h.list.length)b.appendChild(el("div","muted",t("hNoOrd")));
+  var days=[],map={};
+  h.list.forEach(function(o){
+    var k=o.day||String(o.d).slice(0,5);
+    if(!map[k]){map[k]={k:k,sum:0,items:[]};days.push(map[k])}
+    map[k].sum+=Number(o.fee||0)+Number(o.tip||0);map[k].items.push(o)});
+  days.forEach(function(dy){
+    var hd=el("div","dayh");hd.appendChild(el("span",null,dayLabel(dy.k)));
+    hd.appendChild(el("span",null,t("hDayT")+(Math.round(dy.sum*100)/100)+t("sar")));b.appendChild(hd);
+    dy.items.forEach(function(o){
+      var r=el("div","hrow"),l=el("div");l.appendChild(el("span",null,o.place||o.no));l.appendChild(el("small",null,String(o.d).slice(6)+" · "+o.no));
+      var a=el("div","am");a.appendChild(el("div",null,"+"+o.fee+t("sar")));
+      if(o.tip>0)a.appendChild(el("small",null,t("hTipW")+o.tip+t("sar")));
+      if(!o.paid)a.appendChild(el("small",null,t("hUnpaid")));
+      var db=el("button","dbtn",t("hDet"));db.type="button";l.appendChild(db);
+      r.appendChild(l);r.appendChild(a);b.appendChild(r);
+      var pn=el("div","dpan hide");b.appendChild(pn);
+      db.onclick=function(){
+        if(!pn.classList.contains("hide")){pn.classList.add("hide");db.textContent=t("hDet");return}
+        pn.classList.remove("hide");db.textContent=t("hDetHide");pn.textContent="";pn.appendChild(el("div","muted",t("dLoad")));
+        google.script.run.withSuccessHandler(function(x){detDraw(pn,x)}).withFailureHandler(function(){detDraw(pn,null)}).courierOrderDetail(CODE,o.no)}})})}
+function detDraw(pn,r){
+  pn.textContent="";
+    if(!r||!r.ok){pn.appendChild(el("div","err",(r&&tm(r.msg))||t("noConn")));return}
+  pn.appendChild(el("h4",null,t("dTl")));
+  (r.events||[]).forEach(function(e){var d=el("div","ev");d.appendChild(el("b",null,e.t));d.appendChild(el("span",null,e.x));pn.appendChild(d)});
+  pn.appendChild(el("h4",null,t("dChat")));
+  if(!r.chat||!r.chat.length)pn.appendChild(el("div","muted",t("dNoChat")));
+  (r.chat||[]).forEach(function(m){var d=el("div","cm "+(m.w==="d"?"d":"c"));d.appendChild(el("small",null,(m.w==="d"?t("dMe"):t("dCu"))+" · "+m.t));d.appendChild(el("span",null,m.x));pn.appendChild(d)});
+  pn.appendChild(el("div","sub",t("dShot")))}
+/* ===== محفظة المندوب (ملف Wallet.gs): الرصيد + كشف الحساب + بيانات حسابه ===== */
+var WAL=null,WALF=false;
+function walRow(l,k,v){var r=el("div","hrow"),a=el("div",null,k),b=el("div","am",v);r.appendChild(a);r.appendChild(b);l.appendChild(r)}
+function walSave(h,ib,st,b,msg){
+  b.disabled=true;msg.className="sub";msg.textContent=t("doing");
+  google.script.run.withSuccessHandler(function(r){b.disabled=false;
+    if(r&&r.ok){WALF=false;editTs=0;if(WAL)WAL.account=r.account;showWal(WAL);setMsg(t("walSaved"))}
+    else{msg.className="err";msg.textContent=tm(r&&r.msg)||t("noExec")}})
+  .withFailureHandler(function(){b.disabled=false;msg.className="err";msg.textContent=t("noExec2")}).courierWalletSave(CODE,h,ib,st)}
+function showWal(w){
+  var b=$("walbox");b.textContent="";b.appendChild(el("h2",null,t("walT")));
+  if(!w){b.appendChild(el("div","muted",t("loading")));return}
+  var v=w.balance;
+  b.appendChild(el("div","bal "+(v<0?"neg":v>0?"pos":""),v<0?t("owe")+Math.abs(v)+t("sar"):v>0?t("due")+v+t("sar"):t("even")));
+  var c=el("div","card");c.style.background="var(--bg)";c.style.marginTop="10px";
+  walRow(c,t("walPos"),"+"+w.pos+t("sar"));
+  if(w.neg)walRow(c,t("walNeg"),"\u2212"+Math.abs(w.neg)+t("sar"));
+  if(w.settled)walRow(c,t("walSet"),(w.settled>0?"+":"\u2212")+Math.abs(w.settled)+t("sar"));
+  walRow(c,t("walEq"),v+t("sar"));
+  c.appendChild(el("div","wnote",t("walNote")));b.appendChild(c);
+  var a=w.account||{},ac=el("div","card");ac.style.background="var(--bg)";
+  ac.appendChild(el("b",null,t("walAcc")));
+  if(a.has){[[t("walHolder"),a.holder],[t("walIban"),a.ibanM],[t("walStc"),a.stcM]].forEach(function(x){
+    if(!x[1])return;var r=el("div","row");r.appendChild(el("b",null,x[0]));var sp=el("span",null,x[1]);sp.style.direction="ltr";sp.style.display="inline-block";r.appendChild(sp);ac.appendChild(r)})}
+  var form=el("div",a.has&&!WALF?"hide":"");
+  var h=field(form,t("walHolder"),"text",a.holder||"",t("walHolderP"));h.maxLength=60;
+  var ib=field(form,t("walIban"),"text","",a.has?t("walKeep"):"SA00 0000 0000 0000 0000 0000");ib.style.direction="ltr";ib.autocomplete="off";ib.maxLength=40;
+  var st=field(form,t("walStc"),"tel","",a.has?t("walKeep"):"01xxxxxxxxx");st.style.direction="ltr";st.autocomplete="off";st.maxLength=14;
+  var msg=el("div","sub");
+  form.appendChild(btn(t("walSave"),"",function(x){walSave(h.value,ib.value,st.value,x,msg)}));
+  form.appendChild(msg);form.appendChild(el("div","wnote",t("walPriv")));
+  if(a.has)ac.appendChild(btn(t("walEdit"),"sec",function(){WALF=!WALF;form.classList.toggle("hide",!WALF);touch()}));
+  ac.appendChild(form);b.appendChild(ac);
+  b.appendChild(el("h2",null,t("walList")));
+  if(!w.list||!w.list.length)b.appendChild(el("div","muted",t("walNone")));
+  (w.list||[]).forEach(function(e){
+    var r=el("div","hrow"),l=el("div"),am=el("div","am");
+    if(e.k==="o"){
+      l.appendChild(el("span",null,e.place||e.no));
+      l.appendChild(el("small",null,e.d+" \u00b7 "+e.no+" \u00b7 "+(e.cash?t("cashW"):t("trW"))));
+      if(e.paid)l.appendChild(el("small",null,e.cash?t("walCashN"):t("walTrN")));
+      am.appendChild(el("div",null,e.paid?"+"+e.fee+t("sar"):t("walNoPay")));
+      if(e.tip>0)am.appendChild(el("small",null,t("hTipW")+e.tip+t("sar")))
+    }else{
+      l.appendChild(el("span",null,t("walSettle")));
+      l.appendChild(el("small",null,e.d+" \u00b7 "+(e.amt>0?t("walIn"):t("walOut"))));
+      am.appendChild(el("div",null,(e.amt>0?"+":"\u2212")+Math.abs(e.amt)+t("sar")))}
+    r.appendChild(l);r.appendChild(am);b.appendChild(r)})}
+function duesUi(d){var b=$("duesBar");if(!d||!(d.blocked||d.warn)){b.className="hide";b.textContent="";return}
+  b.className=d.blocked?"blk":"wrn";b.textContent=t(d.blocked?"duesBlk":"duesWrn").replace("%o",d.owe).replace("%l",d.limit)}
+/* ===== مشاركة موقع المندوب (ملف Loc.gs): بموافقته، طول ما هو متاح؛ لا يُحفظ له سجل ===== */
+var LW=null,LP=null,LSEND=0,LOK=0,LERR="",WL=null,LHB=null,LST=0;
+function locConsent(){try{return localStorage.getItem("wloc")==="1"}catch(e){return false}}
+function locSet(v){try{if(v)localStorage.setItem("wloc","1");else localStorage.removeItem("wloc")}catch(e){}}
+function locGap(){return (LAST&&LAST.mine&&LAST.mine.length)?10000:30000}
+function locSend(){
+  if(!CODE||!LP||LP.ac>1000)return;
+  var now=Date.now();if(now-LSEND<locGap()-500)return;
+  if(now-LP.t>90000)return;
+  LSEND=now;
+  google.script.run.withSuccessHandler(function(r){if(r&&r.ok){if(!r.skipped)LOK=Date.now();LERR=""}else LERR="bad";locUi()}).withFailureHandler(function(){}).courierPing(CODE,LP.la,LP.ln,LP.ac,false)}
+function onPos(p){var c=p.coords;if(!isFinite(c.latitude)||!isFinite(c.longitude))return;LP={la:c.latitude,ln:c.longitude,ac:c.accuracy||0,t:Date.now()};LERR="";locSend()}
+function onErr(e){LERR=e&&e.code===1?"den":"bad";locUi()}
+function locStart(){
+  if(LW!==null||!navigator.geolocation)return;
+  LST=Date.now();
+  try{LW=navigator.geolocation.watchPosition(onPos,onErr,{enableHighAccuracy:true,maximumAge:5000,timeout:30000})}catch(e){LW=null;LERR="bad"}
+  clearInterval(LHB);LHB=setInterval(locBeat,5000);
+  setTimeout(function(){locUi()},16000)}
+/* لو الـ GPS ما ردش (جوه مبنى مثلًا): نجيب موقع تقريبي من الشبكة لحد ما الدقيق يوصل */
+var LCOARSE=false;
+function locCoarse(){
+  if(LCOARSE||!navigator.geolocation)return;LCOARSE=true;
+  try{navigator.geolocation.getCurrentPosition(function(p){LCOARSE=false;if(!LP||LP.ac>(p.coords.accuracy||0)||Date.now()-LP.t>60000)onPos(p)},function(e){LCOARSE=false;if(e&&e.code===1)onErr(e)},{enableHighAccuracy:false,maximumAge:60000,timeout:15000})}catch(e){LCOARSE=false}}
+function locRetry(){if(LW!==null){try{navigator.geolocation.clearWatch(LW)}catch(e){}LW=null}LERR="";locStart();locCoarse();locUi()}
+/* الجهاز الواقف لا يرسل تحديثات (watchPosition ساكت): نجدد الموقع بأنفسنا (كل ~10 ثواني لو معاه طلب، وكل ~25 ثانية غير كده) حتى يبقى موقعه طازجًا عند الضغط على «وصلت» */
+var LBUSY=false;
+function locBeat(){
+  var lim=(LAST&&LAST.mine&&LAST.mine.length)?10000:25000;
+  if(!LP&&LST&&Date.now()-LST>7000)locCoarse();
+  if(LP&&!LBUSY&&Date.now()-LP.t>lim&&navigator.geolocation){LBUSY=true;var fn=function(){LBUSY=false};try{navigator.geolocation.getCurrentPosition(function(p){fn();onPos(p)},fn,{enableHighAccuracy:true,maximumAge:0,timeout:10000})}catch(e){fn()}}
+  locSend()}
+/* موقع طازج لحظة الضغط على «وصلت» (يُرسل مع الطلب نفسه فلا يعتمد على نبضة قديمة) */
+function freshFix(cb){
+  if(!navigator.geolocation){cb(null);return}
+  if(LP&&Date.now()-LP.t<12000&&LP.ac<=30){cb(LP);return}   /* عندنا موقع حديث ودقيق: نستخدمه فورًا بدون انتظار */
+  var fin=false,best=null,w=null,tmr=null;
+  function end(){if(fin)return;fin=true;clearTimeout(tmr);try{if(w!==null)navigator.geolocation.clearWatch(w)}catch(e){}cb(best)}
+  tmr=setTimeout(end,5000);
+  try{w=navigator.geolocation.watchPosition(function(p){var c=p.coords;if(!isFinite(c.latitude)||!isFinite(c.longitude))return;var ac=c.accuracy||0;
+    if(!best||ac<best.ac){best={la:c.latitude,ln:c.longitude,ac:ac,t:Date.now()};LP=best}
+    if(ac<=30)end()},function(){end()},{enableHighAccuracy:true,maximumAge:0,timeout:6000});if(fin)navigator.geolocation.clearWatch(w)}catch(e){end()}}
+function locStop(sendStop){
+  if(LW!==null){try{navigator.geolocation.clearWatch(LW)}catch(e){}LW=null}
+  clearInterval(LHB);LHB=null;LP=null;LSEND=0;LOK=0;LERR="";
+  wakeSync();
+  if(sendStop&&CODE){try{google.script.run.withSuccessHandler(function(){}).withFailureHandler(function(){}).courierPing(CODE,0,0,0,true)}catch(e){}}}
+function wakeSync(){
+  var need=LW!==null&&!document.hidden&&!!(LAST&&LAST.mine&&LAST.mine.length);
+  if(need&&!WL&&navigator.wakeLock){try{navigator.wakeLock.request("screen").then(function(l){WL=l;l.addEventListener("release",function(){WL=null})}).catch(function(){})}catch(e){}}
+  else if(!need&&WL){try{WL.release()}catch(e){}WL=null}}
+function locSync(){
+  var want=!!(CODE&&ONLINE&&locConsent()&&navigator.geolocation);
+  if(want&&LW===null)locStart();else if(!want&&LW!==null)locStop(true);
+  wakeSync();locUi()}
+function locUi(){
+  var b=$("locBar");
+  if(!CODE||!ONLINE){b.className="card hide";return}
+  b.className="card";b.textContent="";
+  if(!navigator.geolocation){b.appendChild(el("div","sub",t("locNo")));return}
+  b.appendChild(el("b",null,t("locH")));
+  if(!locConsent()){
+    b.appendChild(el("div","sub",t("locAsk")));
+    if(LAST&&LAST.locReq)b.appendChild(el("div","err",t("locReqT")));
+    b.appendChild(btn(t("locYes"),"",function(){locSet(true);locSync()}));return}
+  var st=LERR==="den"?t("locDen"):LERR==="bad"?t("locBad"):LOK?t("locOn")+t("locLast")+ft(LOK):t("locWait");
+  var d=el("div",LERR?"err":"ok",st);d.style.marginTop="6px";b.appendChild(d);
+  if(!LOK&&LST&&Date.now()-LST>15000){b.appendChild(el("div","sub",t("locSlow")));b.appendChild(btn(t("locRetry"),"sec",locRetry))}
+  if(LAST&&LAST.mine&&LAST.mine.length)b.appendChild(el("div","sub",t("locKeep")));
+  if(!(LAST&&LAST.locReq))b.appendChild(btn(t("locStop"),"sec",function(){locSet(false);locSync()}))}
+function render(r){
+  if(!r||!r.ok){logout(r&&r.msg);return}
+  var b4=custUnread();
+  LAST=r;NAME=r.name;ONLINE=r.online!==false;SKEW=(r.now||Date.now())-Date.now();SUP=/^\d{8,15}$/.test(String(r.support||""))?String(r.support):"";
+  if(!SEENC0){SEENC0=true;chatOrders().forEach(function(o){SEENC[o.no]=cc(o)})}
+  var openC=DW.open&&DW.tab==="c";markSeen();
+  if(!openC&&custUnread()>b4)ping(t("newCust"));
+  checkNew(r);
+  $("login").classList.add("hide");$("app").classList.remove("hide");$("out").classList.remove("hide");$("snd").classList.remove("hide");sndBtn();hint();onUi();
+  $("supwa").classList.toggle("hide",!SUP);if(SUP)$("supwa").href="https://wa.me/"+SUP;
+  $("who").textContent=t("courierN")+r.name;showStats(r.stats);
+  var m=$("mine"),a=$("avail");m.textContent="";a.textContent="";
+  var rt=$("rate");rt.textContent="";(r.toRate||[]).forEach(function(o){rt.appendChild(rateCard(o))});
+  $("rwrap").classList.toggle("hide",!(r.toRate&&r.toRate.length));
+  r.mine.forEach(function(o){m.appendChild(card(o,true))});
+  if(r.available.length)a.appendChild(el("div","sub",t("rejInfo")+(r.rejLeft||0)));
+  r.available.forEach(function(o){a.appendChild(card(o,false))});
+  if(!r.mine.length)m.appendChild(el("div","muted",t("noMine")));
+  if(!r.available.length)a.appendChild(el("div","muted",r.busy?t("busyMsg"):r.locNeed?t("locNeed"):(r.dues&&r.dues.blocked)?t("duesBlk").replace("%o",r.dues.owe).replace("%l",r.dues.limit):ONLINE?t("noAvail"):t("offBar")));
+  duesUi(r.dues);
+  locSync();
+  tickWait();$("fab").classList.toggle("hide",DW.open);drawUi();
+}
+var LG=null;
+function legalUi(){
+  var b=$("lgl");b.textContent="";if(!LG||typeof LG.termsCourier!=="string"||typeof LG.privacyCourier!=="string"||!/^https:\/\//.test(LG.termsCourier)||!/^https:\/\//.test(LG.privacyCourier))return;
+  b.appendChild(document.createTextNode(t("lgN")+" "));
+  [["lgT",LG.termsCourier],["lgP",LG.privacyCourier]].forEach(function(x,i){
+    if(i)b.appendChild(document.createTextNode(t("lgS")));
+    var a=document.createElement("a");a.textContent=t(x[0]);a.href=x[1];a.target="_blank";a.rel="noopener noreferrer";a.style.color="var(--br)";b.appendChild(a)})}
+function applyLang(){
+  legalUi();
+  document.documentElement.lang=LANG;document.documentElement.dir=LANG==="en"?"ltr":"rtl";
+  document.querySelectorAll("[data-i]").forEach(function(e){e.textContent=t(e.getAttribute("data-i"))});
+  document.querySelectorAll("[data-ph]").forEach(function(e){e.placeholder=t(e.getAttribute("data-ph"))});
+  $("lang").textContent=LANG==="en"?"عربي":"EN";
+  if(LAST&&CODE){$("cqr").setAttribute("data-l","");render(LAST);if(HIST&&!$("histbox").classList.contains("hide"))showHist(HIST);if(WAL&&!$("walbox").classList.contains("hide"))showWal(WAL)}else $("who").textContent=t("page")}
+$("lang").onclick=function(){LANG=LANG==="en"?"ar":"en";try{localStorage.setItem("wl",LANG)}catch(e){}applyLang()};
+var LSEQ=0,LDG=0,LASTSIG="",PSIG="",PBUSY=false;
+/* نبضة خفيفة كل 4 ثواني: لو تغيّر شيء في الطلبات نحمّل القائمة فورًا، وغير كده القائمة الكاملة كل ~32 ثانية */
+function pulse(){
+  if(!CODE||!ONLINE||PBUSY)return;PBUSY=true;
+  google.script.run.withSuccessHandler(function(r){PBUSY=false;
+    if(r&&r.ok&&r.sig){var ch=PSIG&&r.sig!==PSIG;PSIG=r.sig;if(ch&&!busy&&Date.now()-editTs>=120000)load(true)}})
+  .withFailureHandler(function(){PBUSY=false}).courierPulse(CODE)}
+function sigOf(r){try{return JSON.stringify(r,function(k,v){return k==="now"?undefined:v})}catch(e){return ""+Math.random()}}
+/* نرسم الصفحة فقط لو تغيّر شيء (لا نمسح الأزرار من تحت إصبع المندوب كل 12 ثانية) */
+function renderIf(r){
+  if(!r||!r.ok){LASTSIG="";render(r);return}
+  var sg=sigOf(r);if(sg&&sg===LASTSIG)return;
+  LASTSIG=sg;render(r)}
+function load(force){
+  if(!CODE||(!force&&(busy||Date.now()-editTs<120000||Date.now()-LDG<20000)))return;
+  LDG=Date.now();var seq=++LSEQ,rr=null,xx=null,left=1;
+  function fin(){
+    if(--left>0)return;
+    if(seq!==LSEQ)return;
+    LDG=0;if(!rr)return;
+    var r=rr;
+    // حالة المطعم الشريك ووقت التجهيز (لو فشل الطلب نعرض القائمة بدونها)
+    try{if(r.ok&&xx&&xx.ok&&xx.map&&r.mine&&r.available){r.mine.concat(r.available).forEach(function(o){var m=xx.map[o.no];if(m&&(m.rst===""||m.rst==="مقبول"||m.rst==="جاهز"||m.rst==="مرفوض")&&typeof m.rmin==="number"&&typeof m.racc==="number")o.rs={rst:m.rst,rmin:m.rmin,racc:m.racc,rinv:(typeof m.rinv==="string"&&/^[A-Za-z0-9][A-Za-z0-9\-\/]{0,19}$/.test(m.rinv))?m.rinv:""}})}}catch(e){}
+    renderIf(r)}
+  /* الطلبان يخرجان معًا في نفس اللحظة (بدل الواحد بعد الآخر) فيقصر الانتظار */
+  /* طلب واحد: القائمة بترجع ومعاها حالة المطعم الشريك (rmap). لو السيرفر قديم نطلب حالة المطعم لوحدها */
+  google.script.run.withSuccessHandler(function(r){rr=r;
+    if(r&&r.ok&&r.rmap){xx={ok:true,map:r.rmap};fin()}
+    else{left=2;fin();google.script.run.withSuccessHandler(function(x){xx=x;fin()}).withFailureHandler(function(){xx=null;fin()}).courierRestInfo(CODE)}})
+  .withFailureHandler(function(){
+    if(seq===LSEQ){$("msg").className="err";$("msg").textContent=t("noUpd")}rr=null;fin()}).courierList(CODE)}
+/* الخطوات التي تُظهر المرحلة التالية فورًا (قبل ما يرجع تحديث القائمة من الخادم) */
+var NEXTST={courierArrived:"arrived",courierPicked:"picked",courierSetStatus:"ontheway",courierAtDest:"atdest"};
+var GEOFN={courierArrived:1,courierAtDest:1};
+function act(fn,no,args,b,okcb){
+  if(busy)return;
+  busy=true;b.disabled=true;$("msg").className="";$("msg").textContent="";
+  var lbl=b.textContent;b.textContent=t(GEOFN[fn]?"fixing":"doing");
+  /* قبول الطلب: نعرض الطلب مقبولًا فورًا (والخادم هو اللي يقرر؛ لو رفض نرجّع الصورة الصحيحة ونعرض السبب) */
+  if(fn==="courierAccept"&&LAST&&LAST.available){var ao=null;LAST.available.forEach(function(x){if(x.no===no)ao=x});
+    if(ao){ao.status="مقبول";ao.stage="accepted";LAST.mine=(LAST.mine||[]).concat([ao]);LAST.available=[];LAST.busy=true;LASTSIG="";try{render(LAST)}catch(e){}}}
+  var done=function(r){busy=false;editTs=0;PSIG="";
+    if(r&&r.ok){$("msg").textContent=t("done");if(okcb)okcb(r);
+      if(fn==="courierAccept"){try{google.script.run.withSuccessHandler(function(){}).withFailureHandler(function(){}).courierTakenNotice(CODE,no)}catch(e){}}
+      var ns=NEXTST[fn];
+      if(ns&&LAST&&LAST.mine){var oo=null;LAST.mine.forEach(function(x){if(x.no===no)oo=x});
+        if(oo){oo.stage=ns;if(fn==="courierArrived")oo.arrived=true;LASTSIG="";try{render(LAST)}catch(e){}}}
+    }else{$("msg").className="err";$("msg").textContent=tm(r&&r.msg)||t("noExec");b.disabled=false;b.textContent=lbl;LASTSIG=""}
+    load(true)};
+  var fail=function(){busy=false;b.disabled=false;b.textContent=lbl;LASTSIG="";$("msg").className="err";$("msg").textContent=t("noExec2");load(true)};
+  var run=function(extra){var g=google.script.run.withSuccessHandler(done).withFailureHandler(fail);g[fn].apply(g,[CODE,no].concat(args||[],extra||[]))};
+  if(GEOFN[fn]){freshFix(function(p){b.textContent=t("doing");run(p?[p.la,p.ln,Math.round(p.ac)]:[])})}
+  else run()}
+/* حفظ رمز الدخول كمان في غلاف GitHub (آيفون بيمسح تخزين الصفحة الداخلية)، والرمز ما يتمسحش غير بالخروج أو لو الرمز غلط */
+var WRAP="https://wasel1123.github.io";
+function wrapSet(v){try{if(window.top!==window)window.top.postMessage({wasel:"setwc",v:v||""},WRAP)}catch(e){}}
+window.addEventListener("message",function(e){var d=e.data;if(e.origin!==WRAP||!d||d.wasel!=="wc")return;
+  var v=typeof d.v==="string"?d.v.trim():"";if(v&&!CODE){try{localStorage.setItem("wc",v)}catch(x){}start(v)}});
+var RETRY=null;
+function logout(m){
+  var wipe=!m||/غير صحيح|incorrect/i.test(String(m));
+  clearTimeout(RETRY);
+  locStop(true);if(wipe)locSet(false);
+  CODE="";LAST=null;SEEN=null;HIST=null;REP={};DONE={};ONLINE=true;clearInterval(timer);
+  $("histbox").classList.add("hide");$("walbox").classList.add("hide");WAL=null;WALF=false;INB=[];SEENA=null;SEENC={};SEENC0=false;DW.open=false;$("fab").classList.add("hide");$("dim").classList.add("hide");$("dw").classList.remove("open");if(wipe){try{localStorage.removeItem("wc");localStorage.removeItem("wi")}catch(e){}wrapSet("")}else{RETRY=setTimeout(function(){var s="";try{s=localStorage.getItem("wc")||""}catch(e){}if(s&&!CODE)start(s)},8000)}
+  $("app").classList.add("hide");$("out").classList.add("hide");$("snd").classList.add("hide");$("login").classList.remove("hide");
+  $("who").textContent=t("page");$("lmsg").textContent=tm(m)||""}
+function start(code){
+  CODE=code;
+  google.script.run.withSuccessHandler(function(r){
+    if(r&&r.ok){try{localStorage.setItem("wc",code)}catch(e){}wrapSet(code);clearTimeout(RETRY);$("lmsg").textContent="";$("code").value="";load();loadInbox();
+      clearInterval(timer);var ic=0;PSIG="";timer=setInterval(function(){if(document.hidden)return;ic++;pulse();if(ic%8===0)load();if(ic%6===0)loadInbox();if(DW.open&&DW.tab==="c"&&ic%2===0&&!busy)load(true)},4000)}
+    else logout(r&&r.msg)}).withFailureHandler(function(){logout(t("noConn"))}).courierLogin(code)}
+$("in").onclick=function(){var c=$("code").value.trim();if(c)start(c)};
+$("out").onclick=function(){logout("")};
+try{google.script.run.withSuccessHandler(function(r){LG=r;legalUi()}).withFailureHandler(function(){}).legalLinks()}catch(e){}
+(function(){try{google.script.run.withSuccessHandler(function(u){if(typeof u==="string"&&/^https:\/\//.test(u)){$("regLink").href=u;$("regBox").classList.remove("hide")}}).withFailureHandler(function(){}).regPageUrl()}catch(e){}})();
+$("snd").onclick=function(){SND=!SND;try{localStorage.setItem("ws",SND?"1":"0")}catch(e){}unlock();sndBtn();hint();if(SND)beep()};
+$("onbtn").onclick=function(){
+  var b=this;b.disabled=true;editTs=0;
+  google.script.run.withSuccessHandler(function(r){b.disabled=false;
+    if(r&&r.ok){ONLINE=r.online;SEEN=null;onUi();locSync();load(true)}else setMsg(tm(r&&r.msg)||t("noExec"),1)})
+  .withFailureHandler(function(){b.disabled=false;setMsg(t("noExec2"),1)}).courierSetOnline(CODE,!ONLINE)};
+$("histbtn").onclick=function(){
+  var b=$("histbox"),open=b.classList.contains("hide");
+  if(!open){b.classList.add("hide");return}
+  b.classList.remove("hide");HIST=null;showHist(null);
+  google.script.run.withSuccessHandler(function(h){
+    if(h&&h.ok){HIST=h;showHist(h)}else{b.textContent="";b.appendChild(el("div","err",tm(h&&h.msg)||t("noExec")))}})
+  .withFailureHandler(function(){b.textContent="";b.appendChild(el("div","err",t("noConn")))}).courierHistory(CODE)};
+$("walbtn").onclick=function(){
+  var b=$("walbox"),open=b.classList.contains("hide");
+  if(!open){b.classList.add("hide");return}
+  b.classList.remove("hide");WALF=false;WAL=null;showWal(null);
+  google.script.run.withSuccessHandler(function(w){
+    if(w&&w.ok){WAL=w;showWal(w)}else{b.textContent="";b.appendChild(el("div","err",tm(w&&w.msg)||t("noExec")))}})
+  .withFailureHandler(function(){b.textContent="";b.appendChild(el("div","err",t("noConn")))}).courierWallet(CODE)};
+$("fab").onclick=function(){openDw(DW.tab||"a")};$("dwx").onclick=closeDw;$("dim").onclick=closeDw;
+$("tbA").onclick=function(){DW.tab="a";drawUi()};$("tbC").onclick=function(){DW.tab="c";drawUi()};
+$("asend").onclick=sendA;$("ain").onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();sendA()}};
+$("csend").onclick=function(){var v=$("cin").value.trim();if(v)sendC(v)};$("cin").onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();$("csend").onclick()}};
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&DW.open)closeDw()});
+$("sndHint").onclick=unlock;$("alertBar").onclick=function(){this.className=""};
+document.addEventListener("pointerdown",unlock,{passive:true});
+document.addEventListener("visibilitychange",function(){if(!document.hidden){document.title=TT;if(CODE){load(true);loadInbox();wakeSync();if(LW!==null)locSend()}}});
+
+/* الرسالة إشعار في منتصف الشاشة للنتيجة فقط (نجاح ثانية ونصف، خطأ 6 ثواني) وتُلمس لتختفي. التقدّم يظهر على الزرار نفسه */
+(function(){var m=$("msg"),tm2=null;
+  m.onclick=function(){m.textContent="";m.className=""};
+  try{new MutationObserver(function(){clearTimeout(tm2);if(m.textContent)tm2=setTimeout(function(){m.textContent="";m.className=""},m.textContent===t("done")?1400:6000)}).observe(m,{childList:true,characterData:true,subtree:true})}catch(e){}})();
+applyLang();
+(function(){var s="";try{s=localStorage.getItem("wc")||""}catch(e){}if(s)start(s);else{try{if(window.top!==window)window.top.postMessage({wasel:"getwc"},WRAP)}catch(e){}}})();
+/* مقدمة الفتح للمندوب: تنبيهات مهمة تُكتب بهدوء مرة لكل جلسة، والصفحة تحمل خلفها. لا تغيّر أي منطق في الصفحة */
+(function(){
+  var rm=false;try{rm=window.matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){}
+  var seen=false;try{seen=sessionStorage.getItem("wcsp")==="1"}catch(e){}
+  if(seen||rm)return;
+  try{sessionStorage.setItem("wcsp","1")}catch(e){}
+  var TX=[
+    ["أهلًا بك يا بطل 👋 صفحة مندوب واصل","Welcome, champion 👋 Wasel courier page"],
+    ["⚡ أول مندوب يقبل الطلب هو اللي ياخده.","⚡ The first courier to accept an order gets it."],
+    ["🔊 فعّل الصوت وسيب الصفحة مفتوحة عشان يوصلك تنبيه الطلب الجديد.","🔊 Turn the sound on and keep this page open to get new-order alerts."],
+    ["📍 فعّل الموقع في جوالك عشان الإدارة والعميل يتابعوا الطلب.","📍 Turn on location on your phone so the admin and customer can follow the order."],
+    ["🤝 تعامل بأدب مع العميل والمطعم، وسلّم الطلب كامل.","🤝 Be polite to the customer and restaurant, and deliver the order complete."],
+    ["💰 مستحقاتك وحسابك بيظهروا لك في صفحتك.","💰 Your dues and account are shown on your page."],
+    ["⏳ لو الصفحة اتأخرت ثواني، استنّى… بتحمل على مهلها.","⏳ If the page takes a few seconds, please wait… it is loading."],
+    ["🚀 واصل… سريع وأمين","🚀 Wasel… fast and trusted"]];
+  var UI=[["تخطّي ›","Skip ›"],["🔊 الصوت مفعّل","🔊 Sound on"],["🔇 الصوت مقفول","🔇 Sound off"],["المس الشاشة لتشغيل الصوت","Touch the screen for sound"]];
+  var st=document.createElement("style");
+  st.textContent=".cspl{position:fixed;inset:0;z-index:9999;background:#0e4f4c;color:#fff;display:flex;flex-direction:column;justify-content:center;padding:0 28px;transition:opacity .7s;font-family:Tahoma,Arial,sans-serif}"+
+    ".cspl.out{opacity:0;pointer-events:none}.cspl .l{min-height:1.7em;line-height:1.7;font-size:19px;font-weight:700;margin:6px 0;overflow-wrap:anywhere}.cspl .l.t{font-size:28px;margin-bottom:14px}"+
+    ".cspl .cur{display:inline-block;width:2px;height:1em;background:#fff;vertical-align:-2px;margin-inline-start:3px;animation:cblk .7s steps(1) infinite}@keyframes cblk{50%{opacity:0}}"+
+    ".cspl .top{position:absolute;top:14px;inset-inline:16px;display:flex;justify-content:space-between;gap:10px}"+
+    ".cspl .top button{width:auto;margin:0;background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:99px;padding:7px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}"+
+    ".cspl .bar{position:absolute;bottom:0;inset-inline:0;height:4px;background:rgba(255,255,255,.2)}.cspl .bar i{display:block;height:100%;width:0;background:#fff;transition:width .5s}";
+  document.head.appendChild(st);
+  var sp=document.createElement("div");sp.className="cspl";sp.setAttribute("role","dialog");
+  var top=document.createElement("div");top.className="top";
+  var kb=document.createElement("button"),mb=document.createElement("button");
+  top.appendChild(kb);top.appendChild(mb);
+  var wrap=document.createElement("div"),bar=document.createElement("div"),bi=document.createElement("i");
+  bar.className="bar";bar.appendChild(bi);
+  sp.appendChild(top);sp.appendChild(wrap);sp.appendChild(bar);
+  document.body.appendChild(sp);document.body.style.overflow="hidden";
+  var en=function(){return LANG==="en"?1:0};
+  var SOUND=true;try{SOUND=localStorage.getItem("wss")!=="0"}catch(e){}
+  var AC=null,NB=null,done=false,stop=false,cur=document.createElement("span");cur.className="cur";
+  try{var C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C()}catch(e){}
+  function ok(){return !!(AC&&AC.state==="running")}
+  function noise(){if(NB)return NB;var n=Math.floor(AC.sampleRate*0.05),b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0);for(var i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);NB=b;return b}
+  function tick(){if(!SOUND||!ok())return;try{var s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=noise();f.type="lowpass";f.frequency.value=800+Math.random()*400;g.gain.value=.22;s.connect(f);f.connect(g);g.connect(AC.destination);s.start()}catch(e){}}
+  function chime(){if(!SOUND||!ok())return;try{[523.25,783.99].forEach(function(fr,i){var o=AC.createOscillator(),g=AC.createGain(),n=AC.currentTime+i*.16;o.type="sine";o.frequency.value=fr;g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(.05,n+.03);g.gain.exponentialRampToValueAtTime(.0001,n+1.1);o.connect(g);g.connect(AC.destination);o.start(n);o.stop(n+1.15)})}catch(e){}}
+  function mUi(){mb.textContent=UI[!SOUND?2:ok()?1:3][en()]}
+  function unlock(){try{if(AC&&AC.state==="suspended")AC.resume().then(mUi)}catch(e){}mUi()}
+  kb.textContent=UI[0][en()];mUi();
+  sp.addEventListener("pointerdown",unlock);
+  mb.onclick=function(e){e.stopPropagation();SOUND=!SOUND;try{localStorage.setItem("wss",SOUND?"1":"0")}catch(x){}unlock();mUi()};
+  function fin(){try{document.body.style.overflow=""}catch(e){}sp.parentNode&&sp.parentNode.removeChild(sp)}
+  function close(){if(done)return;done=true;stop=true;sp.classList.add("out");setTimeout(fin,750)}
+  kb.onclick=function(e){e.stopPropagation();close()};
+  var li=0;
+  function line(){
+    if(stop)return;
+    if(li>=TX.length){bi.style.width="100%";chime();setTimeout(close,1300);return}
+    var txt=Array.from(TX[li][en()]),d=document.createElement("div");d.className="l"+(li?"":" t");wrap.appendChild(d);
+    var tn=document.createTextNode("");d.appendChild(tn);d.appendChild(cur);
+    var i=0;bi.style.width=Math.round(li/TX.length*100)+"%";
+    (function ch(){
+      if(stop)return;
+      if(i<txt.length){i++;tn.nodeValue=txt.slice(0,i).join("");if(txt[i-1]!==" ")tick();setTimeout(ch,li?48:75)}
+      else{li++;setTimeout(line,li===1?800:550)}
+    })()}
+  setTimeout(line,500);
+})();
+</script>
+<script>
+/* ===== القائمة الجانبية ☰ (إضافة فقط: لا تغيّر أي دالة قديمة، وكل الأزرار الأصلية بتشتغل زي ما هي من جوه القائمة) ===== */
+(function(){
+var MT={locI:["📍 مشاركة الموقع شغالة","📍 Location sharing is on"],hist:["📊 أرباحي وسجلي","📊 My earnings"],wal:["💰 محفظتي","💰 My wallet"],chat:["💬 الدعم والمحادثات","💬 Support & chats"],snd:["🔔 صوت التنبيه","🔔 Alert sound"],out:["خروج","Log out"],
+ newO:["🚨 طلب جديد وصل","🚨 New order"],view:["عرض","View"],locGo:["📍 فعّل مشاركة الموقع من هنا","📍 Turn on location sharing"]};
+function mt(k){return MT[k][LANG==="en"?1:0]}
+var GSEEN=null,GT={h:["🤝 حط نفسك مكان العميل، وسلّمه طلبه زي ما تحب تستلم طلبك:","🤝 Put yourself in the customer's shoes, and deliver the order the way you'd like to receive yours:"],
+ l1:["تأكد إن الطلب كامل ومقفول زين قبل لا تطلع من المطعم.","Make sure the order is complete and well sealed before leaving the restaurant."],
+ l2:["روح على طول، الأكل يبرد والعميل ينتظر.","Go straight there, the food gets cold and the customer is waiting."],
+ l3:["سلّم وابتسم، وتكلم معه بأدب واحترام.","Greet and smile, and speak politely and respectfully."],
+ l4:["عند الباب انتظر بهدوء، ولا تزعجه بالجرس أو الاتصال الكثير.","Wait calmly at the door, don't disturb with too much ringing or calling."],
+ l5:["اختم بـ «بالعافية عليك».","End with «بالعافية عليك» (enjoy your meal)."],
+ f:["تراك وجه واصل قدام العميل 💚","You are the face of Wasel to the customer 💚"],ok:["تمام، فاهم 👍","Got it 👍"],pin:["🤝 سلّمه كما تحب أن تستلم","🤝 Deliver it the way you'd like to receive it"]};
+function gt(k){return GT[k][LANG==="en"?1:0]}
+function guide(){
+  if($("gdim"))return;
+  var d=document.createElement("div");d.id="gdim";var b=document.createElement("div");b.id="gbox";
+  var h=document.createElement("div");h.className="gh";h.textContent=gt("h");b.appendChild(h);
+  [["✅","l1"],["🔥","l2"],["😊","l3"],["🚪","l4"],["🙏","l5"]].forEach(function(x){var l=document.createElement("div");l.className="gl";var i=document.createElement("span");i.textContent=x[0];var tx=document.createElement("div");tx.textContent=gt(x[1]);l.appendChild(i);l.appendChild(tx);b.appendChild(l)});
+  var f=document.createElement("div");f.className="gf";f.textContent=gt("f");b.appendChild(f);
+  var k=document.createElement("button");k.type="button";k.textContent=gt("ok");k.onclick=function(){d.parentNode&&d.parentNode.removeChild(d)};b.appendChild(k);
+  d.appendChild(b);document.body.appendChild(d)}
+var D=$("mdw"),DIM=$("mdim"),BAN=$("mban"),PREV=-1,HB=document.querySelector("header>div:last-child");
+/* نقل العناصر: الأرقام والموقع للقائمة، وزر متاح/غير متاح للهيدر */
+try{$("mstat").appendChild($("stat"));$("mloc").appendChild($("locBar"));HB.insertBefore($("onbtn"),$("mbtn"))}catch(e){}
+/* الشروط والخصوصية جوه القائمة */
+try{D.appendChild($("lgl"))}catch(e){}
+/* كارت مشاركة الموقع يختفي لما الموقع يكون شغال، ويرجع لو فيه مشكلة. ومن القائمة يقدر يفتحه لو عايز يوقف المشاركة */
+var LOCSHOW=false;
+function locGood(){try{return !!(CODE&&ONLINE&&locConsent()&&LOK&&!LERR)}catch(e){return false}}
+function applyLoc(){var g=locGood();$("mlocI").classList.toggle("hide",!g);if(g&&!LOCSHOW)$("locBar").classList.add("hide");if(!g)LOCSHOW=false}
+var LU0=locUi;locUi=function(){LU0();try{applyLoc()}catch(e){}};
+function isOpen(){return D.classList.contains("open")}
+function labels(){
+  document.querySelectorAll("[data-m]").forEach(function(e){e.textContent=mt(e.getAttribute("data-m"))});
+  var th=document.querySelector("header .thm:not(.gnd)"),gn=document.querySelector("header .gnd");
+  $("mthm").textContent=th?(th.textContent+" "+(th.title||"")):"";$("mthm").parentNode.classList.toggle("hide",!th);
+  $("mgnd").textContent=gn?gn.textContent:"";$("mgnd").parentNode.classList.toggle("hide",!gn);
+  $("mlang").textContent="🌐 "+($("lang").textContent==="EN"?"English":"عربي");
+  $("msnd").textContent=$("snd").textContent;
+  $("mname").textContent=$("who").textContent||"";
+  var n=$("fabn"),c=(n&&!n.classList.contains("hide"))?n.textContent:"";
+  $("mchn").textContent=c;$("mchn").classList.toggle("hide",!c);
+  var loc=LAST&&LAST.locNeed;$("mdot").textContent=c||(loc?"!":"");$("mdot").classList.toggle("hide",!c&&!loc)}
+function open(){labels();D.classList.add("open");D.setAttribute("aria-hidden","false");DIM.classList.remove("hide")}
+function close(){D.classList.remove("open");D.setAttribute("aria-hidden","true");DIM.classList.add("hide");BAN.classList.add("hide")}
+function toAvail(){close();try{$("avail").scrollIntoView({behavior:"smooth",block:"start"})}catch(e){}}
+$("mbtn").onclick=function(){isOpen()?close():open()};$("mx").onclick=close;DIM.onclick=close;
+BAN.onclick=toAvail;
+D.querySelectorAll("[data-go]").forEach(function(b){b.onclick=function(){
+  var g=b.getAttribute("data-go");
+  if(g==="hist"||g==="wal"){close();$(g==="hist"?"histbtn":"walbtn").click();setTimeout(function(){var x=$(g==="hist"?"histbox":"walbox");if(!x.classList.contains("hide"))x.scrollIntoView({behavior:"smooth",block:"start"})},150);return}
+  if(g==="chat"){close();$("fab").click();return}
+  if(g==="snd"){$("snd").click();setTimeout(labels,50);return}
+  if(g==="thm"){var th=document.querySelector("header .thm:not(.gnd)");if(th)th.click();setTimeout(labels,50);return}
+  if(g==="gnd"){var gn=document.querySelector("header .gnd");if(gn)gn.click();setTimeout(labels,50);return}
+  if(g==="lang"){$("lang").click();setTimeout(labels,50);return}
+  if(g==="loc"){LOCSHOW=!LOCSHOW;locUi();if(LOCSHOW)$("mloc").scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(g==="out"){close();$("out").click()}}});
+/* بعد كل رسم للصفحة: حالة الدخول + طلب جديد وهو فاتح القائمة + زر الموقع لو مطلوب */
+var R0=render;render=function(r){R0(r);try{after(r)}catch(e){}};
+function after(r){
+  if(!r||!r.ok)return;
+  document.body.classList.add("cin");$("mbtn").classList.remove("hide");
+  document.body.classList.toggle("hasmine",!!(r.mine&&r.mine.length));
+  var hm=!!(r.mine&&r.mine.length),mh=document.querySelector('#app h2[data-i="mineH"]');if(mh)mh.classList.toggle("hide",!hm);$("mine").classList.toggle("hide",!hm);
+  var n=(r.available||[]).length;
+  if(isOpen()&&PREV>=0&&n>PREV){BAN.textContent="";BAN.appendChild(document.createTextNode(mt("newO")));var s=document.createElement("span");s.textContent=mt("view");BAN.appendChild(s);BAN.classList.remove("hide")}
+  PREV=n;
+  /* توجيه المندوب: نافذة عند كل طلب جديد يقبله (أو تسنده الإدارة له) + سطر ثابت فوق طلبه الحالي */
+  var nowM={};(r.mine||[]).forEach(function(o){nowM[o.no]=1});
+  if(GSEEN===null)GSEEN=nowM;else{var fresh=Object.keys(nowM).some(function(k){return !GSEEN[k]});Object.keys(nowM).forEach(function(k){GSEEN[k]=1});if(fresh)setTimeout(guide,600)}
+  if(hm){var gp=document.createElement("div");gp.className="gpin";gp.textContent=gt("pin");$("mine").insertBefore(gp,$("mine").firstChild)}
+  if(r.locNeed&&!(r.available||[]).length){var a=$("avail"),btn=document.createElement("button");btn.id="mlocGo";btn.textContent=mt("locGo");btn.onclick=open;a.appendChild(btn)}
+  labels()}
+/* لما يخرج: نرجّع الهيدر زي ما كان */
+new MutationObserver(function(){var on=!$("app").classList.contains("hide");document.body.classList.toggle("cin",on);$("mbtn").classList.toggle("hide",!on);if(!on){close();PREV=-1}}).observe($("app"),{attributes:true,attributeFilter:["class"]});
+new MutationObserver(function(){if(isOpen())labels();else{var n=$("fabn"),c=(n&&!n.classList.contains("hide"))?n.textContent:"";if(c){$("mdot").textContent=c;$("mdot").classList.remove("hide")}}}).observe($("fabn"),{attributes:true,childList:true,characterData:true,subtree:true});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&isOpen())close()});
+})();
+</script>
+<div id="shs" class="hide" role="dialog" aria-modal="true"><div class="shw">
+<div class="shh"><button id="shx" type="button">›</button><b id="shtt">🗓 شيفتاتي</b></div>
+<div id="shc"></div></div></div>
+<div id="shsoon" class="hide" role="dialog" aria-modal="true"><div class="shsb"><div style="font-size:40px">⏰</div><b id="shsT"></b><div id="shsD" class="shmu"></div><button id="shsOk" type="button"></button></div></div>
+<div id="shban" class="hide"></div>
+<style>
+#shdot{position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:#dc2626;border:2px solid #fff}
+#shdot.hide{display:none!important}
+#shs{position:fixed;inset:0;z-index:60;background:var(--bg);overflow-y:auto}
+#shs.hide,#shsoon.hide,#shban.hide{display:none!important}
+.shw{max-width:520px;margin:0 auto;padding-bottom:30px}
+.shh{position:sticky;top:0;background:var(--br);color:#fff;display:flex;align-items:center;gap:8px;padding:12px 14px;font-size:17px;z-index:1}
+.shh button{background:transparent!important;border:0!important;color:#fff!important;font-size:26px;line-height:1;width:auto!important;padding:0 6px!important;margin:0!important;box-shadow:none!important}
+[dir=ltr] .shh button{transform:scaleX(-1)}
+#shc{padding:14px;display:grid;gap:10px}
+.shmu{color:var(--mu);font-size:13px;text-align:center;white-space:pre-line}
+.shtabs{display:flex;gap:6px}
+.shtabs button{flex:1;margin:0!important;border-radius:10px!important;border:1px solid var(--ln)!important;background:var(--card)!important;color:var(--tx)!important;box-shadow:none!important;padding:8px!important;font-size:14px}
+.shtabs button.on{background:var(--br)!important;color:#fff!important;border-color:var(--br)!important}
+.shopt{background:var(--card);border:2px solid var(--ln);border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.shopt b{font-size:16px}.shopt small{color:var(--mu);display:block}
+.shck{width:26px;height:26px;border-radius:50%;border:2px solid var(--ln);display:grid;place-items:center;font-weight:800;flex:none}
+.shopt.on{border-color:var(--br);background:var(--br2)}
+.shopt.on .shck{background:var(--br);border-color:var(--br);color:#fff}
+.shall{text-align:center;border:2px dashed var(--br)!important;color:var(--br)!important;background:transparent!important;border-radius:14px!important;padding:10px!important;font-weight:800;margin:0!important;box-shadow:none!important;width:100%!important}
+.shsave{background:var(--br)!important;color:#fff!important;border-radius:14px!important;padding:13px!important;font-weight:800;margin:0!important;width:100%!important;border:0!important}
+.shok{text-align:center;color:#15803d;font-weight:700;min-height:22px}
+.shbad{text-align:center;color:#dc2626;font-weight:700}
+#shsoon{position:fixed;inset:0;z-index:61;background:rgba(0,0,0,.5);display:grid;place-items:center;padding:16px}
+.shsb{background:var(--card);color:var(--tx);border-radius:18px;padding:20px;max-width:340px;width:100%;text-align:center;display:grid;gap:8px}
+#shsOk{background:#15803d!important;color:#fff!important;border:0!important;border-radius:12px!important;padding:11px!important;font-weight:800;margin:4px 0 0!important;width:100%!important}
+#shban{margin:10px 12px 0;background:#fff4e0;color:#a35d00;border-radius:12px;padding:10px 12px;font-size:14px;font-weight:700;cursor:pointer}
+html.dk #shban{background:#2e2412;color:#e7a94a}
+</style>
+<script>
+/* ===== 🗓 شيفتاتي (ملف Shifts.gs): المندوب يختار شيفتاته من التطبيق. إضافة بس، مش بتغيّر أي حاجة في الطلبات ===== */
+(function(){
+var ST={t:["🗓 شيفتاتي","🗓 My shifts"],cur:["الأسبوع ده","This week"],nxt:["الأسبوع الجاي","Next week"],
+ wk:["من ","From "],to:[" لحد "," to "],rep:["اختيارك بيتكرر كل يوم طول الأسبوع","Your choice repeats every day of the week"],
+ all:["☀️ طول اليوم","☀️ All day"],save:["حفظ","Save"],saving:["جارٍ الحفظ...","Saving..."],ok:["✅ اتسجلت شيفتاتك","✅ Your shifts are saved"],none:["✅ اتلغت كل شيفتاتك للأسبوع ده","✅ All your shifts for this week were removed"],
+ err:["تعذر الحفظ، حاول تاني","Couldn't save, try again"],ld:["جارٍ التحميل...","Loading..."],
+ nxtSoon:["الأسبوع الجاي بيتفتح يوم الخميس","Next week opens on Thursday"],need:["⚠️ لسه ما اخترتش شيفتاتك للأسبوع ده، دوس هنا","⚠️ You haven't picked your shifts this week, tap here"],
+ pill:["اختار","Pick"],soonT:["شيفت ","Shift "],soonA:[" بيبدأ الساعة "," starts at "],soonD:["بعد "," In "],min:[" دقيقة. خلّي حالتك «متاح» وشغّل مشاركة الموقع."," min. Set yourself «Available» and share your location."],ready:["🟢 أنا جاهز","🟢 I'm ready"]};
+function s(k){return ST[k][LANG==="en"?1:0]}
+var D=null,TAB="cur",SEL={},SC=null,box=$("shc");
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function need(){return !!(D&&D.cur&&!D.cur.mine.length)}
+function marks(){var n=need();$("shdot").classList.toggle("hide",!n);$("shfn").textContent=s("pill");$("shfn").classList.toggle("hide",!n);
+  $("shban").textContent=s("need");$("shban").classList.toggle("hide",!n||!CODE||$("app").classList.contains("hide"));$("shft").textContent=s("t");$("shtt").textContent=s("t")}
+function load(cb){if(!CODE)return;var c=CODE;google.script.run.withSuccessHandler(function(r){if(c!==CODE)return;if(r&&r.ok){D=r;marks();soon()}cb&&cb()}).withFailureHandler(function(){cb&&cb()}).courierShifts(c)}
+function wk(){return TAB==="nxt"&&D&&D.next?D.next:(D?D.cur:null)}
+function draw(){
+  box.textContent="";
+  if(!D){box.appendChild(el("div","shmu",s("ld")));return}
+  if(D.next){var tb=el("div","shtabs");[["cur",s("cur")],["nxt",s("nxt")]].forEach(function(x){var b=el("button",TAB===x[0]?"on":"",x[1]);b.type="button";b.onclick=function(){TAB=x[0];SEL=sel0();draw()};tb.appendChild(b)});box.appendChild(tb)}
+  var w=wk();box.appendChild(el("div","shmu",s("wk")+w.from+s("to")+w.to+"\n"+s("rep")));
+  D.list.forEach(function(o){var c=el("div","shopt"+(SEL[o.k]?" on":""));var l=el("span");l.appendChild(el("b",null,o.n));l.appendChild(el("small",null,o.t));c.appendChild(l);c.appendChild(el("span","shck",SEL[o.k]?"✓":""));
+    c.onclick=function(){if(SEL[o.k])delete SEL[o.k];else SEL[o.k]=1;msg.textContent="";draw()};box.appendChild(c)});
+  var al=el("button","shall",s("all"));al.type="button";al.onclick=function(){D.list.forEach(function(o){SEL[o.k]=1});draw()};box.appendChild(al);
+  var sv=el("button","shsave",s("save"));sv.type="button";sv.onclick=save;box.appendChild(sv);
+  box.appendChild(msg);
+  if(!D.next)box.appendChild(el("div","shmu",s("nxtSoon")))}
+var msg=el("div","shok");
+function sel0(){var w=wk(),o={};(w?w.mine:[]).forEach(function(k){o[k]=1});return o}
+function save(){var w=wk(),keys=Object.keys(SEL),c=CODE;msg.className="shok";msg.textContent=s("saving");
+  google.script.run.withSuccessHandler(function(r){if(r&&r.ok){if(TAB==="nxt"&&D.next)D.next=r.info;else D.cur=r.info;SEL=sel0();msg.className="shok";msg.textContent=keys.length?s("ok"):s("none");marks();draw()}else{msg.className="shbad";msg.textContent=(r&&r.msg)||s("err")}})
+  .withFailureHandler(function(){msg.className="shbad";msg.textContent=s("err")}).courierShiftsSave(c,w.week,keys)}
+function openS(){var dw=$("mdw");if(dw&&dw.classList.contains("open")){$("mx").click()}TAB="cur";msg.textContent="";$("shs").classList.remove("hide");SEL=sel0();draw();load(function(){SEL=sel0();draw()})}
+function closeS(){$("shs").classList.add("hide")}
+function soon(){if(!D||!D.soon)return;var k="shsoon_"+D.soon.id;try{if(localStorage.getItem(k))return}catch(e){}
+  $("shsT").textContent=s("soonT")+D.soon.n+s("soonA")+D.soon.at;$("shsD").textContent=s("soonD")+D.soon.min+s("min");$("shsOk").textContent=s("ready");
+  $("shsoon").classList.remove("hide");$("shsOk").onclick=function(){try{localStorage.setItem(k,"1")}catch(e){}$("shsoon").classList.add("hide")}}
+$("shfb").onclick=openS;$("shx").onclick=closeS;$("shban").onclick=openS;
+var ap=$("app");if(ap&&ap.parentNode)ap.parentNode.insertBefore($("shban"),ap);
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("shs").classList.contains("hide"))closeS()});
+var lc="";setInterval(function(){if(CODE&&CODE!==lc){lc=CODE;D=null;load()}if(!CODE){lc="";D=null}marks()},2000);
+setInterval(function(){if(CODE&&!document.hidden)load()},5*60000);
+var lb=$("lang");if(lb)lb.addEventListener("click",function(){setTimeout(function(){marks();if(!$("shs").classList.contains("hide"))draw()},100)});
+marks();
+})();
+</script>
+</body></html>
