@@ -2,6 +2,57 @@
 <html lang="ar" dir="rtl"><head>
 <!-- صفحة سريعة على GitHub: نفس ملف Courier.html في Apps Script + bridge.js -->
 <script src="../bridge.js"></script>
+<script>
+/* ===== واصل: تطبيق واحد لكل المدن (عنيزة / المحلة). الاختيار بيتحفظ على الجهاز ===== */
+(function(){
+var ME="unz",K="wcity",BASE="/wasel/";
+var C={unz:{n:"عنيزة",s:"السعودية · بالريال",f:"🇸🇦",la:26.0875,ln:43.9942,km:40,p:BASE+"app/"},mhl:{n:"المحلة الكبرى",s:"مصر · بالجنيه",f:"🇪🇬",la:30.9697,ln:31.1663,km:25,p:BASE+"mh/app/"}};
+function g(){try{return localStorage.getItem(K)}catch(e){return null}}
+function sv(v){try{localStorage.setItem(K,v)}catch(e){}}
+var page=location.pathname.split("/").pop()||"customer.html",c=g();
+// اللي كان بيستخدم واصل عنيزة قبل كده: يفضل على عنيزة من غير ما نسأله
+if(!c&&ME==="unz"){try{if(localStorage.getItem("wp")||localStorage.getItem("wc")||localStorage.getItem("wt")){c="unz";sv(c)}}catch(e){}}
+if(c&&c!==ME&&C[c]){location.replace(C[c].p+page+location.search);return}
+function go(v){sv(v);if(v!==ME)location.replace(C[v].p+page+location.search);else{var o=document.getElementById("wcity");if(o)o.remove()}}
+function km(a,b,c2,d){var r=Math.PI/180,x=(c2-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c2*r)*Math.sin(y/2)*Math.sin(y/2);return 12742*Math.asin(Math.sqrt(h))}
+function el(t,css,tx){var e=document.createElement(t);if(css)e.style.cssText=css;if(tx!=null)e.textContent=tx;return e}
+function show(first){
+  var o=document.getElementById("wcity");if(o)o.remove();
+  o=el("div","position:fixed;inset:0;z-index:2147483000;background:#0e4f4c;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;font-family:inherit;direction:rtl");o.id="wcity";
+  var box=el("div","width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px;align-items:stretch");o.appendChild(box);
+  function perm(){box.textContent="";
+    box.appendChild(el("div","font-size:60px","📍"));
+    box.appendChild(el("b","font-size:22px","علشان نوصّلك أسرع"));
+    box.appendChild(el("div","color:#d5ebe8;font-size:15px","واصل محتاج موقعك علشان يفتحلك مدينتك على طول، ويحسب رسوم التوصيل صح."));
+    var a=el("button","border:0;border-radius:16px;padding:14px;background:#f2b544;color:#1b1200;font:inherit;font-weight:800;font-size:17px;margin-top:6px","سماح بالموقع");a.type="button";
+    var st=el("div","color:#d5ebe8;font-size:14px;min-height:1.4em");
+    a.onclick=function(){a.disabled=true;st.textContent="بنحدد مدينتك...";
+      if(!navigator.geolocation){pick("مقدرناش نحدد موقعك، اختار مدينتك");return}
+      navigator.geolocation.getCurrentPosition(function(p){var la=p.coords.latitude,ln=p.coords.longitude,hit=null;
+          for(var k in C)if(km(la,ln,C[k].la,C[k].ln)<=C[k].km){hit=k;break}
+          if(hit)go(hit);else pick("إنت بره عنيزة والمحلة، اختار المدينة")},
+        function(){pick("الموقع مقفول، اختار مدينتك")},{enableHighAccuracy:false,timeout:12000,maximumAge:600000})};
+    var b=el("button","border:0;background:none;color:#d5ebe8;font:inherit;text-decoration:underline;font-size:14px","أختار المدينة بنفسي");b.type="button";b.onclick=function(){pick("اختار مدينتك")};
+    box.appendChild(a);box.appendChild(st);box.appendChild(b)}
+  function pick(why){box.textContent="";
+    box.appendChild(el("b","font-size:22px","إنت في أنهي مدينة؟"));box.appendChild(el("div","color:#d5ebe8;font-size:14px",why));
+    ["unz","mhl"].forEach(function(k){var x=C[k],bt=el("button","display:flex;align-items:center;gap:12px;border:0;border-radius:18px;padding:14px;background:#fff;color:#0e4f4c;font:inherit;text-align:right;cursor:pointer");bt.type="button";
+      bt.appendChild(el("span","font-size:34px",x.f));var t=el("span");t.appendChild(el("b","display:block;font-size:18px",x.n));t.appendChild(el("small","color:#4f6260",x.s));bt.appendChild(t);
+      bt.onclick=function(){go(k)};box.appendChild(bt)});
+    box.appendChild(el("div","color:#a9d3cf;font-size:12px","اختيارك بيتحفظ، وتقدر تغيّره من ☰ «🌍 غيّر المدينة»"));
+    if(!first){var x=el("button","border:0;background:none;color:#d5ebe8;font:inherit;text-decoration:underline","رجوع");x.type="button";x.onclick=function(){o.remove()};box.appendChild(x)}}
+  if(first)perm();else pick("اختار المدينة");
+  document.body.appendChild(o)}
+window.WCITY={open:function(){show(false)}};
+document.addEventListener("DOMContentLoaded",function(){
+  if(!g())show(true);
+  // زرار «🌍 غيّر المدينة» في القايمة ☰
+  try{var dw=document.getElementById("cdw")||document.getElementById("dw"),ref=dw&&(dw.querySelector('[data-c="lang"]')||dw.querySelector("#shfb"));
+    if(dw){var b=document.createElement("button");b.type="button";b.textContent="🌍 غيّر المدينة ("+C[ME].n+")";b.onclick=function(){show(false)};
+      if(ref&&ref.parentNode)ref.parentNode.insertBefore(b,ref.nextSibling);else dw.appendChild(b)}}catch(e){}
+});
+})();
+</script>
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <title>واصل - المندوب</title>
 <meta charset="utf-8">
