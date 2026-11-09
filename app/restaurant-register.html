@@ -19,7 +19,7 @@ var b=document.createElement("button");b.type="button";b.className="thm";
 function ui(){var k=d.classList.contains("dk");b.textContent=k?"☀️":"🌙";b.title=k?(en()?"Light mode":"الوضع الفاتح"):(en()?"Dark mode":"الوضع الداكن");b.setAttribute("aria-label",b.title)}
 function setDk(k){d.classList.toggle("dk",k);try{localStorage.setItem("wth",k?"dark":"light")}catch(e){}ui()}
 b.onclick=function(){var was=d.classList.contains("dk");setDk(!was);
- waselToast(!was?(en()?"✓ Dark mode on":"✓ اتحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ اتحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
+ waselToast(!was?(en()?"✓ Dark mode on":"✓ تحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ تحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
 var l=h.querySelector("#lang");if(l&&l.parentNode)l.parentNode.insertBefore(b,l);else h.appendChild(b)})})();
 </script>
 <script>/* زر «غيّر مودك / غيّري مودك»: يبدّل شكل التطبيق بين الأخضر والبينك، ويتحفظ على الجهاز بس (مش بيتبعت للسيرفر)، ومعاه «تراجع» */
@@ -30,7 +30,7 @@ function lbl(b){var f=get()==="f",t=en()?"🎨 Change your look":(f?"🎨 غيّ
 window.waselGender=function(v,silent){var prev=get();try{if(v)localStorage.setItem("wgd",v);else localStorage.removeItem("wgd")}catch(e){}
  d.classList.toggle("pk",v==="f");Array.prototype.forEach.call(document.querySelectorAll(".gnd"),lbl);
  try{document.dispatchEvent(new CustomEvent("waselgender",{detail:{v:v,prev:prev}}))}catch(e){}
- if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ اتحوّل للون البينك"):(en()?"✓ Wasel green look on":"✓ اتحوّل للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
+ if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ تحوّل للون الوردي"):(en()?"✓ Wasel green look on":"✓ رجع للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
 document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
  var b=document.createElement("button");b.type="button";b.className="thm gnd";lbl(b);
  b.onclick=function(){window.waselGender(get()==="f"?"m":"f")};
@@ -150,7 +150,7 @@ html.pk header button:not(.thm){color:#9d174d!important}
 <div id="dTg" class="hide" style="margin-top:14px">
 <div class="mu" id="dTx"></div>
 <a id="dTa" class="btn" target="_blank" rel="noopener noreferrer" data-i="tgBtn">✈️ اربط تليجرام لاستلام الرمز</a>
-<div class="mu" style="margin-top:8px" data-i="tgHow">اضغط الزر ثم «Start» في تليجرام. لو ما ربطتش هنتواصل معاك على الجوال.</div>
+<div class="mu" style="margin-top:8px" data-i="tgHow">اضغط الزر ثم «Start» في تليجرام. لو ما ربطت بنتواصل معك على الجوال.</div>
 </div>
 </div>
 </main>
@@ -166,15 +166,15 @@ b1:["تستقبل الطلبات على صفحتك وعلى تليجرام بت�
 b2:["تضيف أصنافك بصورها وأسعارها وعروضك.","Add your items with photos, prices and offers."],
 b3:["مطعمك يظهر للعملاء تلقائيًا في قائمة المطاعم.","Your restaurant appears to customers automatically in the restaurants list."],
 fName:["اسم المطعم (كما يظهر للعملاء)","Restaurant name (as customers will see it)"],
-fOwner:["اسم المسؤول","Manager name"],fLoc:["📍 موقع المطعم (إجباري)","📍 Restaurant location (required)"],locBtn:["📍 موقعي الحالي (وإنت في المطعم)","📍 My current location (while at the restaurant)"],locH:["أو الصق لينك مطعمك من خرائط جوجل","Or paste your restaurant's Google Maps link"],locOk:["✓ تم تحديد الموقع","✓ Location set"],locFail:["تعذر تحديد موقعك، فعّل الموقع أو الصق لينك خرائط جوجل","Could not get your location; enable location or paste a Google Maps link"],eLoc:["حدد موقع المطعم: دوس «موقعي الحالي» أو الصق لينك خرائط جوجل","Set the restaurant location: tap «My current location» or paste a Google Maps link"],fCat:["تصنيف المطعم","Restaurant category"],fPhone:["رقم الجوال (05xxxxxxxx)","Mobile number (05xxxxxxxx)"],
+fOwner:["اسم المسؤول","Manager name"],fLoc:["📍 موقع المطعم (إجباري)","📍 Restaurant location (required)"],locBtn:["📍 موقعي الحالي (وإنت في المطعم)","📍 My current location (while at the restaurant)"],locH:["أو الصق لينك مطعمك من خرائط جوجل","Or paste your restaurant's Google Maps link"],locOk:["✓ تم تحديد الموقع","✓ Location set"],locFail:["تعذر تحديد موقعك، فعّل الموقع أو الصق لينك خرائط جوجل","Could not get your location; enable location or paste a Google Maps link"],eLoc:["حدد موقع المطعم: اضغط «موقعي الحالي» أو الصق رابط خرائط جوجل","Set the restaurant location: tap «My current location» or paste a Google Maps link"],fCat:["تصنيف المطعم","Restaurant category"],fPhone:["رقم الجوال (05xxxxxxxx)","Mobile number (05xxxxxxxx)"],
 agree:["أقرّ أن البيانات صحيحة، وأن المطعم مرخّص ويلتزم بالاشتراطات الصحية، وأوافق على شروط المطاعم وسياسة الخصوصية.","I confirm the details are correct, that the restaurant is licensed and follows health requirements, and I agree to the restaurant terms and privacy policy."],
 send:["إرسال الطلب","Submit request"],read:["اقرأ: ","Read: "],lgT:["شروط المطاعم","Restaurant terms"],lgP:["سياسة الخصوصية","Privacy policy"],
 eName:["اكتب اسم المطعم","Enter the restaurant name"],eOwner:["اكتب اسم المسؤول","Enter the manager name"],ePhone:["اكتب رقم جوال صحيح يبدأ بـ 05","Enter a valid mobile number starting with 05"],eAgree:["لازم توافق على الشروط","You must agree to the terms"],
 eSend:["تعذر الإرسال، حاول مرة أخرى","Could not submit, try again"],noConn:["تعذر الاتصال، حاول مرة أخرى","Connection failed, try again"],
 dT:["✅ تم استلام طلبك","✅ Request received"],dX:["راجعناه وسنتواصل معك على رقم الجوال الذي كتبته، وبعد الموافقة يصلك رمز الدخول. لا داعي لإرسال الطلب مرة ثانية.","We will review it and contact you on the mobile number you entered. After approval you will get your login code. No need to submit again."],
-dTa:["✅ تم تسجيل مطعمك","✅ Your restaurant is registered"],dXa:["رمز دخول مطعمك اتولّد تلقائيًا. اربط تليجرام من الزر تحت وهيوصلك الرمز فورًا. لا داعي لإرسال الطلب مرة ثانية.","Your login code was generated automatically. Link Telegram with the button below and you will get the code right away. No need to submit again."],
+dTa:["✅ تم تسجيل مطعمك","✅ Your restaurant is registered"],dXa:["رمز دخول مطعمك انولّد تلقائيًا. اربط تليجرام من الزر تحت وبيوصلك الرمز على طول. لا داعي لإرسال الطلب مرة ثانية.","Your login code was generated automatically. Link Telegram with the button below and you will get the code right away. No need to submit again."],
 tgA:["عشان يوصلك الرمز:","To receive your code:"],tgW:["عشان الرمز يوصلك تلقائيًا أول ما الإدارة تعتمد مطعمك:","To get your code automatically once admin approves your restaurant:"],
-tgBtn:["✈️ اربط تليجرام لاستلام الرمز","✈️ Link Telegram to get your code"],tgHow:["اضغط الزر ثم «Start» في تليجرام. لو ما ربطتش هنتواصل معاك على الجوال.","Tap the button, then «Start» in Telegram. If you don't link it, we will contact you by phone."]
+tgBtn:["✈️ اربط تليجرام لاستلام الرمز","✈️ Link Telegram to get your code"],tgHow:["اضغط الزر ثم «Start» في تليجرام. لو ما ربطت بنتواصل معك على الجوال.","Tap the button, then «Start» in Telegram. If you don't link it, we will contact you by phone."]
 };
 /* أسماء التصنيفات بالإنجليزي للعرض فقط (القيمة اللي بتروح للسيرفر تفضل عربي زي ما هي) */
 var CATS={"مطاعم":"Restaurants","كافيهات":"Cafés","مقاهي":"Cafés","حلويات":"Sweets","مخابز":"Bakeries","عصائر":"Juices","مشروبات":"Drinks","بقالة":"Grocery","سوبرماركت":"Supermarket","صيدليات":"Pharmacies","وجبات سريعة":"Fast food","مشويات":"Grills","بيتزا":"Pizza","برجر":"Burgers"};
