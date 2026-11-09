@@ -19,7 +19,7 @@ var b=document.createElement("button");b.type="button";b.className="thm";
 function ui(){var k=d.classList.contains("dk");b.textContent=k?"☀️":"🌙";b.title=k?(en()?"Light mode":"الوضع الفاتح"):(en()?"Dark mode":"الوضع الداكن");b.setAttribute("aria-label",b.title)}
 function setDk(k){d.classList.toggle("dk",k);try{localStorage.setItem("wth",k?"dark":"light")}catch(e){}ui()}
 b.onclick=function(){var was=d.classList.contains("dk");setDk(!was);
- waselToast(!was?(en()?"✓ Dark mode on":"✓ اتحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ اتحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
+ waselToast(!was?(en()?"✓ Dark mode on":"✓ تحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ تحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
 var l=h.querySelector("#lang");if(l&&l.parentNode)l.parentNode.insertBefore(b,l);else h.appendChild(b)})})();
 </script>
 <script>/* زر «غيّر مودك / غيّري مودك»: يبدّل شكل التطبيق بين الأخضر والبينك، ويتحفظ على الجهاز بس (مش بيتبعت للسيرفر)، ومعاه «تراجع» */
@@ -30,7 +30,7 @@ function lbl(b){var f=get()==="f",t=en()?"🎨 Change your look":(f?"🎨 غيّ
 window.waselGender=function(v,silent){var prev=get();try{if(v)localStorage.setItem("wgd",v);else localStorage.removeItem("wgd")}catch(e){}
  d.classList.toggle("pk",v==="f");Array.prototype.forEach.call(document.querySelectorAll(".gnd"),lbl);
  try{document.dispatchEvent(new CustomEvent("waselgender",{detail:{v:v,prev:prev}}))}catch(e){}
- if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ اتحوّل للون البينك"):(en()?"✓ Wasel green look on":"✓ اتحوّل للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
+ if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ تحوّل للون الوردي"):(en()?"✓ Wasel green look on":"✓ رجع للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
 document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
  var b=document.createElement("button");b.type="button";b.className="thm gnd";lbl(b);
  b.onclick=function(){window.waselGender(get()==="f"?"m":"f")};
@@ -234,7 +234,7 @@ header #lang{padding:6px 10px!important;margin:0 3px!important}
 <script>
 var LANG="ar";try{LANG=localStorage.getItem("wl")||"ar"}catch(e){}
 var T={
-pinT:["🔐 كود التسليم","🔐 Delivery code"],pinH:["اديه للمندوب لما يسلّمك الطلب، ومن غيره ما يقدرش يسجّل التسليم","Give it to the courier when you receive your order; delivery can't be recorded without it"],rRest:["المطعم أو المكان (اختياري)","The restaurant or place (optional)"],
+pinT:["🔐 كود التسليم","🔐 Delivery code"],pinH:["أعطه للمندوب إذا سلّمك الطلب، وبدونه ما يقدر يسجّل التسليم","Give it to the courier when you receive your order; delivery can't be recorded without it"],rRest:["المطعم أو المكان (اختياري)","The restaurant or place (optional)"],
 sub:["تابع طلبك","Track your order"],title:["تابع طلبي","Track my order"],no:["رقم الطلب","Order number"],p4:["آخر 4 أرقام من جوالك","Last 4 digits of your phone"],go:["تتبّع","Track"],
 tipT:["🎁 تبي تكرم المندوب؟","🎁 Want to tip the courier?"],
 tipD:["اكتب أي مبلغ تبغاه، يُضاف إلى المبلغ الإجمالي الذي تسدده للمندوب، وهو له كاملة.","Enter any amount. It is added to the total you pay the courier, and goes to the courier in full."],
@@ -645,7 +645,7 @@ $("go").onclick=start;
 // «اطلب طلب جديد»: ننسى آخر طلب منتهٍ ثم ينتقل الرابط لصفحة الطلب
 $("another").addEventListener("click",function(){clearInterval(timer);try{localStorage.removeItem("wt")}catch(e){}});
 /* أسباب الإلغاء: القيمة اللي بتروح للسيرفر عربي، والعرض حسب اللغة */
-var CNR=[["طلبت بالغلط","I ordered by mistake"],["المندوب اتأخر في القبول","Courier took too long to accept"],["غيرت رأيي","I changed my mind"],["لقيت بديل أرخص أو أسرع","Found a cheaper or faster option"],["أخرى","Other"]];
+var CNR=[["طلبت بالغلط","I ordered by mistake"],["المندوب تأخر في القبول","Courier took too long to accept"],["غيرت رأيي","I changed my mind"],["لقيت بديل أرخص أو أسرع","Found a cheaper or faster option"],["أخرى","Other"]];
 function fillCn(){var s=$("cnr"),v=s.value;s.textContent="";var o0=document.createElement("option");o0.value="";o0.textContent=t("cnPick");s.appendChild(o0);
   CNR.forEach(function(x){var o=document.createElement("option");o.value=x[0];o.textContent=x[LANG==="en"?1:0];s.appendChild(o)});s.value=v;$("cnn").placeholder=t("cnNote")}
 $("cancelgo").onclick=function(){
@@ -678,5 +678,5 @@ try{google.script.url.getLocation(function(l){var g=l&&l.parameter&&l.parameter.
 </script><script>
 /* كود التسليم: بيظهر للعميل من قبول المندوب لحد التسليم */
 (function(){var _r=window.render;if(typeof _r!=="function")return;
-window.render=function(r){var x=_r.apply(this,arguments);try{var b=document.getElementById("pinbox");if(r&&r.pin){document.getElementById("pinv").textContent=r.pin;b.classList.remove("hide")}else b.classList.add("hide");var gd=document.getElementById("gdeC");if(r&&r.pin&&r.code==="atdest"){var en=LANG==="en",cash=/كاش|cash/i.test(r.pay||"")&&r.total>0;gd.textContent=cash?(en?"📌 Give the courier the amount ("+r.total+" SAR) and the delivery code, then receive your order":"📌 سلّم المندوب المبلغ ("+r.total+" ريال) وكود التسليم، واستلم طلبك"):(en?"📌 Give the courier the delivery code and receive your order":"📌 اديله كود التسليم واستلم طلبك");gd.classList.remove("hide")}else gd.classList.add("hide")}catch(e){}return x}})();
+window.render=function(r){var x=_r.apply(this,arguments);try{var b=document.getElementById("pinbox");if(r&&r.pin){document.getElementById("pinv").textContent=r.pin;b.classList.remove("hide")}else b.classList.add("hide");var gd=document.getElementById("gdeC");if(r&&r.pin&&r.code==="atdest"){var en=LANG==="en",cash=/كاش|cash/i.test(r.pay||"")&&r.total>0;gd.textContent=cash?(en?"📌 Give the courier the amount ("+r.total+" SAR) and the delivery code, then receive your order":"📌 سلّم المندوب المبلغ ("+r.total+" ريال) وكود التسليم، واستلم طلبك"):(en?"📌 Give the courier the delivery code and receive your order":"📌 أعطِ المندوب كود التسليم واستلم طلبك");gd.classList.remove("hide")}else gd.classList.add("hide")}catch(e){}return x}})();
 </script></body></html>
