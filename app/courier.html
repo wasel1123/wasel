@@ -13,6 +13,14 @@ var page=location.pathname.split("/").pop()||"customer.html",c=g();
 // اللي كان بيستخدم واصل عنيزة قبل كده: يفضل على عنيزة من غير ما نسأله
 if(!c&&ME==="unz"){try{if(localStorage.getItem("wp")||localStorage.getItem("wc")||localStorage.getItem("wt")){c="unz";sv(c)}}catch(e){}}
 if(c&&c!==ME&&C[c]){location.replace(C[c].p+page+location.search);return}
+/* بيانات العميل والمندوب منفصلة لكل مدينة: المحلة بتحفظ بحرف «mh_» قبل كل حاجة (الاسم والرقم والطلبات ورمز المندوب)،
+   وعنيزة زي ما هي. الإعدادات العامة (المدينة واللغة والوضع الداكن والمود والصوت) مشتركة */
+if(ME!=="unz"){try{var SP=Storage.prototype,PF=ME==="mhl"?"mh_":ME+"_",SH={wcity:1,wcity_nb:1,wl:1,wth:1,wgd:1,wss:1,ws:1,wloc:1};
+  var gi=SP.getItem,si=SP.setItem,ri=SP.removeItem;
+  function key(st,k){return (st===window.localStorage&&!SH[k])?PF+k:k}
+  SP.getItem=function(k){return gi.call(this,key(this,String(k)))};
+  SP.setItem=function(k,v){return si.call(this,key(this,String(k)),v)};
+  SP.removeItem=function(k){return ri.call(this,key(this,String(k)))}}catch(e){}}
 function go(v){sv(v);if(v!==ME)location.replace(C[v].p+page+location.search);else{var o=document.getElementById("wcity");if(o)o.remove()}}
 function km(a,b,c2,d){var r=Math.PI/180,x=(c2-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c2*r)*Math.sin(y/2)*Math.sin(y/2);return 12742*Math.asin(Math.sqrt(h))}
 function el(t,css,tx){var e=document.createElement(t);if(css)e.style.cssText=css;if(tx!=null)e.textContent=tx;return e}
@@ -252,6 +260,7 @@ html.pk .mdh{background:#9d174d}
 .mlist{padding:6px 0 30px}
 .mlist button{display:flex;justify-content:space-between;align-items:center;width:100%!important;margin:0!important;border-radius:0!important;background:transparent!important;color:var(--tx)!important;box-shadow:none!important;text-align:start;padding:13px 16px!important;font-size:15.5px!important;border-bottom:1px solid var(--ln)!important}
 .mlist button.mred{color:#dc2626!important}
+.mlist a.mla{display:flex;align-items:center;width:100%;padding:13px 18px;color:var(--tx);text-decoration:none;font-weight:700;border-bottom:1px solid var(--ln,#e5e7eb);box-sizing:border-box}
 .mlist .bdg{position:static;background:#dc2626;color:#fff;border-radius:99px;font-size:12px;padding:0 8px}
 #mban{position:fixed;top:10px;left:10px;right:10px;z-index:45;background:#dc2626;color:#fff;border-radius:16px;padding:12px 14px;font-weight:700;font-size:15px;box-shadow:0 8px 22px rgba(0,0,0,.35);display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;animation:msgin .2s ease-out}
 #mban span{background:#fff;color:#dc2626;border-radius:10px;padding:4px 12px;font-size:14px;white-space:nowrap}
@@ -309,6 +318,7 @@ html.pk .mdh{background:#9d174d}
 <button data-go="hist"><span data-m="hist"></span></button>
 <button data-go="wal"><span data-m="wal"></span></button>
 <button data-go="chat"><span data-m="chat"></span><span id="mchn" class="bdg hide"></span></button>
+<a class="mla" href="https://chat.whatsapp.com/D4cFirStNIP0CdQgUbAe1b" target="_blank" rel="noopener noreferrer"><span>💬 جروب مناديب واصل (واتساب)</span></a>
 <button data-go="snd"><span data-m="snd"></span><span id="msnd"></span></button>
 <button data-go="thm"><span id="mthm"></span></button>
 <button data-go="gnd"><span id="mgnd"></span></button>
