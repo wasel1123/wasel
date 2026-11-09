@@ -19,7 +19,7 @@ var b=document.createElement("button");b.type="button";b.className="thm";
 function ui(){var k=d.classList.contains("dk");b.textContent=k?"☀️":"🌙";b.title=k?(en()?"Light mode":"الوضع الفاتح"):(en()?"Dark mode":"الوضع الداكن");b.setAttribute("aria-label",b.title)}
 function setDk(k){d.classList.toggle("dk",k);try{localStorage.setItem("wth",k?"dark":"light")}catch(e){}ui()}
 b.onclick=function(){var was=d.classList.contains("dk");setDk(!was);
- waselToast(!was?(en()?"✓ Dark mode on":"✓ اتحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ اتحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
+ waselToast(!was?(en()?"✓ Dark mode on":"✓ تحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ تحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
 var l=h.querySelector("#lang");if(l&&l.parentNode)l.parentNode.insertBefore(b,l);else h.appendChild(b)})})();
 </script>
 <script>/* زر «غيّر مودك / غيّري مودك»: يبدّل شكل التطبيق بين الأخضر والبينك، ويتحفظ على الجهاز بس (مش بيتبعت للسيرفر)، ومعاه «تراجع» */
@@ -30,7 +30,7 @@ function lbl(b){var f=get()==="f",t=en()?"🎨 Change your look":(f?"🎨 غيّ
 window.waselGender=function(v,silent){var prev=get();try{if(v)localStorage.setItem("wgd",v);else localStorage.removeItem("wgd")}catch(e){}
  d.classList.toggle("pk",v==="f");Array.prototype.forEach.call(document.querySelectorAll(".gnd"),lbl);
  try{document.dispatchEvent(new CustomEvent("waselgender",{detail:{v:v,prev:prev}}))}catch(e){}
- if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ اتحوّل للون البينك"):(en()?"✓ Wasel green look on":"✓ اتحوّل للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
+ if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ تحوّل للون الوردي"):(en()?"✓ Wasel green look on":"✓ رجع للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
 document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
  var b=document.createElement("button");b.type="button";b.className="thm gnd";lbl(b);
  b.onclick=function(){window.waselGender(get()==="f"?"m":"f")};
@@ -187,7 +187,7 @@ sOk:["✅ تم اعتماد طلبك، مرحبًا بك في واصل","✅ App
 sOff:["حسابك موقوف حاليًا، تواصل مع الإدارة.","Your account is currently suspended, contact admin."],sNoAcc:["تم اعتماد طلبك، تواصل مع الإدارة للحصول على الرمز.","Approved, contact admin to get your code."],
 sNo:["❌ لم يتم قبول طلب الانضمام","❌ Join request not accepted"],sWhy:["السبب: ","Reason: "],again:["تقديم طلب جديد","Submit a new request"],
 rno:["رقم طلب انضمامك: ","Your join request number: "],keep:["احتفظ بهذا الرقم. الصفحة تحفظه على هذا الجهاز أيضًا.","Keep this number. This device also remembers it."],
-tgB:["🔔 اربط تليجرام (اختياري)","🔔 Link Telegram (optional)"],tgD:["⏳ أول ما طلبك يتقبل، رمز الدخول ولينك جروب المناديب على واتساب هيظهروا هنا في الصفحة دي، وهيوصلوك كمان على واتساب.","⏳ Once approved, your login code and the couriers WhatsApp group link appear here on this page and are also sent to you on WhatsApp."],tgOn:["✅ إشعار تليجرام مفعّل: سيصلك الرمز هناك فور الاعتماد.","✅ Telegram notification is on: your code will be sent there once approved."]
+tgB:["🔔 اربط تليجرام (اختياري)","🔔 Link Telegram (optional)"],tgD:["⏳ أول ما ينقبل طلبك، رمز الدخول ورابط جروب المناديب على واتساب بيطلعون هنا في هالصفحة، وبيوصلونك بعد على واتساب.","⏳ Once approved, your login code and the couriers WhatsApp group link appear here on this page and are also sent to you on WhatsApp."],tgOn:["✅ إشعار تليجرام مفعّل: سيصلك الرمز هناك فور الاعتماد.","✅ Telegram notification is on: your code will be sent there once approved."]
 };
 var M={"تأكد من رقم الطلب وآخر 4 أرقام من جوالك":"Check the request number and the last 4 digits of your phone","محاولات كثيرة، حاول بعد 10 دقائق":"Too many attempts, try again in 10 minutes","اكتب اسمك الثنائي على الأقل (حروف فقط)":"Enter at least first and last name (letters only)","رقم الجوال غير صحيح (مثال: 05xxxxxxxx)":"Invalid mobile number (e.g. 05xxxxxxxx)","يلزم الموافقة على الإقرار":"You must accept the declaration","طلبات كثيرة الآن، حاول بعد قليل":"Too many requests now, try again shortly","النظام مشغول، حاول بعد لحظات":"System busy, try again in a moment","يوجد طلب تسجيل سابق بهذا الجوال. تابع حالته من تبويب «حالة طلب الانضمام»":"A request with this number already exists. Check it in the \"Join request status\" tab","يوجد طلب تسجيل سابق بهذا الجوال":"A request with this number already exists"};
 function t(k){var d=T[k];return d?d[LANG==="en"?1:0]:k}
