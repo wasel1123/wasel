@@ -95,7 +95,7 @@ var b=document.createElement("button");b.type="button";b.className="thm";
 function ui(){var k=d.classList.contains("dk");b.textContent=k?"☀️":"🌙";b.title=k?(en()?"Light mode":"الوضع الفاتح"):(en()?"Dark mode":"الوضع الداكن");b.setAttribute("aria-label",b.title)}
 function setDk(k){d.classList.toggle("dk",k);try{localStorage.setItem("wth",k?"dark":"light")}catch(e){}ui()}
 b.onclick=function(){var was=d.classList.contains("dk");setDk(!was);
- waselToast(!was?(en()?"✓ Dark mode on":"✓ اتحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ اتحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
+ waselToast(!was?(en()?"✓ Dark mode on":"✓ تحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ تحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
 var l=h.querySelector("#lang");if(l&&l.parentNode)l.parentNode.insertBefore(b,l);else h.appendChild(b)})})();
 </script>
 <script>/* زر «غيّر مودك / غيّري مودك»: يبدّل شكل التطبيق بين الأخضر والبينك، ويتحفظ على الجهاز بس (مش بيتبعت للسيرفر)، ومعاه «تراجع» */
@@ -106,7 +106,7 @@ function lbl(b){var f=get()==="f",t=en()?"🎨 Change your look":(f?"🎨 غيّ
 window.waselGender=function(v,silent){var prev=get();try{if(v)localStorage.setItem("wgd",v);else localStorage.removeItem("wgd")}catch(e){}
  d.classList.toggle("pk",v==="f");Array.prototype.forEach.call(document.querySelectorAll(".gnd"),lbl);
  try{document.dispatchEvent(new CustomEvent("waselgender",{detail:{v:v,prev:prev}}))}catch(e){}
- if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ اتحوّل للون البينك"):(en()?"✓ Wasel green look on":"✓ اتحوّل للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
+ if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ تحوّل للون الوردي"):(en()?"✓ Wasel green look on":"✓ رجع للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
 document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
  var b=document.createElement("button");b.type="button";b.className="thm gnd";lbl(b);
  b.onclick=function(){window.waselGender(get()==="f"?"m":"f")};
@@ -353,7 +353,7 @@ rejectB:["رفض الطلب","Reject order"],pinL:["🔐 كود التسليم �
 invH:["فاتورة الطلب","Order invoice"],invAmt:["قيمة الطلب (ريال)","Order amount (SAR)"],invEx:["مثال: 45.50","e.g. 45.50"],photoInv:["صوّر الفاتورة","Take invoice photo"],
 upInv:["رفع الفاتورة","Upload invoice"],needAmt:["اكتب قيمة الطلب","Enter the order amount"],needPhoto:["صوّر الفاتورة أولًا","Take the invoice photo first"],
 pickQ:["استلمت الطلب؟","Did you pick up the order?"],pickBtn:["تم استلام الطلب من ","Order picked up from "],
-goBtn:["في الطريق للتسليم","On the way to deliver"],kidTag:["📍 المكان الثاني للطلب ","📍 Second place of order "],mainK:["🍱 طلب من مكانين: لازم تستلم المكانين قبل التوصيل (المكان الثاني ظاهر لك كطلب تابع)","🍱 Two-place order: pick up both places before delivering (the second place shows as a linked order)"],kidGo:["تم استلام هذا المكان ✓ ابدأ التوصيل من الطلب الرئيسي ","This place is picked up ✓ start delivery from the main order "],dstBtn:["وصلت موقع التسليم","I arrived at the delivery location"],gdeC1:["📌 استلم المبلغ كامل (","📌 Collect the full amount ("],gdeC2:[") وكود التسليم من العميل، وبعدها سلّمه الطلب",") and the delivery code from the customer, then hand over the order"],gdeT:["📌 خد كود التسليم من العميل، وبعدها سلّمه الطلب","📌 Get the delivery code from the customer, then hand over the order"],
+goBtn:["في الطريق للتسليم","On the way to deliver"],kidTag:["📍 المكان الثاني للطلب ","📍 Second place of order "],mainK:["🍱 طلب من مكانين: لازم تستلم المكانين قبل التوصيل (المكان الثاني ظاهر لك كطلب تابع)","🍱 Two-place order: pick up both places before delivering (the second place shows as a linked order)"],kidGo:["تم استلام هذا المكان ✓ ابدأ التوصيل من الطلب الرئيسي ","This place is picked up ✓ start delivery from the main order "],dstBtn:["وصلت موقع التسليم","I arrived at the delivery location"],gdeC1:["📌 استلم المبلغ كاملًا (","📌 Collect the full amount ("],gdeC2:[") وكود التسليم من العميل، ثم سلّمه الطلب",") and the delivery code from the customer, then hand over the order"],gdeT:["📌 خذ كود التسليم من العميل، ثم سلّمه الطلب","📌 Get the delivery code from the customer, then hand over the order"],
 delH:["تسليم الطلب","Deliver the order"],gotAmt:["المبلغ المستلم من العميل (ريال)","Amount received from customer (SAR)"],
 gotBtn:["استلمت المبلغ وسلّمت الطلب","I received the money and delivered"],lessThan:["المبلغ أقل من المطلوب: ","Amount is less than required: "],
 confDel1:["تأكيد استلام ","Confirm receiving "],confDel2:[" ريال وتسليم الطلب؟"," SAR and delivering the order?"],
@@ -388,13 +388,13 @@ rk0:["العميل لا يرد","Customer not answering"],rk1:["العنوان �
 waitL:["⏱ بانتظار العميل منذ","⏱ Waiting for the customer for"],waitH:["جرّب رسالة «أنا عند الباب» في المحادثة. بعد 5 دقائق يظهر زر إبلاغ الإدارة.","Try the \"I am at the door\" message in the chat. After 5 minutes a button to alert admin appears."],noAns:["🚨 العميل لا يرد، بلّغ الإدارة","🚨 Customer not answering, alert admin"],noAnsOk:["✓ تم إبلاغ الإدارة، انتظر تعليماتها","✓ Admin was alerted, wait for instructions"],
 rsNo:["🍽 مطعم شريك: لم يرد على الطلب بعد","🍽 Partner restaurant: has not responded yet"],rsInv:["🧾 رقم فاتورة المطعم: ","🧾 Restaurant invoice no.: "],rsAcc:["🍽 المطعم قبل الطلب · جاهز بعد حوالي ","🍽 Restaurant accepted · ready in about "],rsMin:[" د"," min"],rsNow:["🍽 المطعم قبل الطلب، ومن المفروض يكون جاهزًا الآن","🍽 Restaurant accepted; it should be ready now"],rsRdy:["✅ المطعم جاهز: الطلب جاهز للاستلام","✅ Restaurant ready: the order is ready for pickup"],rsRej:["⚠️ المطعم اعتذر عن الطلب، تواصل مع الإدارة","⚠️ The restaurant declined the order, contact support"],
 noUpd:["تعذر التحديث، تأكد من الإنترنت","Could not refresh, check your internet"],noConn:["تعذر الاتصال","Connection failed"],hDet:["🧾 التفاصيل","🧾 Details"],hDetHide:["إخفاء التفاصيل","Hide details"],dLoad:["جارٍ تحميل التفاصيل…","Loading details…"],dTl:["سير الطلب","Order timeline"],dChat:["المحادثة","Chat"],dNoChat:["لا توجد محادثة على هذا الطلب.","No chat on this order."],dMe:["أنت","You"],dCu:["العميل","Customer"],dShot:["تقدر تعمل لقطة شاشة لهذه التفاصيل وتبعتها للإدارة عند الطلب.","You can screenshot these details and send them to support if asked."],
-locH:["📍 مشاركة موقعك","📍 Share your location"],locAsk:["لو وافقت، يظهر موقعك للإدارة طول ما أنت متاح، ويظهر للعميل فقط من لما تقبل طلبه لحد التسليم. الموقع يتحدث والصفحة مفتوحة، ولا نحفظ سجل لمسارك، ويتوقف فورًا لو بقيت غير متاح أو خرجت.","If you agree, admin can see your location while you are available, and the customer sees it only from the moment you accept their order until delivery. It updates while this page is open, no route history is kept, and it stops right away when you go unavailable or log out."],
+locH:["📍 مشاركة موقعك","📍 Share your location"],locAsk:["لو وافقت، يظهر موقعك للإدارة طول ما أنت متاح، ويظهر للعميل فقط من يوم تقبل طلبه لين التسليم. الموقع يتحدث والصفحة مفتوحة، ولا نحفظ سجل لمسارك، ويوقف على طول إذا صرت غير متاح أو طلعت.","If you agree, admin can see your location while you are available, and the customer sees it only from the moment you accept their order until delivery. It updates while this page is open, no route history is kept, and it stops right away when you go unavailable or log out."],
 locYes:["أوافق وأشارك موقعي","I agree, share my location"],locOn:["✅ مشاركة الموقع تعمل","✅ Location sharing is on"],locLast:[" · آخر إرسال "," · last sent "],
 locDen:["⚠️ الموقع مرفوض: فعّل إذن الموقع لهذا الموقع من إعدادات المتصفح ثم حدّث الصفحة","⚠️ Location is blocked: allow location for this site in the browser settings, then refresh"],locBad:["⚠️ تعذر تحديد موقعك الآن (تأكد من تشغيل GPS)","⚠️ Could not get your location (make sure GPS is on)"],
-locWait:["⏳ جارٍ تحديد موقعك...","⏳ Getting your location..."],locSlow:["لو طوّل: 1) شغّل الموقع (GPS) من إعدادات الموبايل. 2) اسمح للمتصفح بالموقع لما يسألك (ولو رفضت قبل كده: من إعدادات المتصفح ← الموقع ← اسمح). 3) افتح الرابط من Chrome أو Safari مش من جوه واتساب أو تليجرام. 4) اطلع جنب شباك أو برا المبنى.","If it takes long: 1) Turn on Location (GPS) in phone settings. 2) Allow location for the browser (if you blocked it before: browser settings → Location → Allow). 3) Open the link in Chrome or Safari, not inside WhatsApp or Telegram. 4) Move near a window or outside."],locRetry:["🔄 حاول تاني","🔄 Try again"],locStop:["إيقاف مشاركة الموقع","Stop sharing"],locKeep:["خلّي الشاشة مفتوحة أثناء التوصيل حتى يستمر التحديث.","Keep the screen on during delivery so updates continue."],locNo:["جهازك أو متصفحك لا يدعم الموقع","Your device or browser does not support location"],
+locWait:["⏳ جارٍ تحديد موقعك...","⏳ Getting your location..."],locSlow:["لو طوّل: 1) شغّل الموقع (GPS) من إعدادات الجوال. 2) اسمح للمتصفح بالموقع إذا سألك (ولو رفضت قبل: من إعدادات المتصفح ← الموقع ← اسمح). 3) افتح الرابط من Chrome أو Safari ما هو من داخل واتساب أو تليجرام. 4) اطلع جنب الشباك أو برّا المبنى.","If it takes long: 1) Turn on Location (GPS) in phone settings. 2) Allow location for the browser (if you blocked it before: browser settings → Location → Allow). 3) Open the link in Chrome or Safari, not inside WhatsApp or Telegram. 4) Move near a window or outside."],locRetry:["🔄 حاول مرة ثانية","🔄 Try again"],locStop:["إيقاف مشاركة الموقع","Stop sharing"],locKeep:["خلّي الشاشة مفتوحة أثناء التوصيل حتى يستمر التحديث.","Keep the screen on during delivery so updates continue."],locNo:["جهازك أو متصفحك لا يدعم الموقع","Your device or browser does not support location"],
 locReqT:["مشاركة الموقع إلزامية لاستقبال الطلبات: تظهر لك الطلبات وتقدر تقبلها بعد ما موقعك يوصل للإدارة.","Location sharing is required to receive orders: orders appear and you can accept them once your location reaches admin."],locNeed:["📍 فعّل مشاركة الموقع لتظهر لك الطلبات المتاحة","📍 Turn on location sharing to see available orders"],
 walB:["💰 محفظتي","💰 My wallet"],walT:["💰 محفظتي","💰 My wallet"],walPos:["أجورك من الطلبات المحوّلة (المبلغ عند التطبيق)","Your fees from transfer orders (money held by the app)"],walNeg:["مبالغ مطلوب تسليمها من الطلبات الكاش","Amounts to hand over from cash orders"],walSet:["تسويات مع الإدارة","Settlements with admin"],walEq:["رصيدك الآن","Your balance now"],
-walNote:["في الطلب الكاش: المبلغ كله معك وتحتفظ بأجرك، والمبلغ المطلوب تسليمه بيتحسب في رصيدك. في الحوالة: المبلغ يصل للتطبيق ويُضاف أجرك لرصيدك.","Cash order: you hold all the money and keep your fee; the amount to hand over is counted in your balance. Transfer order: the app receives the money and your fee is added to your balance."],
+walNote:["في الطلب الكاش: المبلغ كله معك وتحتفظ بأجرك، والمبلغ المطلوب تسليمه ينحسب في رصيدك. في الحوالة: المبلغ يصل للتطبيق ويُضاف أجرك لرصيدك.","Cash order: you hold all the money and keep your fee; the amount to hand over is counted in your balance. Transfer order: the app receives the money and your fee is added to your balance."],
 walAcc:["🏦 بيانات حسابك لتحويل مستحقاتك","🏦 Your account for payouts"],walHolder:["اسم صاحب الحساب (كما في البنك)","Account holder name (as in the bank)"],walHolderP:["مثال: أحمد محمد علي","e.g. Ahmed Mohammed Ali"],walIban:["الآيبان (IBAN)","IBAN"],walStc:["رقم STC Pay","STC Pay number"],walKeep:["اتركه فارغًا ليبقى المحفوظ","Leave empty to keep the saved one"],
 walSave:["حفظ بيانات الحساب","Save account details"],walEdit:["تعديل بيانات الحساب","Edit account details"],walSaved:["✓ تم حفظ بيانات حسابك","✓ Your account details were saved"],walPriv:["بياناتك تُستخدم لتحويل مستحقاتك فقط وتظهر للإدارة فقط. لا نعرض الرقم كاملًا هنا.","Your details are used only to pay you and are visible to admin only. The full number is never shown here."],
 walList:["آخر الحركات","Recent activity"],walNone:["لا توجد حركات بعد","No activity yet"],walNoPay:["لم يُستلم المبلغ: بدون أجر","Money not received: no fee"],walCashN:["كاش: المبلغ معك وتحتفظ بأجرك","Cash: you hold the money and keep your fee"],walTrN:["حوالة: المبلغ عند التطبيق ويُضاف أجرك لرصيدك","Transfer: the app holds the money and your fee is added to your balance"],walSettle:["تسوية مع الإدارة","Settlement with admin"],walIn:["سلّمت مبلغًا للإدارة","You handed money to admin"],walOut:["استلمت مبلغًا من التطبيق","You received money from the app"]
@@ -458,7 +458,7 @@ function put(p,x){var re=/https?:\/\/\S+/g,last=0,m;
   if(last<x.length)p.appendChild(document.createTextNode(x.slice(last)))}
 function row(card,k,v){if(!v)return;var r=el("div","row");r.appendChild(el("b",null,k));var s=el("span");put(s,v);r.appendChild(s);card.appendChild(r)}
 /* أسباب رفض المندوب: القيمة عربي للسيرفر، والعرض حسب اللغة */
-var RJO={no:"",r:"",n:""},RJR=[["المكان بعيد","Too far"],["مشغول بطلب تاني","Busy with another order"],["المطعم مقفول أو زحمة","Restaurant closed or crowded"],["مشكلة في المركبة","Vehicle problem"],["أخرى","Other"]];
+var RJO={no:"",r:"",n:""},RJR=[["المكان بعيد","Too far"],["مشغول بطلب ثاني","Busy with another order"],["المطعم مقفول أو زحمة","Restaurant closed or crowded"],["مشكلة في المركبة","Vehicle problem"],["أخرى","Other"]];
 function alertMsg(m){try{if(typeof setMsg==="function"){setMsg(m,1);return}}catch(e){}alert(m)}
 function btn(tx,cls,fn){var b=el("button",cls,tx);b.onclick=function(){fn(b)};return b}
 var editTs=0;
@@ -1050,11 +1050,11 @@ applyLang();
   var TX=[
     ["أهلًا بك يا بطل 👋 صفحة مندوب واصل","Welcome, champion 👋 Wasel courier page"],
     ["⚡ أول مندوب يقبل الطلب هو اللي ياخده.","⚡ The first courier to accept an order gets it."],
-    ["🔊 فعّل الصوت وسيب الصفحة مفتوحة عشان يوصلك تنبيه الطلب الجديد.","🔊 Turn the sound on and keep this page open to get new-order alerts."],
+    ["🔊 فعّل الصوت وخلّ الصفحة مفتوحة عشان يوصلك تنبيه الطلب الجديد.","🔊 Turn the sound on and keep this page open to get new-order alerts."],
     ["📍 فعّل الموقع في جوالك عشان الإدارة والعميل يتابعوا الطلب.","📍 Turn on location on your phone so the admin and customer can follow the order."],
     ["🤝 تعامل بأدب مع العميل والمطعم، وسلّم الطلب كامل.","🤝 Be polite to the customer and restaurant, and deliver the order complete."],
-    ["💰 مستحقاتك وحسابك بيظهروا لك في صفحتك.","💰 Your dues and account are shown on your page."],
-    ["⏳ لو الصفحة اتأخرت ثواني، استنّى… بتحمل على مهلها.","⏳ If the page takes a few seconds, please wait… it is loading."],
+    ["💰 مستحقاتك وحسابك تطلع لك في صفحتك.","💰 Your dues and account are shown on your page."],
+    ["⏳ إذا تأخرت الصفحة ثواني، انتظر شوي… قاعدة تحمّل.","⏳ If the page takes a few seconds, please wait… it is loading."],
     ["🚀 واصل… سريع وأمين","🚀 Wasel… fast and trusted"]];
   var UI=[["تخطّي ›","Skip ›"],["🔊 الصوت مفعّل","🔊 Sound on"],["🔇 الصوت مقفول","🔇 Sound off"],["المس الشاشة لتشغيل الصوت","Touch the screen for sound"]];
   var st=document.createElement("style");
@@ -1110,7 +1110,7 @@ applyLang();
 var MT={locI:["📍 مشاركة الموقع شغالة","📍 Location sharing is on"],hist:["📊 أرباحي وسجلي","📊 My earnings"],wal:["💰 محفظتي","💰 My wallet"],chat:["💬 الدعم والمحادثات","💬 Support & chats"],snd:["🔔 صوت التنبيه","🔔 Alert sound"],out:["خروج","Log out"],
  newO:["🚨 طلب جديد وصل","🚨 New order"],view:["عرض","View"],locGo:["📍 فعّل مشاركة الموقع من هنا","📍 Turn on location sharing"]};
 function mt(k){return MT[k][LANG==="en"?1:0]}
-var GSEEN=null,GT={h:["🤝 حط نفسك مكان العميل، وسلّمه طلبه زي ما تحب تستلم طلبك:","🤝 Put yourself in the customer's shoes, and deliver the order the way you'd like to receive yours:"],
+var GSEEN=null,GT={h:["🤝 حط نفسك مكان العميل، وسلّمه طلبه مثل ما تحب تستلم طلبك:","🤝 Put yourself in the customer's shoes, and deliver the order the way you'd like to receive yours:"],
  l1:["تأكد إن الطلب كامل ومقفول زين قبل لا تطلع من المطعم.","Make sure the order is complete and well sealed before leaving the restaurant."],
  l2:["روح على طول، الأكل يبرد والعميل ينتظر.","Go straight there, the food gets cold and the customer is waiting."],
  l3:["سلّم وابتسم، وتكلم معه بأدب واحترام.","Greet and smile, and speak politely and respectfully."],
@@ -1222,11 +1222,11 @@ html.dk #shban{background:#2e2412;color:#e7a94a}
 <script>
 /* ===== 🗓 شيفتاتي (ملف Shifts.gs): المندوب يختار شيفتاته من التطبيق. إضافة بس، مش بتغيّر أي حاجة في الطلبات ===== */
 (function(){
-var ST={t:["🗓 شيفتاتي","🗓 My shifts"],cur:["الأسبوع ده","This week"],nxt:["الأسبوع الجاي","Next week"],
- wk:["من ","From "],to:[" لحد "," to "],rep:["اختيارك بيتكرر كل يوم طول الأسبوع","Your choice repeats every day of the week"],
- all:["☀️ طول اليوم","☀️ All day"],save:["حفظ","Save"],saving:["جارٍ الحفظ...","Saving..."],ok:["✅ اتسجلت شيفتاتك","✅ Your shifts are saved"],none:["✅ اتلغت كل شيفتاتك للأسبوع ده","✅ All your shifts for this week were removed"],
- err:["تعذر الحفظ، حاول تاني","Couldn't save, try again"],ld:["جارٍ التحميل...","Loading..."],
- nxtSoon:["الأسبوع الجاي بيتفتح يوم الخميس","Next week opens on Thursday"],need:["⚠️ لسه ما اخترتش شيفتاتك للأسبوع ده، دوس هنا","⚠️ You haven't picked your shifts this week, tap here"],
+var ST={t:["🗓 شيفتاتي","🗓 My shifts"],cur:["هالأسبوع","This week"],nxt:["الأسبوع الجاي","Next week"],
+ wk:["من ","From "],to:[" إلى "," to "],rep:["اختيارك يتكرر كل يوم طول الأسبوع","Your choice repeats every day of the week"],
+ all:["☀️ طول اليوم","☀️ All day"],save:["حفظ","Save"],saving:["جارٍ الحفظ...","Saving..."],ok:["✅ انسجلت شيفتاتك","✅ Your shifts are saved"],none:["✅ انلغت كل شيفتاتك لهالأسبوع","✅ All your shifts for this week were removed"],
+ err:["تعذر الحفظ، حاول مرة ثانية","Couldn't save, try again"],ld:["جارٍ التحميل...","Loading..."],
+ nxtSoon:["الأسبوع الجاي ينفتح يوم الخميس","Next week opens on Thursday"],need:["⚠️ للحين ما اخترت شيفتاتك لهالأسبوع، اضغط هنا","⚠️ You haven't picked your shifts this week, tap here"],
  pill:["اختار","Pick"],soonT:["شيفت ","Shift "],soonA:[" بيبدأ الساعة "," starts at "],soonD:["بعد "," In "],min:[" دقيقة. خلّي حالتك «متاح» وشغّل مشاركة الموقع."," min. Set yourself «Available» and share your location."],ready:["🟢 أنا جاهز","🟢 I'm ready"]};
 function s(k){return ST[k][LANG==="en"?1:0]}
 var D=null,TAB="cur",SEL={},SC=null,box=$("shc");
