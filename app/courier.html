@@ -10,6 +10,8 @@ var C={unz:{n:"عنيزة",s:"السعودية · بالريال",f:"🇸🇦",l
 function g(){try{return localStorage.getItem(K)}catch(e){return null}}
 function sv(v){try{localStorage.setItem(K,v)}catch(e){}}
 var page=location.pathname.split("/").pop()||"customer.html",c=g();
+// آخر صفحة اتفتحت (عميل/مندوب): علشان لو النت فصل ورجع، التطبيق يرجع لنفس الصفحة
+try{localStorage.setItem("wlast",page)}catch(e){}
 // اللي كان بيستخدم واصل عنيزة قبل كده: يفضل على عنيزة من غير ما نسأله
 if(!c&&ME==="unz"){try{if(localStorage.getItem("wp")||localStorage.getItem("wc")||localStorage.getItem("wt")){c="unz";sv(c)}}catch(e){}}
 if(c&&c!==ME&&C[c]){location.replace(C[c].p+page+location.search);return}
