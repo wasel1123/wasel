@@ -183,11 +183,11 @@ eName:["اكتب اسمك الثنائي على الأقل","Enter at least firs
 noConn:["تعذر الاتصال، حاول مرة أخرى","Connection failed, try again"],
 stT:["متابعة حالة طلب الانضمام","Follow your join request"],stNo:["رقم طلب الانضمام","Join request number"],stP4:["آخر 4 أرقام من جوالك","Last 4 digits of your phone"],stGo:["عرض الحالة","Show status"],
 sPend:["⏳ طلب انضمامك قيد المراجعة","⏳ Your join request is under review"],sPendD:["سنراجع بياناتك ومستنداتك. هذه الصفحة تتحدث تلقائيًا، ويظهر رمز الدخول هنا فور الاعتماد.","We will review your details and documents. This page refreshes automatically and your login code appears here once approved."],
-sOk:["✅ تم اعتماد طلبك، مرحبًا بك في واصل","✅ Approved, welcome to Wasel"],sCode:["رمز دخولك (لا تشاركه مع أحد):","Your login code (do not share it):"],sOpen:["افتح صفحة المندوب وادخل بالرمز","Open the courier page and log in with the code"],copy:["نسخ الرمز","Copy code"],copied:["✓ تم النسخ","✓ Copied"],sGrp:["👥 انضم لجروب مناديب واصل","👥 Join the Wasel couriers group"],
+sOk:["✅ تم اعتماد طلبك، مرحبًا بك في واصل","✅ Approved, welcome to Wasel"],sCode:["رمز دخولك (لا تشاركه مع أحد):","Your login code (do not share it):"],sOpen:["افتح صفحة المندوب وادخل بالرمز","Open the courier page and log in with the code"],copy:["نسخ الرمز","Copy code"],copied:["✓ تم النسخ","✓ Copied"],sGrp:["💬 انضم لجروب مناديب واصل (واتساب)","💬 Join the Wasel couriers group (WhatsApp)"],
 sOff:["حسابك موقوف حاليًا، تواصل مع الإدارة.","Your account is currently suspended, contact admin."],sNoAcc:["تم اعتماد طلبك، تواصل مع الإدارة للحصول على الرمز.","Approved, contact admin to get your code."],
 sNo:["❌ لم يتم قبول طلب الانضمام","❌ Join request not accepted"],sWhy:["السبب: ","Reason: "],again:["تقديم طلب جديد","Submit a new request"],
 rno:["رقم طلب انضمامك: ","Your join request number: "],keep:["احتفظ بهذا الرقم. الصفحة تحفظه على هذا الجهاز أيضًا.","Keep this number. This device also remembers it."],
-tgB:["🔔 اربط تليجرام (إجباري)","🔔 Link Telegram (required)"],tgD:["⚠️ طلبك مش هيتراجع غير بعد ما تربط تليجرام: افتح البوت واضغط Start ثم ارجع هنا. على تليجرام هيوصلك رمز الدخول ورابط دخول جروب مناديب واصل فور الاعتماد.","⚠️ Your request will not be reviewed until you link Telegram: open the bot, tap Start, then come back. Your login code and the Wasel couriers group link will be sent on Telegram once approved."],tgOn:["✅ إشعار تليجرام مفعّل: سيصلك الرمز هناك فور الاعتماد.","✅ Telegram notification is on: your code will be sent there once approved."]
+tgB:["🔔 اربط تليجرام (اختياري)","🔔 Link Telegram (optional)"],tgD:["⏳ أول ما طلبك يتقبل، رمز الدخول ولينك جروب المناديب على واتساب هيظهروا هنا في الصفحة دي، وهيوصلوك كمان على واتساب.","⏳ Once approved, your login code and the couriers WhatsApp group link appear here on this page and are also sent to you on WhatsApp."],tgOn:["✅ إشعار تليجرام مفعّل: سيصلك الرمز هناك فور الاعتماد.","✅ Telegram notification is on: your code will be sent there once approved."]
 };
 var M={"تأكد من رقم الطلب وآخر 4 أرقام من جوالك":"Check the request number and the last 4 digits of your phone","محاولات كثيرة، حاول بعد 10 دقائق":"Too many attempts, try again in 10 minutes","اكتب اسمك الثنائي على الأقل (حروف فقط)":"Enter at least first and last name (letters only)","رقم الجوال غير صحيح (مثال: 05xxxxxxxx)":"Invalid mobile number (e.g. 05xxxxxxxx)","يلزم الموافقة على الإقرار":"You must accept the declaration","طلبات كثيرة الآن، حاول بعد قليل":"Too many requests now, try again shortly","النظام مشغول، حاول بعد لحظات":"System busy, try again in a moment","يوجد طلب تسجيل سابق بهذا الجوال. تابع حالته من تبويب «حالة طلب الانضمام»":"A request with this number already exists. Check it in the \"Join request status\" tab","يوجد طلب تسجيل سابق بهذا الجوال":"A request with this number already exists"};
 function t(k){var d=T[k];return d?d[LANG==="en"?1:0]:k}
@@ -267,8 +267,7 @@ function showRes(r){
   c.appendChild(el("div","no",r.no));
   if(r.status==="جديد"){
     c.appendChild(el("span","pill w",t("sPend")));c.appendChild(el("p","mu",t("sPendD")));c.appendChild(el("div","mu",t("keep")));
-    if(r.tg&&r.tg.linked)c.appendChild(el("p","okc",t("tgOn")));
-    else if(r.tg&&r.tg.url){var tb=el("a","go",t("tgB"));tb.href=r.tg.url;tb.target="_blank";tb.rel="noopener noreferrer";c.appendChild(tb);c.appendChild(el("p","mu",t("tgD")))}}
+    c.appendChild(el("p","mu",t("tgD")))}
   else if(r.status==="مقبول"){
     c.appendChild(el("div","big okc",t("sOk")));
     if(r.code){
