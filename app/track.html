@@ -192,7 +192,7 @@ header #lang{padding:6px 10px!important;margin:0 3px!important}
 <div class="card hide" id="cmap"><div class="big" data-i="mapT"></div><div class="mu" id="mapInfo"></div><div class="mm hide" id="mapBox" style="margin-top:8px"></div><div class="mu" style="margin-top:6px" data-i="mapNote"></div></div>
 <div class="card hide" id="stc"><div class="ch" data-i="stT"></div><ul class="steps" id="st"></ul></div>
 <div class="card bill hide" id="bill"></div>
-<div class="card hide" id="pinbox" style="text-align:center"><div class="mu" data-i="pinT"></div><div id="pinv" dir="ltr" style="font-size:40px;letter-spacing:12px;font-weight:700;color:var(--br)"></div><div class="mu" data-i="pinH"></div></div>
+<div class="card hide" id="pinbox" style="text-align:center"><div id="gdeC" class="hide" style="margin:0 0 10px;padding:10px 12px;border-radius:12px;background:#fef3c7;color:#78350f;border:1px solid #f59e0b;font-weight:700;font-size:15px;line-height:1.6"></div><div class="mu" data-i="pinT"></div><div id="pinv" dir="ltr" style="font-size:40px;letter-spacing:12px;font-weight:700;color:var(--br)"></div><div class="mu" data-i="pinH"></div></div>
 <div class="card hide" id="tipbox">
  <div class="big" data-i="tipT"></div>
  <div class="mu" data-i="tipD"></div>
@@ -678,5 +678,5 @@ try{google.script.url.getLocation(function(l){var g=l&&l.parameter&&l.parameter.
 </script><script>
 /* كود التسليم: بيظهر للعميل من قبول المندوب لحد التسليم */
 (function(){var _r=window.render;if(typeof _r!=="function")return;
-window.render=function(r){var x=_r.apply(this,arguments);try{var b=document.getElementById("pinbox");if(r&&r.pin){document.getElementById("pinv").textContent=r.pin;b.classList.remove("hide")}else b.classList.add("hide")}catch(e){}return x}})();
+window.render=function(r){var x=_r.apply(this,arguments);try{var b=document.getElementById("pinbox");if(r&&r.pin){document.getElementById("pinv").textContent=r.pin;b.classList.remove("hide")}else b.classList.add("hide");var gd=document.getElementById("gdeC");if(r&&r.pin&&r.code==="atdest"){var en=LANG==="en",cash=/كاش|cash/i.test(r.pay||"")&&r.total>0;gd.textContent=cash?(en?"📌 Give the courier the amount ("+r.total+" SAR) and the delivery code, then receive your order":"📌 سلّم المندوب المبلغ ("+r.total+" ريال) وكود التسليم، واستلم طلبك"):(en?"📌 Give the courier the delivery code and receive your order":"📌 اديله كود التسليم واستلم طلبك");gd.classList.remove("hide")}else gd.classList.add("hide")}catch(e){}return x}})();
 </script></body></html>
