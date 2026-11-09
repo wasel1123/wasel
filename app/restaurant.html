@@ -19,7 +19,7 @@ var b=document.createElement("button");b.type="button";b.className="thm";
 function ui(){var k=d.classList.contains("dk");b.textContent=k?"☀️":"🌙";b.title=k?(en()?"Light mode":"الوضع الفاتح"):(en()?"Dark mode":"الوضع الداكن");b.setAttribute("aria-label",b.title)}
 function setDk(k){d.classList.toggle("dk",k);try{localStorage.setItem("wth",k?"dark":"light")}catch(e){}ui()}
 b.onclick=function(){var was=d.classList.contains("dk");setDk(!was);
- waselToast(!was?(en()?"✓ Dark mode on":"✓ اتحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ اتحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
+ waselToast(!was?(en()?"✓ Dark mode on":"✓ تحوّل للوضع الداكن"):(en()?"✓ Light mode on":"✓ تحوّل للوضع الفاتح"),en()?"↩ Undo":"↩ تراجع",function(){setDk(was)})};ui();
 var l=h.querySelector("#lang");if(l&&l.parentNode)l.parentNode.insertBefore(b,l);else h.appendChild(b)})})();
 </script>
 <script>/* زر «غيّر مودك / غيّري مودك»: يبدّل شكل التطبيق بين الأخضر والبينك، ويتحفظ على الجهاز بس (مش بيتبعت للسيرفر)، ومعاه «تراجع» */
@@ -30,7 +30,7 @@ function lbl(b){var f=get()==="f",t=en()?"🎨 Change your look":(f?"🎨 غيّ
 window.waselGender=function(v,silent){var prev=get();try{if(v)localStorage.setItem("wgd",v);else localStorage.removeItem("wgd")}catch(e){}
  d.classList.toggle("pk",v==="f");Array.prototype.forEach.call(document.querySelectorAll(".gnd"),lbl);
  try{document.dispatchEvent(new CustomEvent("waselgender",{detail:{v:v,prev:prev}}))}catch(e){}
- if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ اتحوّل للون البينك"):(en()?"✓ Wasel green look on":"✓ اتحوّل للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
+ if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ تحوّل للون الوردي"):(en()?"✓ Wasel green look on":"✓ رجع للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
 document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
  var b=document.createElement("button");b.type="button";b.className="thm gnd";lbl(b);
  b.onclick=function(){window.waselGender(get()==="f"?"m":"f")};
@@ -168,7 +168,7 @@ html.pk header button:not(.thm){color:#9d174d!important}
 <div id="sndHint"></div><div id="msg"></div>
 <div class="tabs"><button id="tO" class="on" data-a>📋 الطلبات</button><button id="tM" data-a>🍽 المنيو والعروض</button><button id="tD" data-a>📊 لوحتي</button></div>
 <div id="locCard" class="card hide" style="border:2px solid #f2b544!important"><h2 data-a>📍 لازم تحدد موقع مطعمك</h2>
-<div class="sub" data-a>ما تقدرش تقبل طلبات غير بعد ما تحدد موقعك، عشان المندوب يوصلك على طول والعميل يشوف مكانك.</div>
+<div class="sub" data-a>ما تقدر تقبل طلبات إلا بعد ما تحدد موقعك، عشان المندوب يوصلك على طول والعميل يشوف مكانك.</div>
 <button type="button" id="locHere" data-a>📍 موقعي الحالي (وإنت في المطعم)</button>
 <div class="sub" style="margin-top:8px" data-a>أو الصق لينك مطعمك من خرائط جوجل:</div>
 <input id="locLink" dir="ltr" data-ap placeholder="https://maps.app.goo.gl/..."><button type="button" id="locSave" class="sec" data-a>حفظ اللينك</button></div>
@@ -178,7 +178,7 @@ html.pk header button:not(.thm){color:#9d174d!important}
 <h2 data-a>آخر الطلبات المنتهية</h2><div id="done"></div>
 </div>
 <div id="pMenu" class="hide">
-<div class="card opn"><div><b id="opT"></b><div class="sub" data-a>لما تقفل، يظهر مطعمك للعميل «مغلق» ولا يستقبل طلبات</div></div><button id="opB"></button></div>
+<div class="card opn"><div><b id="opT"></b><div class="sub" data-a>إذا قفلت، يظهر مطعمك للعميل «مغلق» ولا يستقبل طلبات</div></div><button id="opB"></button></div>
 <div class="card" id="form"><h2 id="fT">إضافة صنف</h2>
 <div class="fg"><div class="w"><label data-a>اسم الصنف</label><input id="fN" maxlength="80" data-ap placeholder="مثال: وجبة برجر دجاج"></div>
 <div><label data-a>السعر (ريال)</label><input id="fP" type="number" inputmode="decimal" min="0.5" max="1000" step="0.5"></div>
@@ -189,13 +189,13 @@ html.pk header button:not(.thm){color:#9d174d!important}
 <h2><span data-a>أصنافي </span><span class="sub" id="cnt"></span></h2><div id="mlist"></div>
 </div>
 <div id="pDash" class="hide">
-<div class="sumtabs"><button type="button" id="dP0" class="on" data-a>اليوم</button><button type="button" id="dP1" data-a>آخر 7 أيام</button><button type="button" id="dP2" data-a>الشهر ده</button></div>
+<div class="sumtabs"><button type="button" id="dP0" class="on" data-a>اليوم</button><button type="button" id="dP1" data-a>آخر 7 أيام</button><button type="button" id="dP2" data-a>هالشهر</button></div>
 <div class="card"><div class="stats" id="dSum"></div></div>
 <div class="card"><h2 data-a>💰 حسابك مع واصل</h2><div id="dAcc"></div>
-<div class="rbtn"><button type="button" id="dR3" class="sec" data-a>📄 ابعتلي تقرير آخر 3 أيام PDF</button><button type="button" id="dR7" class="sec" data-a>📄 ابعتلي التقرير الأسبوعي PDF</button></div></div>
-<div class="card"><h2 data-a>🕘 مواعيد المطعم</h2><div class="sub" data-a>المطعم بيفتح ويقفل لوحده على المواعيد دي. سيبهم فاضيين لو عايز تفتح وتقفل بإيدك.</div>
+<div class="rbtn"><button type="button" id="dR3" class="sec" data-a>📄 أرسل لي تقرير آخر 3 أيام PDF</button><button type="button" id="dR7" class="sec" data-a>📄 أرسل لي التقرير الأسبوعي PDF</button></div></div>
+<div class="card"><h2 data-a>🕘 مواعيد المطعم</h2><div class="sub" data-a>المطعم يفتح ويقفل بروحه على هالمواعيد. خلّهم فاضيين لو تبي تفتح وتقفل بيدك.</div>
 <div class="hrs"><div><label data-a>ساعة الفتح</label><input id="hO" type="time"></div><div><label data-a>ساعة القفل</label><input id="hC" type="time"></div></div>
-<label class="bz"><input type="checkbox" id="hB"><span data-a>⏳ وضع «مشغول»: وقت التجهيز يبدأ من 20 دقيقة، والعميل يشوف إن المطعم مزدحم</span></label>
+<label class="bz"><input type="checkbox" id="hB"><span data-a>⏳ وضع «مشغول»: وقت التجهيز يبدأ من 20 دقيقة، والعميل يشوف إن المطعم زحمة</span></label>
 <button type="button" id="hS" data-a>💾 حفظ المواعيد</button></div>
 <div class="card"><h2 data-a>🔎 سجل الطلبات</h2><input id="dQ" data-ap placeholder="ابحث برقم الطلب أو رقم الفاتورة أو التاريخ 2026/11/05" dir="auto"><button type="button" id="dG" data-a>بحث</button><div id="dList"></div></div>
 </div>
@@ -210,7 +210,7 @@ function touch(){editTs=Date.now()}
 /* ===== اللغتين: عربي / English (الاختيار يتحفظ على الجهاز ويتشارك مع باقي صفحات واصل) ===== */
 var LANG="ar";try{LANG=localStorage.getItem("wl")==="en"?"en":"ar"}catch(e){}
 var EN={
-"🧾 رقم الفاتورة الأصلية (إجباري)":"🧾 Original invoice number (required)","مثال: 10452":"e.g. 10452","أرقام وحروف إنجليزي فقط، والأرقام العربي بتتحول تلقائي":"English letters and numbers only; Arabic digits are converted automatically",
+"🧾 رقم الفاتورة الأصلية (إجباري)":"🧾 Original invoice number (required)","مثال: 10452":"e.g. 10452","أرقام وحروف إنجليزي فقط، والأرقام العربي تتحول تلقائي":"English letters and numbers only; Arabic digits are converted automatically",
 "🔕 اضغط هنا لتفعيل صوت التنبيه":"🔕 Tap here to enable the alert sound","🔔 طلب جديد! اقبله وحدد وقت التجهيز":"🔔 New order! Accept it and set the prep time","🔔 طلبات جديدة: ":"🔔 New orders: ",
 "تعذر الاتصال، حاول مرة أخرى":"Connection failed, try again","تعذر التحديث، تأكد من الإنترنت":"Could not refresh, check your internet","جارٍ التنفيذ...":"Working...","تم ✓":"Done ✓","تعذر التنفيذ":"Could not complete","تعذر التنفيذ، حاول مرة أخرى":"Could not complete, try again",
 "الآن":"now","منذ ":""," د.":" min ago"," د":" min",
@@ -223,15 +223,15 @@ var EN={
 "واصل | ":"Wasel | ","قيد التجهيز":"Preparing","سُلّمت اليوم":"Delivered today","لا توجد طلبات الآن. سيصلك تنبيه صوتي عند وصول طلب جديد.":"No orders now. You will hear an alert when a new order arrives.","لا توجد طلبات منتهية حديثًا":"No recently finished orders","سُلّم":"Delivered","أُلغي":"Cancelled",
 "تأخر ":"Late ","متبقي ":"Left ","تعذر تحميل المنيو":"Could not load the menu","جارٍ الحفظ...":"Saving...","تتصغّر وتتضغط تلقائي":"Resized and compressed automatically","إضافة صنف":"Add item","حفظ الصنف":"Save item","لا توجد صورة":"No photo",
 "اختر ملف صورة":"Choose an image file","الصورة كبيرة جدًا، اختر صورة أصغر":"Image too large, choose a smaller one","جارٍ تجهيز الصورة...":"Preparing image...","تعذر تجهيز الصورة، جرّب صورة أخرى":"Could not prepare the image, try another","تعذر تجهيز الصورة":"Could not prepare the image","جاهزة ✓ (":"Ready ✓ ("," ك.ب)":" KB)",
-"🟢 المطعم مفتوح":"🟢 Restaurant open","🔴 المطعم مغلق":"🔴 Restaurant closed","قفل المطعم":"Close restaurant","فتح المطعم":"Open restaurant"," من ":" of ","لسه ما ضفتش أصناف. ضيف أول صنف من الأعلى.":"No items yet. Add your first item above.","أصناف":"Items","صورة قديمة":"Old photo","بدون صورة":"No photo",
+"🟢 المطعم مفتوح":"🟢 Restaurant open","🔴 المطعم مغلق":"🔴 Restaurant closed","قفل المطعم":"Close restaurant","فتح المطعم":"Open restaurant"," من ":" of ","للحين ما أضفت أصناف. أضف أول صنف من فوق.":"No items yet. Add your first item above.","أصناف":"Items","صورة قديمة":"Old photo","بدون صورة":"No photo",
 " ريال":" SAR"," 🔥 عرض":" 🔥 Offer","إيقاف (خلص)":"Pause (sold out)","تشغيل (متاح)":"Enable (available)","تعديل":"Edit","حذف":"Delete","تم إيقاف الصنف":"Item paused","الصنف متاح الآن":"Item is available now","تعديل صنف":"Edit item","حفظ التعديل":"Save changes",
-"الصورة الحالية (اختر صورة جديدة لو عايز تغيّرها)":"Current photo (choose a new one to change it)","ارفع صورة للصنف":"Upload a photo for the item","حذف الصنف «":"Delete «","»؟":"»?","تم الحذف":"Deleted","اكتب اسم الصنف":"Enter the item name","اكتب السعر":"Enter the price","لازم تختار صورة للصنف 📷":"You must choose a photo for the item 📷",
+"الصورة الحالية (اختر صورة جديدة لو تبي تغيّرها)":"Current photo (choose a new one to change it)","ارفع صورة للصنف":"Upload a photo for the item","حذف الصنف «":"Delete «","»؟":"»?","تم الحذف":"Deleted","اكتب اسم الصنف":"Enter the item name","اكتب السعر":"Enter the price","لازم تختار صورة للصنف 📷":"You must choose a photo for the item 📷",
 "تم حفظ التعديل ✓":"Changes saved ✓","تمت إضافة الصنف ✓":"Item added ✓","قفل المطعم؟ لن يستطيع العملاء الطلب منك.":"Close the restaurant? Customers won't be able to order from you.","المطعم مفتوح الآن":"Restaurant is open now","المطعم مغلق الآن":"Restaurant is closed now","واصل | المطعم":"Wasel | Restaurant","تعذر الاتصال":"Connection failed",
 "بانتظار مندوب":"Waiting for a courier","المندوب قبل الطلب وهو في الطريق إليك":"Courier accepted and is on the way to you","المندوب وصل عندك":"Courier has arrived at you","المندوب استلم الطلب":"Courier picked up the order","المندوب في الطريق للعميل":"Courier on the way to the customer","المندوب عند العميل":"Courier is at the customer","تم التسليم":"Delivered",
 "الصنف غير متوفر":"Item not available","المطعم مزدحم الآن":"Restaurant is busy now","المطعم مغلق":"Restaurant is closed",
 /* الصفحة الثابتة */
 "دخول المطعم":"Restaurant login","رمز الدخول":"Login code","الرمز الذي أعطتك إياه إدارة واصل":"The code Wasel admin gave you","دخول":"Log in","ما عندكش رمز؟ ":"No code? ","سجّل مطعمك معنا":"Register your restaurant","خروج":"Log out",
-"📋 الطلبات":"📋 Orders","📍 لازم تحدد موقع مطعمك":"📍 You must set your restaurant location","ما تقدرش تقبل طلبات غير بعد ما تحدد موقعك، عشان المندوب يوصلك على طول والعميل يشوف مكانك.":"You can't accept orders until you set your location, so couriers reach you directly and customers see where you are.","📍 موقعي الحالي (وإنت في المطعم)":"📍 My current location (while at the restaurant)","أو الصق لينك مطعمك من خرائط جوجل:":"Or paste your restaurant's Google Maps link:","حفظ اللينك":"Save link","تم حفظ موقع المطعم ✓":"Restaurant location saved ✓","جارٍ تحديد موقعك...":"Getting your location...","تعذر تحديد موقعك، فعّل الموقع أو الصق لينك خرائط جوجل":"Could not get your location; enable location or paste a Google Maps link","حدد موقع مطعمك الأول من أعلى الصفحة، عشان المندوب يوصلك":"Set your restaurant location first (top of the page) so couriers can reach you","دوس «موقعي الحالي» وإنت في المطعم، أو الصق لينك من خرائط جوجل":"Tap «My current location» while at the restaurant, or paste a Google Maps link","📊 لوحتي":"📊 Dashboard","اليوم":"Today","آخر 7 أيام":"Last 7 days","الشهر ده":"This month","💰 حسابك مع واصل":"💰 Your account with Wasel","📄 ابعتلي تقرير آخر 3 أيام PDF":"📄 Send me the last 3 days report (PDF)","📄 ابعتلي التقرير الأسبوعي PDF":"📄 Send me the weekly report (PDF)","🕘 مواعيد المطعم":"🕘 Opening hours","المطعم بيفتح ويقفل لوحده على المواعيد دي. سيبهم فاضيين لو عايز تفتح وتقفل بإيدك.":"The restaurant opens and closes automatically at these times. Leave them empty to open and close manually.","ساعة الفتح":"Opens at","ساعة القفل":"Closes at","⏳ وضع «مشغول»: وقت التجهيز يبدأ من 20 دقيقة، والعميل يشوف إن المطعم مزدحم":"⏳ Busy mode: prep time starts at 20 min and customers see the restaurant is busy","💾 حفظ المواعيد":"💾 Save hours","🔎 سجل الطلبات":"🔎 Order history","ابحث برقم الطلب أو رقم الفاتورة أو التاريخ 2026/11/05":"Search by order no., invoice no. or date 2026/11/05","بحث":"Search","طلبات اتسلّمت":"Delivered orders","قيمة الطلبات":"Orders value","متوسط التجهيز":"Avg. prep time","اعتذرت عنها":"Declined","آخر 3 أيام":"Last 3 days","عدد الطلبات":"Orders","العمولة":"Commission","فترة التجربة المجانية شغالة لحد ":"Free trial runs until ","فترة التجربة خلصت يوم ":"Free trial ended on ","تاريخ بداية الاتفاق لسه ما اتسجلش، فالعمولة مش بتتحسب.":"The agreement start date isn't recorded yet, so no commission is counted.","العمولة ":"Commission ","% من قيمة الطلبات بعد التجربة، والدفع كاش خلال فترة التجربة.":"% of orders value after the trial; cash payment during the trial period.","تم حفظ المواعيد ✓":"Hours saved ✓","وصلك التقرير على تليجرام ✓":"The report was sent to your Telegram ✓","لا توجد طلبات":"No orders","رقم فاتورتك: ":"Your invoice no.: ","التجهيز: ":"Prep: ","جارٍ التحميل...":"Loading...","تعذر تحميل اللوحة":"Could not load the dashboard","اكتب الساعة كده: 10:00":"Write the time like 10:00","اكتب ساعة الفتح وساعة القفل الاتنين، أو سيبهم فاضيين":"Enter both opening and closing times, or leave both empty","اربط تليجرام مطعمك الأول عشان التقرير يوصلك عليه":"Link your restaurant's Telegram first to receive the report","استنى دقيقتين وجرّب تاني":"Wait two minutes and try again","تعذر إرسال التقرير، حاول تاني":"Could not send the report, try again","ملغي":"Cancelled","مرفوض":"Declined","🍽 المنيو والعروض":"🍽 Menu & offers","طلبات تحتاج تجهيز":"Orders to prepare","آخر الطلبات المنتهية":"Recently finished orders","لما تقفل، يظهر مطعمك للعميل «مغلق» ولا يستقبل طلبات":"When closed, customers see your restaurant as «closed» and it receives no orders",
+"📋 الطلبات":"📋 Orders","📍 لازم تحدد موقع مطعمك":"📍 You must set your restaurant location","ما تقدر تقبل طلبات إلا بعد ما تحدد موقعك، عشان المندوب يوصلك على طول والعميل يشوف مكانك.":"You can't accept orders until you set your location, so couriers reach you directly and customers see where you are.","📍 موقعي الحالي (وإنت في المطعم)":"📍 My current location (while at the restaurant)","أو الصق لينك مطعمك من خرائط جوجل:":"Or paste your restaurant's Google Maps link:","حفظ اللينك":"Save link","تم حفظ موقع المطعم ✓":"Restaurant location saved ✓","جارٍ تحديد موقعك...":"Getting your location...","تعذر تحديد موقعك، فعّل الموقع أو الصق لينك خرائط جوجل":"Could not get your location; enable location or paste a Google Maps link","حدد موقع مطعمك أول من أعلى الصفحة، عشان المندوب يوصلك":"Set your restaurant location first (top of the page) so couriers can reach you","اضغط «موقعي الحالي» وأنت في المطعم، أو الصق رابط من خرائط جوجل":"Tap «My current location» while at the restaurant, or paste a Google Maps link","📊 لوحتي":"📊 Dashboard","اليوم":"Today","آخر 7 أيام":"Last 7 days","هالشهر":"This month","💰 حسابك مع واصل":"💰 Your account with Wasel","📄 أرسل لي تقرير آخر 3 أيام PDF":"📄 Send me the last 3 days report (PDF)","📄 أرسل لي التقرير الأسبوعي PDF":"📄 Send me the weekly report (PDF)","🕘 مواعيد المطعم":"🕘 Opening hours","المطعم يفتح ويقفل بروحه على هالمواعيد. خلّهم فاضيين لو تبي تفتح وتقفل بيدك.":"The restaurant opens and closes automatically at these times. Leave them empty to open and close manually.","ساعة الفتح":"Opens at","ساعة القفل":"Closes at","⏳ وضع «مشغول»: وقت التجهيز يبدأ من 20 دقيقة، والعميل يشوف إن المطعم زحمة":"⏳ Busy mode: prep time starts at 20 min and customers see the restaurant is busy","💾 حفظ المواعيد":"💾 Save hours","🔎 سجل الطلبات":"🔎 Order history","ابحث برقم الطلب أو رقم الفاتورة أو التاريخ 2026/11/05":"Search by order no., invoice no. or date 2026/11/05","بحث":"Search","طلبات انسلّمت":"Delivered orders","قيمة الطلبات":"Orders value","متوسط التجهيز":"Avg. prep time","اعتذرت عنها":"Declined","آخر 3 أيام":"Last 3 days","عدد الطلبات":"Orders","العمولة":"Commission","فترة التجربة المجانية شغالة إلى ":"Free trial runs until ","فترة التجربة خلصت يوم ":"Free trial ended on ","تاريخ بداية الاتفاق للحين ما انسجل، فالعمولة ما تنحسب.":"The agreement start date isn't recorded yet, so no commission is counted.","العمولة ":"Commission ","% من قيمة الطلبات بعد التجربة، والدفع كاش خلال فترة التجربة.":"% of orders value after the trial; cash payment during the trial period.","تم حفظ المواعيد ✓":"Hours saved ✓","وصلك التقرير على تليجرام ✓":"The report was sent to your Telegram ✓","لا توجد طلبات":"No orders","رقم فاتورتك: ":"Your invoice no.: ","التجهيز: ":"Prep: ","جارٍ التحميل...":"Loading...","تعذر تحميل اللوحة":"Could not load the dashboard","اكتب الساعة كذا: 10:00":"Write the time like 10:00","اكتب ساعة الفتح وساعة القفل الثنتين، أو خلّهم فاضيين":"Enter both opening and closing times, or leave both empty","اربط تليجرام مطعمك أول عشان التقرير يوصلك عليه":"Link your restaurant's Telegram first to receive the report","انتظر دقيقتين وجرّب مرة ثانية":"Wait two minutes and try again","تعذر إرسال التقرير، حاول مرة ثانية":"Could not send the report, try again","ملغي":"Cancelled","مرفوض":"Declined","🍽 المنيو والعروض":"🍽 Menu & offers","طلبات تحتاج تجهيز":"Orders to prepare","آخر الطلبات المنتهية":"Recently finished orders","إذا قفلت، يظهر مطعمك للعميل «مغلق» ولا يستقبل طلبات":"When closed, customers see your restaurant as «closed» and it receives no orders",
 "اسم الصنف":"Item name","مثال: وجبة برجر دجاج":"e.g. Chicken burger meal","السعر (ريال)":"Price (SAR)","قبل الخصم (عرض - اختياري)":"Before discount (offer - optional)","صورة الصنف (إجبارية) 📷":"Item photo (required) 📷","اختر / صوّر الصورة":"Choose / take photo","القسم":"Section","مثال: وجبات / مشروبات / حلويات":"e.g. Meals / Drinks / Desserts","إلغاء التعديل":"Cancel editing","أصنافي ":"My items ",
 /* رسائل السيرفر */
 "محاولات كثيرة، حاول بعد 10 دقائق":"Too many attempts, try again in 10 minutes","الرمز غير صحيح":"Wrong code","الطلب غير موجود":"Order not found","النظام مشغول، حاول بعد لحظات":"System busy, try again shortly","هذا الطلب ليس لمطعمك":"This order is not for your restaurant","الطلب منتهٍ":"The order is finished",
@@ -251,7 +251,7 @@ function invOk(v){return /^[A-Za-z0-9][A-Za-z0-9\-\/]{0,19}$/.test(invNorm(v))}
 function invBox(o,val,btnTxt,onSave){
   var w=el("div","invb");w.appendChild(el("label","invl",A("🧾 رقم الفاتورة الأصلية (إجباري)")));
   var i=el("input","inv");i.maxLength=20;i.dir="ltr";i.autocomplete="off";i.inputMode="text";i.placeholder=A("مثال: 10452");i.value=val||"";
-  w.appendChild(i);w.appendChild(el("div","invh",A("أرقام وحروف إنجليزي فقط، والأرقام العربي بتتحول تلقائي")));
+  w.appendChild(i);w.appendChild(el("div","invh",A("أرقام وحروف إنجليزي فقط، والأرقام العربي تتحول تلقائي")));
   return {w:w,i:i}}
 var STG={new:"بانتظار مندوب",accepted:"المندوب قبل الطلب وهو في الطريق إليك",arrived:"المندوب وصل عندك",invoiced:"المندوب وصل عندك",picked:"المندوب استلم الطلب",ontheway:"المندوب في الطريق للعميل",atdest:"المندوب عند العميل",delivered:"تم التسليم"};
 var QR=["الصنف غير متوفر","المطعم مزدحم الآن","المطعم مغلق"];
@@ -413,7 +413,7 @@ function drawMenu(){
   $("cnt").textContent="("+m.items.length+A(" من ")+m.max+")";
   var dl=$("secs");dl.textContent="";var seen={};m.items.forEach(function(i){if(i.sec&&!seen[i.sec]){seen[i.sec]=1;var o=document.createElement("option");o.value=i.sec;dl.appendChild(o)}});
   var L=$("mlist");L.textContent="";
-  if(!m.items.length){L.appendChild(el("div","muted",A("لسه ما ضفتش أصناف. ضيف أول صنف من الأعلى.")));return}
+  if(!m.items.length){L.appendChild(el("div","muted",A("للحين ما أضفت أصناف. أضف أول صنف من فوق.")));return}
   var by={},order=[];m.items.forEach(function(i){var k=i.sec||A("أصناف");if(!by[k]){by[k]=[];order.push(k)}by[k].push(i)});
   order.forEach(function(k){
     var c=el("div","card");c.appendChild(el("div","sech",k));
@@ -425,7 +425,7 @@ function drawMenu(){
       var p=el("div","pr",i.price+A(" ريال"));if(i.old){p.appendChild(el("s",null,i.old+A(" ريال")));p.appendChild(document.createTextNode(A(" 🔥 عرض")))}tx.appendChild(p);d.appendChild(tx);
       var a=el("div","acts"),b1=el("button","sec",i.on?A("إيقاف (خلص)"):A("تشغيل (متاح)")),b2=el("button","sec",A("تعديل")),b3=el("button","bad",A("حذف"));
       b1.onclick=function(){mact("restMenuAvail",[i.id,!i.on],b1,i.on?A("تم إيقاف الصنف"):A("الصنف متاح الآن"))};
-      b2.onclick=function(){EID=i.id;$("fN").value=i.name;$("fP").value=i.price;$("fO").value=i.old||"";$("fS").value=i.sec;$("fT").textContent=A("تعديل صنف");$("fSave").textContent=A("حفظ التعديل");PIMG="";PHAD=!!i.img;pvDraw(i.img||"");$("ps").textContent=i.img?A("الصورة الحالية (اختر صورة جديدة لو عايز تغيّرها)"):A("ارفع صورة للصنف");$("fCancel").classList.remove("hide");$("form").scrollIntoView({behavior:"smooth"})};
+      b2.onclick=function(){EID=i.id;$("fN").value=i.name;$("fP").value=i.price;$("fO").value=i.old||"";$("fS").value=i.sec;$("fT").textContent=A("تعديل صنف");$("fSave").textContent=A("حفظ التعديل");PIMG="";PHAD=!!i.img;pvDraw(i.img||"");$("ps").textContent=i.img?A("الصورة الحالية (اختر صورة جديدة لو تبي تغيّرها)"):A("ارفع صورة للصنف");$("fCancel").classList.remove("hide");$("form").scrollIntoView({behavior:"smooth"})};
       b3.onclick=function(){if(confirm(A("حذف الصنف «")+i.name+A("»؟")))mact("restMenuDelete",[i.id],b3,A("تم الحذف"))};
       a.appendChild(b1);a.appendChild(b2);a.appendChild(b3);tx.appendChild(a);c.appendChild(d)});
     L.appendChild(c)})}
@@ -477,13 +477,13 @@ function sar(v){return (Math.round(v*100)/100)+A(" ريال")}
 function drawDash(){var r=DASH;if(!r)return;
   ["dP0","dP1","dP2"].forEach(function(id,i){$(id).className=i===DP?"on":""});
   var s=[r.today,r.week,r.month][DP],g=$("dSum");g.textContent="";g.className="stats s4";
-  [[A("طلبات اتسلّمت"),String(s.n)],[A("قيمة الطلبات"),sar(s.sales)],[A("متوسط التجهيز"),s.prep?s.prep+A(" د"):"—"],[A("اعتذرت عنها"),String(s.rej)]].forEach(function(x){var b=el("div");b.appendChild(el("b",null,x[1]));b.appendChild(el("span",null,x[0]));g.appendChild(b)});
+  [[A("طلبات انسلّمت"),String(s.n)],[A("قيمة الطلبات"),sar(s.sales)],[A("متوسط التجهيز"),s.prep?s.prep+A(" د"):"—"],[A("اعتذرت عنها"),String(s.rej)]].forEach(function(x){var b=el("div");b.appendChild(el("b",null,x[1]));b.appendChild(el("span",null,x[0]));g.appendChild(b)});
   var a=$("dAcc");a.textContent="";
   function al(k,v){var d=el("div","acl");d.appendChild(el("span",null,k));d.appendChild(el("b",null,v));a.appendChild(d)}
   al(A("آخر 3 أيام")+" · "+A("عدد الطلبات"),String(r.acc3.n));al(A("آخر 3 أيام")+" · "+A("قيمة الطلبات"),sar(r.acc3.sales));al(A("آخر 3 أيام")+" · "+A("العمولة"),sar(r.acc3.comm));
   al(A("آخر 7 أيام")+" · "+A("العمولة"),sar(r.acc7.comm));
   var nt=el("div","sub");nt.style.marginTop="8px";
-  var tx=r.trialEnd?((Date.now()<r.trialEnd?A("فترة التجربة المجانية شغالة لحد "):A("فترة التجربة خلصت يوم "))+new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Riyadh"}).format(new Date(r.trialEnd))+". "):A("تاريخ بداية الاتفاق لسه ما اتسجلش، فالعمولة مش بتتحسب.")+" ";
+  var tx=r.trialEnd?((Date.now()<r.trialEnd?A("فترة التجربة المجانية شغالة إلى "):A("فترة التجربة خلصت يوم "))+new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Riyadh"}).format(new Date(r.trialEnd))+". "):A("تاريخ بداية الاتفاق للحين ما انسجل، فالعمولة ما تنحسب.")+" ";
   nt.textContent=tx+A("العمولة ")+Math.round(r.rate*100)+A("% من قيمة الطلبات بعد التجربة، والدفع كاش خلال فترة التجربة.");a.appendChild(nt);
   if(document.activeElement!==$("hO"))$("hO").value=r.open||"";if(document.activeElement!==$("hC"))$("hC").value=r.close||"";$("hB").checked=!!r.busy;
   var L=$("dList");L.textContent="";if(!r.list.length){L.appendChild(el("div","muted",A("لا توجد طلبات")));return}
