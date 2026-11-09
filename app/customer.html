@@ -10,9 +10,19 @@ var C={unz:{n:"عنيزة",s:"السعودية · بالريال",f:"🇸🇦",l
 function g(){try{return localStorage.getItem(K)}catch(e){return null}}
 function sv(v){try{localStorage.setItem(K,v)}catch(e){}}
 var page=location.pathname.split("/").pop()||"customer.html",c=g();
+// آخر صفحة اتفتحت (عميل/مندوب): علشان لو النت فصل ورجع، التطبيق يرجع لنفس الصفحة
+try{localStorage.setItem("wlast",page)}catch(e){}
 // اللي كان بيستخدم واصل عنيزة قبل كده: يفضل على عنيزة من غير ما نسأله
 if(!c&&ME==="unz"){try{if(localStorage.getItem("wp")||localStorage.getItem("wc")||localStorage.getItem("wt")){c="unz";sv(c)}}catch(e){}}
 if(c&&c!==ME&&C[c]){location.replace(C[c].p+page+location.search);return}
+/* بيانات العميل والمندوب منفصلة لكل مدينة: المحلة بتحفظ بحرف «mh_» قبل كل حاجة (الاسم والرقم والطلبات ورمز المندوب)،
+   وعنيزة زي ما هي. الإعدادات العامة (المدينة واللغة والوضع الداكن والمود والصوت) مشتركة */
+if(ME!=="unz"){try{var SP=Storage.prototype,PF=ME==="mhl"?"mh_":ME+"_",SH={wcity:1,wcity_nb:1,wl:1,wth:1,wgd:1,wss:1,ws:1,wloc:1};
+  var gi=SP.getItem,si=SP.setItem,ri=SP.removeItem;
+  function key(st,k){return (st===window.localStorage&&!SH[k])?PF+k:k}
+  SP.getItem=function(k){return gi.call(this,key(this,String(k)))};
+  SP.setItem=function(k,v){return si.call(this,key(this,String(k)),v)};
+  SP.removeItem=function(k){return ri.call(this,key(this,String(k)))}}catch(e){}}
 function go(v){sv(v);if(v!==ME)location.replace(C[v].p+page+location.search);else{var o=document.getElementById("wcity");if(o)o.remove()}}
 function km(a,b,c2,d){var r=Math.PI/180,x=(c2-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c2*r)*Math.sin(y/2)*Math.sin(y/2);return 12742*Math.asin(Math.sqrt(h))}
 function el(t,css,tx){var e=document.createElement(t);if(css)e.style.cssText=css;if(tx!=null)e.textContent=tx;return e}
