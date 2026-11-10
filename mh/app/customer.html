@@ -110,7 +110,7 @@ function lbl(b){var f=get()==="f",t=en()?"🎨 Change your look":(f?"🎨 غيّ
 window.waselGender=function(v,silent){var prev=get();try{if(v)localStorage.setItem("wgd",v);else localStorage.removeItem("wgd")}catch(e){}
  d.classList.toggle("pk",v==="f");Array.prototype.forEach.call(document.querySelectorAll(".gnd"),lbl);
  try{document.dispatchEvent(new CustomEvent("waselgender",{detail:{v:v,prev:prev}}))}catch(e){}
- if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ اتحوّل للون البينك"):(en()?"✓ Wasel green look on":"✓ اتحوّل للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
+ if(!silent&&window.waselToast)waselToast(v==="f"?(en()?"✓ Pink look on":"✓ اتحوّل للون الوردي"):(en()?"✓ Wasel green look on":"✓ اتحوّل للون واصل الأخضر"),en()?"↩ Undo":"↩ تراجع",function(){window.waselGender(prev,true)})};
 document.addEventListener("DOMContentLoaded",function(){var h=document.querySelector("header");if(!h)return;
  var b=document.createElement("button");b.type="button";b.className="thm gnd";lbl(b);
  b.onclick=function(){window.waselGender(get()==="f"?"m":"f")};
@@ -452,7 +452,7 @@ html.pk .cdh{background:#9d174d}
 <button type="button" data-c="hist"><span data-cm="hist"></span></button>
 <button type="button" data-c="again"><span data-cm="again"></span></button>
 <button type="button" data-c="of"><span data-cm="of"></span><span id="cofn" class="cnw hide"></span></button>
-<button type="button" data-c="uo" id="uob"><span id="uobt">👀 وش الجديد؟</span><span id="uon" class="cnw hide"></span></button>
+<button type="button" data-c="uo" id="uob"><span id="uobt">👀 إيه الجديد؟</span><span id="uon" class="cnw hide"></span></button>
 <button type="button" data-c="wa"><span data-cm="wa"></span></button>
 <button type="button" data-c="thm"><span id="cthm"></span></button>
 <button type="button" data-c="gnd"><span id="cgnd"></span></button>
@@ -469,51 +469,51 @@ var LANG="ar";try{LANG=localStorage.getItem("wl")||"ar"}catch(e){}
 var T={
 brand:["واصل","Wasel"],slogan:["واصل، خليك واصل","Wasel, stay connected"],
 bn0:["واصل… دايمًا متواصل معاك","Wasel… always connected"],bn1:["واصل… طلبك يوصلك أسرع","Wasel… delivered faster"],bn2:["من بابهم لبابك… واصل","Door to door… Wasel"],
-wl1:["أهلًا بك في واصل 👋","Welcome to Wasel 👋"],wl2:["اطلب من أي مطعم أو متجر في المحلة الكبرى، ونوصّله لك بسرعة وأمانة. عبّي الطلب تحت وخلّ الباقي علينا.","Order from any restaurant or store in El-Mahalla and we deliver it fast and safely. Fill in the form below and leave the rest to us."],
+wl1:["أهلًا بيك في واصل 👋","Welcome to Wasel 👋"],wl2:["اطلب من أي مطعم أو متجر في المحلة الكبرى، وإحنا نوصّلهولك بسرعة وأمانة. املا الطلب تحت وسيب الباقي علينا.","Order from any restaurant or store in El-Mahalla and we deliver it fast and safely. Fill in the form below and leave the rest to us."],
 c1:["🚀 توصيل سريع","🚀 Fast delivery"],c2:["📍 تتبّع طلبك مباشرة","📍 Live order tracking"],c3:["💬 محادثة مع المندوب","💬 Chat with the courier"],c4:["💵 الدفع كاش","💵 Cash payment"],
-sp0:["أهلًا بك في واصل 👋","Welcome to Wasel 👋"],sp1:["من أي مطعم أو متجر في المحلة الكبرى… لحد بابك.","From any restaurant or store in El-Mahalla… to your door."],sp2:["💰 سعر المطعم الحقيقي، بدون زيادة على الأصناف.","💰 The restaurant's real price, no markup on items."],sp3:["🧾 رسوم توصيل واضحة قبل التأكيد، بدون رسوم خفية.","🧾 A clear delivery fee before you confirm, no hidden fees."],sp4:["📸 تتبّع طلبك وشوف فاتورته خطوة بخطوة.","📸 Track your order and see its invoice step by step."],sp5:["🚀 واصل… دايمًا متواصل معاك","🚀 Wasel… always connected with you"],spSkip:["تخطي ›","Skip ›"],spOn:["🔊 صوت","🔊 Sound"],spOff:["🔇 صوت","🔇 Sound"],spTap:["🔊 اضغط لتشغيل الصوت","🔊 Tap for sound"],
-title:["اطلب توصيل","Order a delivery"],only:["الخدمة داخل مدينة المحلة الكبرى فقط.","Delivery within El-Mahalla city only."],
-wb:["👋 أهلاً بك يا ","👋 Welcome, "],schC:["⏰ عايز الطلب يوصل في وقت معين","⏰ Deliver at a specific time"],schT:["النهارده","Today"],schTm:["بكرة","Tomorrow"],schBad:["اختار موعد بعد ساعة على الأقل من دلوقتي","Choose a time at least one hour from now"],schH:["الطلب هيتبعت للمندوب قبل الموعد بشوية","The order goes to a courier shortly before that time"],refL:["كود دعوة من صاحبك (اختياري)","Friend's invite code (optional)"],refMy:["🎁 كود دعوتك: ","🎁 Your invite code: "],refH:["ابعته لصاحبك، ولما يكمل أول طلب ليه تاخدوا إنتو الاتنين {p} نقطة","Send it to a friend; when they complete their first order you both get {p} points"],refCp:["نسخ","Copy"],refOk:["✓ اتنسخ","✓ Copied"],rbT:["🧾 بيانات طلبك الجاهز","🧾 Your ready order details"],rbH:["طلبت من تطبيق المطعم وعايزنا نستلمه؟ اكتب رقم الطلب أو الاسم اللي عليه، أو ارفع صورة الفاتورة (واحدة على الأقل).","Ordered from the restaurant app and want us to pick it up? Enter the order number or the name on it, or upload the invoice photo (at least one)."],rbNo:["رقم الطلب في تطبيق المطعم","Order number in the restaurant app"],rbName:["الطلب باسم مين","Name on the order"],rbImg:["صورة الفاتورة أو الطلب","Invoice or order photo"],rbPick:["📷 اختر / صوّر الصورة","📷 Choose / take photo"],rbChg:["📷 تغيير الصورة","📷 Change photo"],rbReady:["✓ الصورة جاهزة","✓ Photo ready"],rbBad:["تعذر تجهيز الصورة، جرّب صورة أخرى","Could not prepare the photo, try another"],rbNeed:["اكتب رقم الطلب أو الاسم اللي عليه، أو ارفع صورة الفاتورة","Enter the order number or the name on it, or upload the invoice photo"],wbc:["ليس أنت؟ تغيير الاسم أو الرقم","Not you? Change name or number"],name:["الاسم","Name"],phone:["رقم الجوال","Phone number"],type:["نوع الطلب","Order type"],pickup:["موقع الاستلام","Pickup location"],
-pko:["اكتب اسم المكان","Type the place name"],pkl:["رابط موقع الاستلام (يُعبّأ تلقائيًا للمطاعم المعروفة)","Pickup location link (auto-filled for known restaurants)"],
-pks:["🔍 ابحث عن المطعم أو المتجر…","🔍 Search for a restaurant or store…"],pkLg:["📋 = عنده منيو تطلب منه مباشرة","📋 = has a menu you can order from"],
+sp0:["أهلًا بيك في واصل 👋","Welcome to Wasel 👋"],sp1:["من أي مطعم أو متجر في المحلة الكبرى… لحد بابك.","From any restaurant or store in El-Mahalla… to your door."],sp2:["💰 سعر المطعم الحقيقي، بدون زيادة على الأصناف.","💰 The restaurant's real price, no markup on items."],sp3:["🧾 رسوم توصيل واضحة قبل التأكيد، بدون رسوم خفية.","🧾 A clear delivery fee before you confirm, no hidden fees."],sp4:["📸 تتبّع طلبك وشوف فاتورته خطوة بخطوة.","📸 Track your order and see its invoice step by step."],sp5:["🚀 واصل… دايمًا متواصل معاك","🚀 Wasel… always connected with you"],spSkip:["تخطي ›","Skip ›"],spOn:["🔊 صوت","🔊 Sound"],spOff:["🔇 صوت","🔇 Sound"],spTap:["🔊 دوس علشان تشغّل الصوت","🔊 Tap for sound"],
+title:["اطلب توصيل","Order a delivery"],only:["الخدمة جوه المحلة الكبرى بس.","Delivery within El-Mahalla city only."],
+wb:["👋 أهلًا بيك يا ","👋 Welcome, "],schC:["⏰ عايز الطلب يوصلك في ميعاد معيّن؟","⏰ Deliver at a specific time"],schT:["النهارده","Today"],schTm:["بكرة","Tomorrow"],schBad:["اختار ميعاد بعد ساعة على الأقل من دلوقتي","Choose a time at least one hour from now"],schH:["الطلب هيتبعت للمندوب قبل الميعاد بشوية","The order goes to a courier shortly before that time"],refL:["كود دعوة من صاحبك (اختياري)","Friend's invite code (optional)"],refMy:["🎁 كود دعوتك: ","🎁 Your invite code: "],refH:["ابعته لصاحبك، ولما يكمل أول طلب ليه تاخدوا إنتو الاتنين {p} نقطة","Send it to a friend; when they complete their first order you both get {p} points"],refCp:["نسخ","Copy"],refOk:["✓ اتنسخ","✓ Copied"],rbT:["🧾 بيانات طلبك الجاهز","🧾 Your ready order details"],rbH:["طلبت من تطبيق المطعم وعايزنا نستلمه؟ اكتب رقم الطلب أو الاسم اللي عليه، أو ارفع صورة الفاتورة (واحدة على الأقل).","Ordered from the restaurant app and want us to pick it up? Enter the order number or the name on it, or upload the invoice photo (at least one)."],rbNo:["رقم الطلب في تطبيق المطعم","Order number in the restaurant app"],rbName:["الطلب باسم مين","Name on the order"],rbImg:["صورة الفاتورة أو الطلب","Invoice or order photo"],rbPick:["📷 اختر / صوّر الصورة","📷 Choose / take photo"],rbChg:["📷 تغيير الصورة","📷 Change photo"],rbReady:["✓ الصورة جاهزة","✓ Photo ready"],rbBad:["الصورة مجهزتش، جرّب صورة تانية","Could not prepare the photo, try another"],rbNeed:["اكتب رقم الطلب أو الاسم اللي عليه، أو ارفع صورة الفاتورة","Enter the order number or the name on it, or upload the invoice photo"],wbc:["مش انت؟ غيّر الاسم أو الرقم","Not you? Change name or number"],name:["الاسم","Name"],phone:["رقم الموبايل","Phone number"],type:["نوع الطلب","Order type"],pickup:["موقع الاستلام","Pickup location"],
+pko:["اكتب اسم المكان","Type the place name"],pkl:["لينك مكان الاستلام (بيتملى لوحده للمطاعم المعروفة)","Pickup location link (auto-filled for known restaurants)"],
+pks:["🔍 دوّر على المطعم أو المحل…","🔍 Search for a restaurant or store…"],pkLg:["📋 = عنده منيو تطلب منه على طول","📋 = has a menu you can order from"],
 pkNone:["مفيش نتيجة بالاسم ده. اختار «أخرى» من القائمة واكتب الاسم.","No match. Choose “Other” from the list and type the name."],
-loyPts:["⭐ نقاطك: {p} من {n} — باقي {r} نقطة للتوصيل المجاني","⭐ Your points: {p} of {n} — {r} more for free delivery"],
-loyFull:["🎁 عندك نقاط تكفي لتوصيل مجاني!","🎁 You have enough points for free delivery!"],
-loyUse:["استخدم نقاطي لتوصيل مجاني في هذا الطلب","Use my points for free delivery on this order"],
+loyPts:["⭐ نقطك: {p} من {n} — فاضلك {r} نقطة وتاخد توصيلة ببلاش","⭐ Your points: {p} of {n} — {r} more for free delivery"],
+loyFull:["🎁 نقطك تكفي لتوصيلة ببلاش!","🎁 You have enough points for free delivery!"],
+loyUse:["استخدم نقطي وخلّي التوصيل ببلاش في الطلب ده","Use my points for free delivery on this order"],
 loyDev:["للاستخدام: افتح من الجهاز اللي طلبت منه قبل كده.","To use: open from the device you ordered with before."],
 loyNote:["⭐ هتكسب نقطتين لما الطلب يتسلّم.","⭐ You will earn 2 points when it is delivered."],
-loyFree:["🎁 توصيل مجاني بنقاطك — ادفع للمندوب ثمن مشترياتك فقط.","🎁 Free delivery with your points — pay the courier only for your items."],
-outA:["نعتذر، واصل متاحة حاليًا في المحلة الكبرى فقط 💚 وهنكون موجودين في منطقتك قريبًا بإذن الله.","Sorry, Wasel is currently available in El-Mahalla only 💚 We will be in your area soon, God willing."],
-locNeed2:["حدّد موقعك على الخريطة (زر موقعي الحالي) أو الصق رابط موقع من خرائط جوجل.","Please set your location on the map (My location button) or paste a Google Maps location link."],
-partner:["ظهور المطعم في القائمة لا يعني أنه شريك رسمي لواصل.","Being listed does not mean the restaurant is an official partner of Wasel."],
-items:["مكونات الطلب","Order details"],add2:["➕ أضف مكانًا ثانيًا (طلب من مكانين)","➕ Add a second place (order from two places)"],pk2l:["المكان الثاني","Second place"],items2l:["مكونات الطلب من المكان الثاني","Order details from the second place"],rm2:["إلغاء المكان الثاني","Remove the second place"],ex2:["رسوم توصيل المكان الثاني: +","Second place delivery fee: +"],cold:["نوصّل الطلبين معًا. للأكل الساخن الأفضل تختار مكانين قريبين من بعض.","We deliver both together. For hot food, pick two places close to each other."],hood:["حي التسليم","Delivery district"],dt:["وصف موقع التسليم (اختياري)","Delivery location description (optional)"],door:["صورة باب البيت (اختياري)","Photo of your door (optional)"],doorPick:["📷 أضف صورة باب البيت","📷 Add a photo of your door"],doorChg:["🔄 غيّر الصورة","🔄 Change photo"],doorReady:["✅ الصورة جاهزة، هتوصل للمندوب","✅ Photo ready, it will reach the courier"],doorBad:["تعذر قراءة الصورة، جرّب صورة تانية","Couldn’t read the photo, try another"],
-dtp:["الشارع أو أقرب معلم","Street or nearest landmark"],dm:["موقع التسليم","Delivery location"],dmHere:["موقعي الحالي (يُحدَّد تلقائيًا)","My current location (detected automatically)"],dmOther:["موقع آخر (أضيفه بنفسي)","Another location (I will add it)"],
-locBtn:["📍 حدّد موقعي الآن","📍 Detect my location now"],locing:["جارٍ تحديد موقعك... وافق على طلب الموقع","Detecting your location... please allow location access"],
-locOk:["✓ تم تحديد موقعك","✓ Your location was detected"],locFail:["تعذر تحديد موقعك. اختر «موقع آخر» وأضف الرابط أو اكتب وصف الموقع.","Could not detect your location. Choose \"Another location\" and add a link or describe the place."],
-feeLbl:["رسوم التوصيل حسب المسافة: ","Delivery fee by distance: "],feeCur:[" جنيه"," EGP"],feeKm:[" (حوالي "," (about "],feeWait:["جارٍ حساب رسوم التوصيل…","Calculating the delivery fee…"],feeNeed:["حدّد موقعك لتظهر رسوم التوصيل","Set your location to see the delivery fee"],feeApprox:["السعر تقريبي وسيؤكده فريق واصل","Approximate price, Wasel will confirm it"],
-pm1:["💰 سعر المطعم الحقيقي: تدفع قيمة الفاتورة كما هي، بدون زيادة على الأصناف.","💰 The restaurant's real price: you pay the invoice as is, no markup on items."],
-pm2:["🧾 رسوم توصيل واحدة واضحة قبل التأكيد، بدون رسوم خفية.","🧾 One clear delivery fee before you confirm, no hidden fees."],
-pm3:["📸 نوريك صورة فاتورة طلبك وتتابعه خطوة بخطوة.","📸 We show you your invoice photo and you track every step."],
-waBtn:["💬 تواصل معنا على واتساب","💬 Chat with us on WhatsApp"],waHint:["مشكلة في طلبك أو استفسار؟ نرد عليك بشكل مباشر","Problem with your order or a question? A real person replies"],
-waMsg:["مرحبًا واصل، عندي استفسار","Hello Wasel, I have a question"],waMsg2:["مرحبًا واصل، بخصوص طلبي رقم ","Hello Wasel, about my order no. "],
-menuBtn:["📖 شوف منيو ","📖 See the menu of "],mealNo:["بدون وجبة","No meal"],mealYes:["🍟🥤 مع وجبة","🍟🥤 With meal"],mealTag:[" + وجبة"," + meal"],menuClose:["✕ رجوع","✕ Back"],menuNote:["الأسعار من قائمة المطعم. المبلغ تقديري، وفاتورة المطعم هي النهائية، ورسوم التوصيل تُضاف عند التأكيد.","Prices are from the restaurant's menu. The amount is an estimate; the restaurant's invoice is final and the delivery fee is added at confirmation."],menuLoad:["جارٍ تحميل المنيو…","Loading the menu…"],menuFail:["تعذر تحميل المنيو، اكتب طلبك يدويًا.","Could not load the menu, please type your order."],menuConfirm:["تأكيد الأصناف","Confirm items"],menuCart:["السلة","Cart"],menuSar:[" جنيه"," EGP"],menuLong:["الطلب كبير جدًا، قلّل الأصناف أو اكتب الباقي في الملاحظات.","The order is too long; reduce items or write the rest in the notes."],menuEmpty:["اختر صنفًا واحدًا على الأقل","Pick at least one item"],menuTot:["الإجمالي التقديري للأصناف: ","Estimated items total: "],
-histBtn:["📋 طلباتي السابقة","📋 My previous orders"],histHide:["إخفاء طلباتي السابقة","Hide my previous orders"],histLoad:["جارٍ التحميل…","Loading…"],histEmpty:["لا توجد طلبات محفوظة على هذا الجهاز. لو عندك طلب قديم أضفه بالأسفل.","No orders saved on this device. Add an old order below."],histFind:["لقيت طلب قديم مش ظاهر؟ اكتب رقمه وآخر 4 أرقام من جوالك","Can't see an old order? Enter its number and the last 4 digits of your phone"],histNo:["رقم الطلب (مثال: 42)","Order number (e.g. 42)"],histP4:["آخر 4 أرقام","Last 4 digits"],histAdd:["إضافة","Add"],histNotFound:["لم نجد طلبًا بهذه البيانات","No order found with these details"],histWait:["جارٍ التحقق…","Checking…"],histFail:["تعذر تحميل طلباتك، حاول لاحقًا.","Could not load your orders, try later."],histTrack:["تتبّع","Track"],histAgain:["🔁 اطلب مرة ثانية","🔁 Order again"],histNote:["تظهر هنا الطلبات التي أرسلتها من هذا الجهاز فقط.","Only orders sent from this device appear here."],histSar:[" جنيه"," EGP"],histBy:["المندوب: ","Courier: "],histRated:["✓ تم التقييم","✓ Rated"],histDet:["🧾 التفاصيل","🧾 Details"],histDetHide:["إخفاء التفاصيل","Hide details"],detLoad:["جارٍ تحميل التفاصيل…","Loading details…"],detFail:["تعذر تحميل التفاصيل، حاول لاحقًا.","Could not load details, try later."],detTl:["سير الطلب","Order timeline"],detChat:["المحادثة","Chat"],detNoChat:["لا توجد محادثة على هذا الطلب.","No chat on this order."],detMe:["أنت","You"],detCr:["المندوب","Courier"],detShot:["تقدر تعمل لقطة شاشة (سكرين شوت) لهذه التفاصيل وترسلها للإدارة عند الحاجة.","You can screenshot these details and send them to support if needed."],
-sNew:["بانتظار مندوب","Waiting for a courier"],sAccepted:["المندوب قبل الطلب","Courier accepted"],sArrived:["المندوب عند المطعم","Courier at the restaurant"],sInvoiced:["الفاتورة مرفوعة","Invoice uploaded"],sPicked:["تم استلام الطلب","Order picked up"],sOntheway:["في الطريق إليك","On the way to you"],sAtdest:["وصل المندوب لموقعك","Courier at your location"],sDelivered:["تم التسليم","Delivered"],sCancelled:["ملغي","Cancelled"],sUnavailable:["غير متاح","Unavailable"],
-trkBtn:["📍 تتبّع طلبي","📍 Track my order"],trkHint:["ضاع منك الرابط؟ اضغط هنا وادخل رقم الطلب وآخر 4 أرقام من جوالك","Lost the link? Tap here and enter your order number and the last 4 digits of your phone"],
-locNeed:["حدّد موقعك أولًا (اضغط زر تحديد الموقع) أو اختر «موقع آخر»","Detect your location first (tap the button) or choose \"Another location\""],
-locAcc:[" (الدقة تقريبية، اكتب وصف الموقع للمساعدة)"," (approximate accuracy, add a description to help)"],
-dlh:["افتح خرائط جوجل، اضغط على موقعك ثم مشاركة وانسخ الرابط.","Open Google Maps, tap your spot, then Share and copy the link."],dlp:["رابط خرائط جوجل","Google Maps link"],
-pay:["طريقة الدفع","Payment method"],cash:["💵 خلال فترة التجربة (30 يومًا) الدفع كاش للمندوب عند الاستلام فقط (قيمة الفاتورة + التوصيل). الدفع الإلكتروني قريبًا بإذن الله.","💵 During our 30-day trial, payment is cash to the courier on delivery only (invoice + delivery fee). Online payment is coming soon."],
+loyFree:["🎁 التوصيل ببلاش بنقطك — هتدفع للمندوب تمن الحاجة بس.","🎁 Free delivery with your points — pay the courier only for your items."],
+outA:["معلش، واصل شغالة في المحلة الكبرى بس دلوقتي 💚 وقريب إن شاء الله هنوصل لمنطقتك.","Sorry, Wasel is currently available in El-Mahalla only 💚 We will be in your area soon, God willing."],
+locNeed2:["حدّد مكانك (زرار «موقعي الحالي») أو الصق لينك من خرايط جوجل.","Please set your location on the map (My location button) or paste a Google Maps location link."],
+partner:["وجود المطعم في القايمة مش معناه إنه شريك رسمي لواصل.","Being listed does not mean the restaurant is an official partner of Wasel."],
+items:["مكونات الطلب","Order details"],add2:["➕ زوّد مكان تاني (طلب من مكانين)","➕ Add a second place (order from two places)"],pk2l:["المكان التاني","Second place"],items2l:["مكونات الطلب من المكان التاني","Order details from the second place"],rm2:["إلغاء المكان التاني","Remove the second place"],ex2:["رسوم توصيل المكان التاني: +","Second place delivery fee: +"],cold:["بنوصّل الطلبين مع بعض. لو أكل سخن، الأحسن تختار مكانين قريبين من بعض.","We deliver both together. For hot food, pick two places close to each other."],hood:["حي التسليم","Delivery district"],dt:["وصف موقع التسليم (اختياري)","Delivery location description (optional)"],door:["صورة باب البيت (اختياري)","Photo of your door (optional)"],doorPick:["📷 ضيف صورة باب البيت","📷 Add a photo of your door"],doorChg:["🔄 غيّر الصورة","🔄 Change photo"],doorReady:["✅ الصورة جاهزة، هتوصل للمندوب","✅ Photo ready, it will reach the courier"],doorBad:["الصورة مقريتش، جرّب صورة تانية","Couldn’t read the photo, try another"],
+dtp:["الشارع أو أقرب علامة","Street or nearest landmark"],dm:["موقع التسليم","Delivery location"],dmHere:["موقعي الحالي (يُحدَّد تلقائيًا)","My current location (detected automatically)"],dmOther:["مكان تاني (هكتبه بنفسي)","Another location (I will add it)"],
+locBtn:["📍 حدّد مكاني دلوقتي","📍 Detect my location now"],locing:["بنحدد مكانك... وافق لما يسألك عن الموقع","Detecting your location... please allow location access"],
+locOk:["✓ تم تحديد موقعك","✓ Your location was detected"],locFail:["معرفناش نحدد مكانك. اختار «مكان تاني» وحط اللينك أو اكتب وصف المكان.","Could not detect your location. Choose \"Another location\" and add a link or describe the place."],
+feeLbl:["التوصيل حسب المسافة: ","Delivery fee by distance: "],feeCur:[" جنيه"," EGP"],feeKm:[" (حوالي "," (about "],feeWait:["بنحسب التوصيل…","Calculating the delivery fee…"],feeNeed:["حدّد مكانك علشان يظهرلك سعر التوصيل","Set your location to see the delivery fee"],feeApprox:["السعر تقريبي وفريق واصل هيأكده","Approximate price, Wasel will confirm it"],
+pm1:["💰 سعر المطعم الحقيقي: بتدفع الفاتورة زي ما هي، من غير ولا قرش زيادة.","💰 The restaurant's real price: you pay the invoice as is, no markup on items."],
+pm2:["🧾 سعر توصيل واحد واضح قبل ما تأكد، ومفيش أي حاجة مستخبية.","🧾 One clear delivery fee before you confirm, no hidden fees."],
+pm3:["📸 هنوريك صورة الفاتورة وتتابع طلبك خطوة بخطوة.","📸 We show you your invoice photo and you track every step."],
+waBtn:["💬 كلّمنا على واتساب","💬 Chat with us on WhatsApp"],waHint:["عندك مشكلة في طلبك أو سؤال؟ هنرد عليك على طول","Problem with your order or a question? A real person replies"],
+waMsg:["أهلًا واصل، عندي سؤال","Hello Wasel, I have a question"],waMsg2:["أهلًا واصل، بخصوص طلبي رقم ","Hello Wasel, about my order no. "],
+menuBtn:["📖 شوف منيو ","📖 See the menu of "],mealNo:["بدون وجبة","No meal"],mealYes:["🍟🥤 مع وجبة","🍟🥤 With meal"],mealTag:[" + وجبة"," + meal"],menuClose:["✕ رجوع","✕ Back"],menuNote:["الأسعار من منيو المطعم. المبلغ تقريبي، وفاتورة المطعم هي اللي بنمشي عليها، والتوصيل بيتضاف لما نأكد.","Prices are from the restaurant's menu. The amount is an estimate; the restaurant's invoice is final and the delivery fee is added at confirmation."],menuLoad:["المنيو بيحمّل…","Loading the menu…"],menuFail:["المنيو مفتحش، اكتب طلبك بإيدك.","Could not load the menu, please type your order."],menuConfirm:["أكّد الأصناف","Confirm items"],menuCart:["السلة","Cart"],menuSar:[" جنيه"," EGP"],menuLong:["الطلب كبير أوي، قلّل الأصناف أو اكتب الباقي في الملاحظات.","The order is too long; reduce items or write the rest in the notes."],menuEmpty:["اختار صنف واحد على الأقل","Pick at least one item"],menuTot:["الإجمالي التقريبي: ","Estimated items total: "],
+histBtn:["📋 طلباتي السابقة","📋 My previous orders"],histHide:["إخفاء طلباتي السابقة","Hide my previous orders"],histLoad:["بيحمّل…","Loading…"],histEmpty:["مفيش طلبات متسجلة على الموبايل ده. لو عندك طلب قديم ضيفه تحت.","No orders saved on this device. Add an old order below."],histFind:["لقيت طلب قديم مش ظاهر؟ اكتب رقمه وآخر 4 أرقام من موبايلك","Can't see an old order? Enter its number and the last 4 digits of your phone"],histNo:["رقم الطلب (مثال: 42)","Order number (e.g. 42)"],histP4:["آخر 4 أرقام","Last 4 digits"],histAdd:["إضافة","Add"],histNotFound:["ملقيناش طلب بالبيانات دي","No order found with these details"],histWait:["بنتأكد…","Checking…"],histFail:["طلباتك محمّلتش، جرّب كمان شوية.","Could not load your orders, try later."],histTrack:["تتبّع","Track"],histAgain:["🔁 اطلب تاني","🔁 Order again"],histNote:["هنا بتظهر الطلبات اللي بعتها من الموبايل ده بس.","Only orders sent from this device appear here."],histSar:[" جنيه"," EGP"],histBy:["المندوب: ","Courier: "],histRated:["✓ تم التقييم","✓ Rated"],histDet:["🧾 التفاصيل","🧾 Details"],histDetHide:["إخفاء التفاصيل","Hide details"],detLoad:["التفاصيل بتحمّل…","Loading details…"],detFail:["التفاصيل محمّلتش، جرّب كمان شوية.","Could not load details, try later."],detTl:["سير الطلب","Order timeline"],detChat:["المحادثة","Chat"],detNoChat:["مفيش محادثة على الطلب ده.","No chat on this order."],detMe:["أنت","You"],detCr:["المندوب","Courier"],detShot:["تقدر تاخد سكرين شوت للتفاصيل دي وتبعتها للإدارة لو احتجت.","You can screenshot these details and send them to support if needed."],
+sNew:["مستنيين مندوب","Waiting for a courier"],sAccepted:["المندوب قبل الطلب","Courier accepted"],sArrived:["المندوب عند المطعم","Courier at the restaurant"],sInvoiced:["الفاتورة مرفوعة","Invoice uploaded"],sPicked:["تم استلام الطلب","Order picked up"],sOntheway:["في الطريق ليك","On the way to you"],sAtdest:["المندوب وصل عندك","Courier at your location"],sDelivered:["تم التسليم","Delivered"],sCancelled:["ملغي","Cancelled"],sUnavailable:["غير متاح","Unavailable"],
+trkBtn:["📍 تتبّع طلبي","📍 Track my order"],trkHint:["اللينك ضاع منك؟ دوس هنا واكتب رقم الطلب وآخر 4 أرقام من موبايلك","Lost the link? Tap here and enter your order number and the last 4 digits of your phone"],
+locNeed:["حدّد مكانك الأول (دوس زرار تحديد المكان) أو اختار «مكان تاني»","Detect your location first (tap the button) or choose \"Another location\""],
+locAcc:[" (المكان تقريبي، اكتب وصف علشان المندوب يوصل بسهولة)"," (approximate accuracy, add a description to help)"],
+dlh:["افتح خرايط جوجل، دوس على مكانك وبعدين «مشاركة» وانسخ اللينك.","Open Google Maps, tap your spot, then Share and copy the link."],dlp:["لينك خرايط جوجل","Google Maps link"],
+pay:["طريقة الدفع","Payment method"],cash:["💵 في فترة التجربة (30 يوم) الدفع كاش للمندوب وانت بتستلم (الفاتورة + التوصيل).","💵 During our 30-day trial, payment is cash to the courier on delivery only (invoice + delivery fee). Online payment is coming soon."],
 catAll:["الكل","All"],
 nt:["ملاحظات للمندوب (اختياري)","Notes for the courier (optional)"],send:["إرسال الطلب","Send order"],
-other:["غير موجود في القائمة (اكتب يدويًا)","Not listed (type it)"],sending:["جارٍ الإرسال...","Sending..."],
-got:["تم استلام طلبك","Your order was received"],num:[" ورقمه: "," - number: "],soon:[". سيتواصل معك المندوب قريبًا.",". A courier will contact you soon."],
-track:[" ← تابع طلبي","Track my order →"],need4:["ستحتاج آخر 4 أرقام من جوالك للدخول.","You will need the last 4 digits of your phone number."],
-fail:["تعذر الإرسال، حاول مرة أخرى","Could not send, please try again"],failx:["تعذر الإرسال","Could not send"],
-again:["🔁 اطلب نفس آخر طلب","🔁 Reorder my last order"],forget:["نسيان بياناتي على هذا الجهاز","Forget my details on this device"],
-lgN:["بإرسال الطلب فأنت توافق على","By sending the order you accept the"],lgT:["الشروط والأحكام","Terms"],lgP:["سياسة الخصوصية","Privacy policy"],lgA:[" و"," and "],
-share:["📤 شارك رابط التتبع","📤 Share the tracking link"],shareTxt:["تابع طلبي من واصل. رقم الطلب: ","Track my Wasel order. Order no.: "],shareNote:[" (آخر 4 أرقام من جوال صاحب الطلب مطلوبة للدخول)"," (the last 4 digits of the orderer's phone are needed)"],copied:["✓ تم نسخ الرابط","✓ Link copied"],copyFail:["انسخ الرابط من هنا:","Copy the link from here:"],
-chk:["تأكد من بياناتك وحاول مرة أخرى","Please check your details and try again"]
+other:["مش موجود في القايمة (اكتبه بإيدك)","Not listed (type it)"],sending:["بيتبعت...","Sending..."],
+got:["تم استلام طلبك","Your order was received"],num:[" ورقمه: "," - number: "],soon:[". المندوب هيكلمك قريب.",". A courier will contact you soon."],
+track:[" ← تابع طلبي","Track my order →"],need4:["هتحتاج آخر 4 أرقام من موبايلك علشان تدخل.","You will need the last 4 digits of your phone number."],
+fail:["متبعتش، جرّب تاني","Could not send, please try again"],failx:["تعذر الإرسال","Could not send"],
+again:["🔁 اطلب نفس آخر طلب","🔁 Reorder my last order"],forget:["امسح بياناتي من الموبايل ده","Forget my details on this device"],
+lgN:["لما تبعت الطلب يبقى انت موافق على","By sending the order you accept the"],lgT:["الشروط والأحكام","Terms"],lgP:["سياسة الخصوصية","Privacy policy"],lgA:[" و"," and "],
+share:["📤 ابعت لينك التتبع","📤 Share the tracking link"],shareTxt:["تابع طلبي من واصل. رقم الطلب: ","Track my Wasel order. Order no.: "],shareNote:[" (آخر 4 أرقام من جوال صاحب الطلب مطلوبة للدخول)"," (the last 4 digits of the orderer's phone are needed)"],copied:["✓ اللينك اتنسخ","✓ Link copied"],copyFail:["انسخ اللينك من هنا:","Copy the link from here:"],
+chk:["راجع بياناتك وجرّب تاني","Please check your details and try again"]
 };
 function t(k){var d=T[k];return d?d[LANG==="en"?1:0]:k}
 // [عربي, English]
@@ -587,7 +587,7 @@ function pickName(){var v=$("pk").value;return v==="x"?$("pko").value:v}
 function feeCoord(){
   if($("dm").value==="here")return COORD?("https://www.google.com/maps?q="+COORD):"";
   var v=$("dl").value;return (/(-?\d{1,2}\.\d{2,}),\s*(-?\d{1,3}\.\d{2,})/.test(v)||SHORTL.test(v.trim()))?v:""}
-var SHORTL=/^https?:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|g\.co\/kgs)\//i;   // رابط خرائط جوجل القصير: السيرفر بيطلّع منه الإحداثيات
+var SHORTL=/^https?:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|g\.co\/kgs)\//i;   // لينك خرايط جوجل القصير: السيرفر بيطلّع منه الإحداثيات
 function feeUpd(){
   var b=$("feebox");if(!OFFER||!OFFER.pricing){b.classList.add("hide");return}
   b.classList.remove("hide");clearTimeout(FT);
@@ -931,7 +931,7 @@ function hLoad(){
 
 /* ===== منيو المطعم (للتجربة) ===== */
 function menuBtnUi(){var b=$("menubtn"),v=$("pk").value;
-  if(v&&v!=="x"&&CLOSED[v]){b.textContent=(LANG==="en"?"🔴 Closed now: ":"🔴 مغلق حاليًا: ")+v;b.classList.remove("hide");return}
+  if(v&&v!=="x"&&CLOSED[v]){b.textContent=(LANG==="en"?"🔴 Closed now: ":"🔴 قافل دلوقتي: ")+v;b.classList.remove("hide");return}
   if(v&&v!=="x"&&MR.indexOf(v)>=0){b.textContent=t("menuBtn")+v+rTx(v);b.classList.remove("hide")}else b.classList.add("hide")}
 function mEl(tag,c,x){var e=document.createElement(tag);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
 function mLines(){var L=[],c=MCART[MCUR]||{};Object.keys(c).forEach(function(k){var o=c[k];if(o.q>0)L.push(o)});return L}
@@ -981,7 +981,7 @@ function mOpen(rest){
   if(MC[rest]){mRender(rest,MC[rest]);return}
   google.script.run.withSuccessHandler(function(r){
     if(MCUR!==rest)return;
-    if(r&&r.ok&&r.closed){CLOSED[rest]=1;fill("pk",R,1);$("pk").value=rest;$("mbody").innerHTML="";$("mbody").appendChild(mEl("p","mu bad",LANG==="en"?"This restaurant is closed now. Please try later.":"هذا المطعم مغلق حاليًا. جرّب لاحقًا."));return}
+    if(r&&r.ok&&r.closed){CLOSED[rest]=1;fill("pk",R,1);$("pk").value=rest;$("mbody").innerHTML="";$("mbody").appendChild(mEl("p","mu bad",LANG==="en"?"This restaurant is closed now. Please try later.":"المطعم ده قافل دلوقتي. جرّب بعدين."));return}
     if(!r||!r.ok||!r.sections||!r.sections.length){$("mbody").innerHTML="";$("mbody").appendChild(mEl("p","mu bad",t("menuFail")));return}
     MC[rest]=r;mRender(rest,r)}).withFailureHandler(function(){$("mbody").innerHTML="";$("mbody").appendChild(mEl("p","mu bad",t("menuFail")))}).getMenu(rest)}
 function mClose(){$("msheet").classList.add("hide")}
@@ -1017,7 +1017,7 @@ function storesInit(){
 /* ===== مكان ثانٍ (طلب من مكانين برقم واحد) ===== */
 var SEC2=false,MTGT="items";
 function menuBtn2Ui(){var b=$("menubtn2"),v=$("pk2").value;
-  if(v&&v!=="x"&&CLOSED[v]){b.textContent=(LANG==="en"?"🔴 Closed now: ":"🔴 مغلق حاليًا: ")+v;b.classList.remove("hide");return}
+  if(v&&v!=="x"&&CLOSED[v]){b.textContent=(LANG==="en"?"🔴 Closed now: ":"🔴 قافل دلوقتي: ")+v;b.classList.remove("hide");return}
   if(v&&v!=="x"&&MR.indexOf(v)>=0){b.textContent=t("menuBtn")+v+rTx(v);b.classList.remove("hide")}else b.classList.add("hide")}
 function sec2Ui(){
   $("sec2").classList.toggle("hide",!SEC2);
@@ -1045,13 +1045,13 @@ try{google.script.url.getLocation(function(l){var g=l&&l.parameter&&l.parameter.
   try{sessionStorage.setItem("wsp","1")}catch(e){}
   document.body.style.overflow="hidden";
   var TXT=[
-    ["أهلًا بك في واصل 👋","Welcome to Wasel 👋"],
+    ["أهلًا بيك في واصل 👋","Welcome to Wasel 👋"],
     ["من أي مطعم في المحلة الكبرى… لحد بابك.","From any restaurant in El-Mahalla… to your door."],
     ["💰 سعر المطعم الحقيقي بدون زيادة.","💰 The restaurant's real price, no markup."],
     ["🧾 رسوم توصيل واضحة بلا مفاجآت.","🧾 A clear delivery fee, no surprises."],
     ["📸 تتبّع طلبك وفاتورته خطوة بخطوة.","📸 Track your order and invoice step by step."],
-    ["⚠️ تنبيه: راجع عنوان التسليم ورقم جوالك قبل إرسال الطلب.","⚠️ Note: please double-check your address and phone number before sending."],
-    ["📞 خليك قريب من جوالك… المندوب هيتواصل معاك.","📞 Keep your phone close… the courier will contact you."],
+    ["⚠️ خلي بالك: راجع العنوان ورقم موبايلك قبل ما تبعت الطلب.","⚠️ Note: please double-check your address and phone number before sending."],
+    ["📞 خليك جنب موبايلك… المندوب هيكلمك.","📞 Keep your phone close… the courier will contact you."],
     ["⏳ لو الصفحة اتأخرت ثواني، استنّى… بتحمل على مهلها.","⏳ If the page takes a few seconds, please wait… it is loading."],
     ["🚀 واصل… دايمًا متواصل معاك","🚀 Wasel… always connected with you"]];
   var SOUND=true;try{SOUND=localStorage.getItem("wss")!=="0"}catch(e){}
@@ -1302,7 +1302,7 @@ document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&
 })();
 </script>
 <div id="uosh" class="hide" role="dialog" aria-modal="true"><div class="uow">
-<div class="uohero"><button id="uox" type="button" aria-label="close">✕</button><div class="uoht" id="uott">👀 وش الجديد؟</div><div class="uohs" id="uosub"></div><span class="uocnt" id="uocnt"></span></div>
+<div class="uohero"><button id="uox" type="button" aria-label="close">✕</button><div class="uoht" id="uott">👀 إيه الجديد؟</div><div class="uohs" id="uosub"></div><span class="uocnt" id="uocnt"></span></div>
 <div id="uofh" class="uosec hide"><b id="uofl"></b><button type="button" id="uofs" class="uofnx"></button></div>
 <div id="uofeat" class="uofeat"></div>
 <div id="uoch" class="uoch"></div>
@@ -1376,15 +1376,15 @@ document.addEventListener("click",function(e){var b=e.target&&e.target.closest&&
 .uorp{background:transparent!important;border:0!important;color:var(--mu)!important;font-size:12px;text-decoration:underline;width:auto!important;padding:2px!important;margin:0!important;box-shadow:none!important}
 </style>
 <script>
-/* ===== «وش الجديد؟ 👀» (ملف Offers.gs): إضافة فقط، مش بتغيّر أي حاجة في الطلب ===== */
+/* ===== «إيه الجديد؟ 👀» (ملف Offers.gs): إضافة فقط، مش بتغيّر أي حاجة في الطلب ===== */
 (function(){
-var UT={t:["👀 وش الجديد؟","👀 What's new?"],sub:["أحدث عروض مطاعم ومحلات المحلة الكبرى","Latest offers in El-Mahalla"],cnt:["🔥 {n} عرض شغال النهارده","🔥 {n} offers live today"],
+var UT={t:["👀 إيه الجديد؟","👀 What's new?"],sub:["أحدث عروض مطاعم ومحلات المحلة الكبرى","Latest offers in El-Mahalla"],cnt:["🔥 {n} عرض شغال النهارده","🔥 {n} offers live today"],
  feat:["⭐ عروض مميزة","⭐ Featured"],swipe:["المزيد ←","More →"],all:["الكل","All"],from:["يبدأ","Starts"],to:["ينتهي","Ends"],rem:["باقي","Left"],
  go:["🛵 اطلبه مع واصل","🛵 Order with Wasel"],rp:["العرض مش متاح؟","Offer not available?"],rpd:["شكرًا، اتشال العرض ✅","Thanks, offer removed ✅"],
  left0:["آخر يوم","Last day"],day1:["يوم","1 day"],day2:["يومين","2 days"],days:[" أيام"," days"],
- none:["مفيش عروض دلوقتي، ارجع بعدين 🙏","No offers right now, check back later 🙏"],ld:["جارٍ التحميل...","Loading..."],
+ none:["مفيش عروض دلوقتي، ارجع بعدين 🙏","No offers right now, check back later 🙏"],ld:["بيحمّل...","Loading..."],
  note:["حسب إعلان المحل، ويؤكَّد عند الطلب. لو العرض مش موجود هنبلّغك قبل ما تدفع أي حاجة.","As announced by the store, confirmed when ordering. If it's not available we'll tell you before you pay anything."],
- ofn:["🔥 عرض: ","🔥 Offer: "],ofq:["🔢 العدد: ","🔢 Qty: "],qty:["العدد","Quantity"],ofs:["🏪 المتجر: ","🏪 Store: "],ofd:["📝 التفاصيل: ","📝 Details: "],ofp:["💰 السعر: ","💰 Price: "],ofe:["⏳ ينتهي: ","⏳ Ends: "],nw:["جديد","New"],dt:["تفاصيل العرض","Offer details"],
+ ofn:["🔥 عرض: ","🔥 Offer: "],ofq:["🔢 العدد: ","🔢 Qty: "],qty:["العدد","Quantity"],ofs:["🏪 المحل: ","🏪 Store: "],ofd:["📝 التفاصيل: ","📝 Details: "],ofp:["💰 السعر: ","💰 Price: "],ofe:["⏳ ينتهي: ","⏳ Ends: "],nw:["جديد","New"],dt:["تفاصيل العرض","Offer details"],
  viaIg:["📷 المصدر: إنستجرام ","📷 Source: Instagram of "],viaWeb:["🌐 المصدر: الموقع الرسمي","🌐 Source: official website"],lim:["🔥 لفترة محدودة","🔥 Limited time"]};
 var CI={"مطاعم":"🍔 ","كافيهات":"☕ ","حلويات ومخابز":"🍩 ","سوبر ماركت":"🛒 ","إلكترونيات":"📱 ","محلات":"🛍️ ","أخرى":"✨ "};
 function ut(k){return UT[k][LANG==="en"?1:0]}
@@ -1492,6 +1492,75 @@ lbl();setTimeout(function(){load()},2500);
     if([].some.call(p.options,function(o){return /فودافون/.test(o.value)}))return;
     var o=document.createElement("option");o.value="فودافون كاش - VODAFONE CASH";o.textContent="📱 فودافون كاش - Vodafone Cash";p.appendChild(o);
     p.addEventListener("change",ui);ui()}).withFailureHandler(function(){}).vfConfig()}catch(e){}
+})();
+</script>
+<style>
+/* ===== اختيار المطعم: قايمة بلوجو (مقفولة على المختار، وبتفتح لما تدوس) ===== */
+#pk.pkx{display:none!important}
+#pkBox{margin-top:8px}
+#pkBox .pkc,#pkBox .pkr{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:14px;cursor:pointer;text-align:start}
+#pkBox .pkc{border:2px solid var(--fldb,var(--ln));background:var(--fld,var(--bg))}
+#pkBox .pkc .pkv{flex:none;font-size:13px;font-weight:800;color:var(--br);display:flex;align-items:center;gap:4px}
+#pkBox .pkc .pkv i{display:inline-block;width:28px;height:28px;font-size:0;transition:transform .2s;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%230e7c75'/%3E%3Cpath d='M7 10l5 5 5-5' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center/28px 28px}
+#pkBox.open .pkc .pkv i{transform:rotate(180deg)}
+#pkBox .pkl{display:none;margin-top:6px;max-height:270px;overflow-y:auto;border:1px solid var(--ln);border-radius:14px;background:var(--card,var(--bg));padding:4px;overscroll-behavior:contain}
+#pkBox.open .pkl{display:block}
+#pkBox .pkr{border-bottom:1px solid var(--ln);border-radius:10px}#pkBox .pkr:last-child{border-bottom:0}
+#pkBox .pkr.on{background:var(--br2,rgba(14,79,76,.1))}
+#pkBox .pkg{flex:none;width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:17px;overflow:hidden;background:#0e4f4c}
+#pkBox .pkg img{width:100%;height:100%;object-fit:cover;background:#fff}
+#pkBox .pkt{flex:1;min-width:0;line-height:1.35}
+#pkBox .pkt b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pkBox .pkt small{display:block;color:var(--mu);font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pkBox .pkm2{flex:none;font-size:11px;font-weight:800;padding:2px 7px;border-radius:99px;background:var(--br2,rgba(14,79,76,.1));color:var(--br)}
+#pkBox .pkm2.cl{background:#fee2e2;color:#991b1b}
+/* السهم بتاع كل القوايم (الاختيارات) أكبر وأوضح */
+select{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%230e7c75'/%3E%3Cpath d='M7 10l5 5 5-5' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-size:26px 26px!important;background-position:left 10px center!important;padding-left:46px!important}
+[dir=ltr] select,select[dir=ltr]{background-position:right 10px center!important;padding-left:12px!important;padding-right:46px!important}
+</style>
+<script>
+/* ===== اختيار المطعم بالشكل الجديد: بيقرا من نفس القايمة القديمة (#pk) فكل حاجة تانية شغالة زي ما هي ===== */
+(function(){
+var pk=document.getElementById("pk");if(!pk)return;
+var box=document.createElement("div");box.id="pkBox";
+box.innerHTML='<div class="pkc" role="button" tabindex="0"></div><div class="pkl"></div>';
+pk.parentNode.insertBefore(box,pk.nextSibling);pk.classList.add("pkx");
+var cur=box.firstChild,list=box.lastChild,busy=false;
+function en(){try{return LANG==="en"}catch(e){return false}}
+function catTxt(n){try{var k=catsOf(n)[0];for(var i=0;i<CATS.length;i++)if(CATS[i][0]===k)return CATS[i][en()?2:1];return k}catch(e){return ""}}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function logo(v){var u="";try{u=(window.SLOGO||{})[v]||""}catch(e){}
+  if(v==="x")return '<span class="pkg" style="background:#64748b">✏️</span>';
+  if(/^https:\/\//.test(u))return '<span class="pkg"><img src="'+esc(u)+'" alt="" loading="lazy" onerror="this.remove()"></span>';
+  var h=0;for(var i=0;i<v.length;i++)h=(h*31+v.charCodeAt(i))%360;
+  return '<span class="pkg" style="background:hsl('+h+',55%,36%)">'+esc((v||"؟").charAt(0))+'</span>'}
+function rowHtml(o,isCur){var v=o.value,mn=false,cl=false;try{mn=MR.indexOf(v)>=0;cl=!!CLOSED[v]}catch(e){}
+  var nm=o.textContent.replace(/^📋\s*/,"").replace(/\s*\((مغلق 🔴|قافل 🔴|closed)\)\s*$/,"");
+  var sub=v==="x"?(en()?"Type the place name below":"اكتب اسم المكان تحت"):catTxt(v);
+  var tag=cl?'<span class="pkm2 cl">'+(en()?"Closed":"قافل")+'</span>':mn?'<span class="pkm2">📋 '+(en()?"Menu":"منيو")+'</span>':"";
+  return logo(v)+'<span class="pkt"><b>'+esc(nm)+'</b><small>'+esc(sub)+'</small></span>'+tag+
+    (isCur?'<span class="pkv">'+(en()?"Change":"تغيير")+' <i>▾</i></span>':"")}
+function draw(){if(busy)return;busy=true;
+  try{box.style.display=pk.classList.contains("hide")?"none":"";
+    var o=pk.options[pk.selectedIndex];
+    cur.innerHTML=o?rowHtml(o,true):'<span class="pkt"><b>'+(en()?"Choose a place":"اختار المكان")+'</b></span><span class="pkv"><i>▾</i></span>';
+    var h="";for(var i=0;i<pk.options.length;i++)h+='<div class="pkr'+(i===pk.selectedIndex?" on":"")+'" data-i="'+i+'">'+rowHtml(pk.options[i],false)+'</div>';
+    list.innerHTML=h||'<div class="pkr" style="cursor:default"><span class="pkt"><small>'+(en()?"No results":"مفيش نتايج")+'</small></span></div>';
+  }catch(e){}busy=false}
+function toggle(f){box.classList.toggle("open",f);if(box.classList.contains("open")){var on=list.querySelector(".on");if(on)list.scrollTop=on.offsetTop-list.offsetTop-60}}
+cur.addEventListener("click",function(){toggle()});
+cur.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle()}});
+list.addEventListener("click",function(e){var r=e.target.closest(".pkr[data-i]");if(!r)return;
+  pk.selectedIndex=+r.dataset.i;pk.dispatchEvent(new Event("change",{bubbles:true}));toggle(false);draw()});
+new MutationObserver(function(){setTimeout(draw,0)}).observe(pk,{childList:true,attributes:true,attributeFilter:["class"]});
+pk.addEventListener("change",function(){setTimeout(draw,0)});
+var s=document.getElementById("pks");if(s){s.addEventListener("input",function(){toggle(!!s.value.trim())});s.addEventListener("focus",function(){if(s.value.trim())toggle(true)})}
+/* تغيير القيمة من الكود (زي اختيار عرض) */
+var d=Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,"value");
+if(d&&d.set)Object.defineProperty(pk,"value",{get:function(){return d.get.call(pk)},set:function(v){d.set.call(pk,v);setTimeout(draw,0)},configurable:true});
+var lb=document.getElementById("lang");if(lb)lb.addEventListener("click",function(){setTimeout(draw,150)});
+setInterval(function(){var t=pk.selectedIndex+"|"+pk.options.length+"|"+(window.SLOGO?Object.keys(SLOGO).length:0);if(t!==box._t){box._t=t;draw()}},1500);
+draw();
 })();
 </script>
 </body></html>
