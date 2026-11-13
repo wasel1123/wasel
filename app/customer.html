@@ -825,6 +825,8 @@ function send(){
           sb.onclick=function(){shareLink(tu,r.no,sn)};m.appendChild(sb);m.appendChild(sn);
           var h=document.createElement("small");h.style.display="block";h.textContent=t("need4");m.appendChild(h)}
                 }
+      /* بعد الطلب: يدخل على التتبّع على طول */
+      if(r.no){var go2=r.no;setTimeout(function(){try{if(/\/app\/customer\.html$/.test(location.pathname))location.href="track.html?o="+encodeURIComponent(go2);else window.top.location.href=trackUrl(go2)}catch(eG){}},1500)}
       ["pko","pkl","items","dt","dl","nt","items2","pko2","pkl2"].forEach(function(i){$(i).value=""});DIMG="";try{doorUi()}catch(eD){}$("pkl2").dataset.manual="";SEC2=false;sec2Ui();CHG=false;renderMem();COORD=null;locUi();feeUpd();$("pkl").dataset.manual="";autoLink();
     }else if(r.closed){appClosedUi(true,r.msg)}
     else if(r.out){m.style.color="#b45309";m.textContent=t("outA")}
