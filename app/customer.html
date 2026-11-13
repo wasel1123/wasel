@@ -1690,5 +1690,11 @@ bar.onclick=go;bar.onkeydown=function(e){if(e.key==="Enter")go()};
 setInterval(tick,1000);setTimeout(chk,1800);setInterval(function(){if(!document.hidden)chk()},45000);
 document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});
 })();
+/* إشعارات الموبايل: لو الصفحة جوه تطبيق واصل على أندرويد، بنسجّل الجهاز (مرة في اليوم) علشان توصله الإشعارات (ملف Push.gs) */
+(function(){function tryReg(){try{var A=window.WaselApp;if(!A||!A.token)return;var tk=String(A.token()||"");if(tk.length<60)return;
+  var role="c",id=(function(){try{var w=JSON.parse(localStorage.getItem("wp")||"null");return w&&w.phone?String(w.phone).replace(/\D/g,""):""}catch(e){return ""}})();if(!id)return;
+  var day=new Date().toISOString().slice(0,10),sig=role+"|"+id+"|"+tk.slice(-12)+"|"+day,old="";try{old=localStorage.getItem("wpr")||""}catch(e){}
+  if(old===sig)return;google.script.run.withSuccessHandler(function(r){if(r&&r.ok){try{localStorage.setItem("wpr",sig)}catch(e){}}}).withFailureHandler(function(){}).pushReg(role,tk,id)}catch(e){}}
+  setTimeout(tryReg,4000);setInterval(tryReg,60000)})();
 </script>
 </body></html>
