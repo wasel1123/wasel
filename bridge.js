@@ -3,11 +3,24 @@
    ومرة واحدة بس: بينقل البيانات المحفوظة على الجهاز من الصفحات القديمة (الاسم والرقم ورمز المندوب...). */
 (function () {
   var API = "https://script.google.com/macros/s/AKfycbwmS0DX-pqH17-cKKftKNqjVzD3lMuskpL8MvFKJpfSGt3uyVk5bli1dWeGOq782YbnLg/exec";
+  try { window.WASEL_API = API; } catch (e) {}   // لتطبيق أندرويد: يبعت موقع المندوب لنفس السيرفر
 
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
 
   /* اللغة لو جاية في الرابط (?lang=ar أو en) تتثبت قبل ما الصفحة تقراها */
   try { var lg = new URLSearchParams(location.search).get("lang"); if (lg === "ar" || lg === "en") ls("wl", lg); } catch (e) {}
+
+  /* أمان: لو السيرفر الجديد مش شغال لأي سبب، الصفحة تتحول لوحدها للصفحة القديمة على Apps Script (فمفيش حاجة تقف) */
+  var FB = { "customer.html": "", "courier.html": "page=courier", "track.html": "page=track", "register.html": "page=register",
+    "restaurant.html": "page=restaurant", "restaurant-register.html": "page=restaurant-register", "legal.html": "page=terms" };
+  function fallback() {
+    if (window.__waselFb) return; window.__waselFb = 1;
+    var f = (location.pathname.split("/").pop() || "customer.html"), q = FB[f] !== undefined ? FB[f] : "";
+    var rest = (location.search || "").replace(/^\?/, "").split("&").filter(function (x) { return x && !/^(page|p)=/.test(x); }).join("&");
+    if (f === "legal.html") { try { var pp = new URLSearchParams(location.search).get("p") || "terms-customer"; q = "page=" + ({ "terms-customer": "terms", "privacy-customer": "privacy" }[pp] || pp); } catch (e) {} }
+    var qs = [q, rest].filter(Boolean).join("&");
+    location.replace(API + (qs ? "?" + qs : ""));
+  }
 
   /* نداء دالة على السيرفر */
   function call(fn, args, ok, bad, uo) {
@@ -17,11 +30,13 @@
       fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ fn: fn, args: args }), redirect: "follow", cache: "no-store" })
         .then(function (r) { return r.json(); })
         .then(function (d) {
+          if (d && d.e === "not allowed") { fallback(); return; }   // السيرفر لسه من غير Api.gs
           if (d && d.e !== undefined) { if (bad) bad(new Error(d.e), uo); }
           else if (ok) ok(d ? d.r : null, uo);
         })
         .catch(function (err) {
           if (tries < 2 && navigator.onLine !== false) { setTimeout(go, 700); return; }   // محاولة تانية لو النت قطع لحظة
+          if (navigator.onLine !== false) { fallback(); return; }   // السيرفر الجديد مش بيرد: نرجع للصفحة القديمة
           if (bad) bad(err, uo);
         });
     }
