@@ -368,6 +368,42 @@ html.pk .cdh{background:#9d174d}
 #ctrk b{color:var(--br)}
 #ctrk.hide,#cdim.hide,#cmdot.hide{display:none!important}
 #cdw #lgl{margin:0!important;padding:14px 16px 30px;text-align:start!important;line-height:1.9}
+/* فاتورة الطلب المبدئية */
+.rcpt{margin:8px 0;border:1.5px dashed var(--br,#0e4f4c);border-radius:14px;padding:10px 12px;background:var(--card,#fff)}
+.rcpt .rch{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;font-size:14px}
+.rcpt .rch b{color:var(--br,#0e4f4c)}.rcpt .rch span{font-size:13px;font-weight:700;color:var(--mu,#5f6f6d)}
+.rcpt .rcr{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--ln,#e5e7eb)}
+.rcpt .rcq{flex:none;min-width:34px;height:28px;border-radius:9px;background:var(--br,#0e4f4c);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;direction:ltr;padding:0 6px}
+.rcpt .rcr.of .rcq{background:#f2b544;color:#3b2300}
+.rcpt .rcn{flex:1;min-width:0;font-weight:700;font-size:14.5px;line-height:1.45;overflow-wrap:anywhere}
+.rcpt .rcn small{display:block;font-weight:600;font-size:12px;color:var(--mu,#5f6f6d)}
+.rcpt .rcp{flex:none;font-weight:800;color:var(--br,#0e4f4c);font-size:14px}
+.rcpt .rcf{display:flex;justify-content:space-between;align-items:center;border-top:2px solid var(--ln,#e5e7eb);margin-top:4px;padding-top:7px;font-size:14.5px}
+.rcpt .rcf b{color:var(--br,#0e4f4c);font-size:16px}
+.rcpt .rcft{font-size:12px;color:var(--mu,#5f6f6d);margin-top:6px}
+
+/* سلايدر العروض المميزة في الرئيسية */
+.hfeat{margin:0 0 12px}.hfeat.hide{display:none}
+.hft{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:18px;scrollbar-width:none}.hft::-webkit-scrollbar{display:none}
+.hfc{flex:0 0 100%;height:auto;aspect-ratio:4/3;max-height:340px;position:relative;scroll-snap-align:start;cursor:pointer;overflow:hidden;border-radius:18px;background:#0e4f4c}
+.hfc .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:1}
+.hfc .blur{position:absolute;inset:-20px;width:calc(100% + 40px);height:calc(100% + 40px);object-fit:cover;filter:blur(18px) brightness(.75);transform:scale(1.05)}
+.hfc .ov{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,.78))}
+.hfc .hfs{position:absolute;top:10px;right:10px;background:#f2b544;color:#3b2300;font-weight:800;font-size:12px;border-radius:99px;padding:2px 10px;z-index:2}
+.hfc .uopr{position:absolute;top:10px;left:10px;z-index:2}
+.hfc .tx{position:absolute;right:12px;left:12px;bottom:10px;color:#fff;z-index:2}
+.hfc .nm{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;opacity:.95}
+.hfc .ti{font-size:17px;font-weight:800;text-shadow:0 2px 6px rgba(0,0,0,.45);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hfd{display:flex;justify-content:center;gap:5px;margin-top:6px}.hfd i{width:7px;height:7px;border-radius:9px;background:var(--ln,#cbd5d3);transition:width .2s}.hfd i.on{width:18px;background:var(--br,#0e4f4c)}
+/* شريط الطلب الحالي */
+#livebar{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:60;background:#0e4f4c;color:#fff;border-radius:16px;padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 22px rgba(0,0,0,.28);cursor:pointer;max-width:560px;margin:0 auto;font-weight:700;font-size:14.5px}
+#livebar.hide{display:none}
+#livebar .pl{flex:none;width:10px;height:10px;border-radius:50%;background:#4ade80;animation:lbp 1.6s infinite}
+@keyframes lbp{0%{box-shadow:0 0 0 0 rgba(74,222,128,.7)}100%{box-shadow:0 0 0 10px rgba(74,222,128,0)}}
+#livebar .n{margin-inline-start:auto;background:#f2b544;color:#3b2300;font-weight:800;border-radius:99px;padding:2px 10px;direction:ltr;font-variant-numeric:tabular-nums}
+body.haslb main{padding-bottom:70px}
+/* اختيار «رجل / امرأة» موجود في القايمة ☰، فشيلناه من الصفحة علشان ما تتزحمش */
+#gbox{display:none!important}
 </style></head><body>
 <div id="spl" class="spl" role="presentation"><button id="spk" type="button"></button><button id="spm" type="button"></button><div id="spt"></div><div class="spb"><i id="spi"></i></div></div>
 <header><div class="brand"><svg viewBox="0 0 64 64" role="img" aria-label="Wasel"><rect width="64" height="64" rx="18" fill="#fff"/><g transform="translate(2 -3.55) scale(.3)"><path fill="#0e4f4c" d="M13.26,54.00 L42.97,158.00 L85.58,158.00 L100.00,131.44 L114.42,158.00 L157.03,158.00 L186.74,54.00 L155.54,54.00 L133.66,130.57 L100.00,68.56 L66.34,130.57 L44.46,54.00 Z"/><path fill="#0e4f4c" d="M67.315185546875 188.0H64.409912109375L62.824462890625 181.23486328125Q62.533935546875 180.03955078125 62.334716796875 178.736328125Q62.135498046875 179.82373046875 62.010986328125 180.392333984375Q61.886474609375 180.9609375 60.242919921875 188.0H57.337646484375L54.324462890625 176.30419921875H56.806396484375L58.499755859375 183.85791015625L58.881591796875 185.68408203125Q59.114013671875 184.5302734375 59.333984375 183.480224609375Q59.553955078125 182.43017578125 60.989990234375 176.30419921875H63.729248046875L65.206787109375 182.52978515625Q65.381103515625 183.22705078125 65.796142578125 185.68408203125L66.003662109375 184.72119140625L66.443603515625 182.81201171875L67.854736328125 176.30419921875H70.336669921875Z M85.758056640625 188.0 84.720458984375 185.01171875H80.262939453125L79.225341796875 188.0H76.776611328125L81.043212890625 176.30419921875H83.931884765625L88.181884765625 188.0ZM82.487548828125 178.10546875 82.437744140625 178.2880859375Q82.354736328125 178.5869140625 82.238525390625 178.96875Q82.122314453125 179.3505859375 80.810791015625 183.1689453125H84.172607421875L83.018798828125 179.80712890625L82.661865234375 178.67822265625Z M105.304931640625 184.6298828125Q105.304931640625 186.34814453125 104.03076171875 187.257080078125Q102.756591796875 188.166015625 100.291259765625 188.166015625Q98.041748046875 188.166015625 96.763427734375 187.369140625Q95.485107421875 186.572265625 95.119873046875 184.95361328125L97.485595703125 184.5634765625Q97.726318359375 185.4931640625 98.423583984375 185.912353515625Q99.120849609375 186.33154296875 100.357666015625 186.33154296875Q102.922607421875 186.33154296875 102.922607421875 184.77099609375Q102.922607421875 184.27294921875 102.6279296875 183.94921875Q102.333251953125 183.62548828125 101.7978515625 183.40966796875Q101.262451171875 183.19384765625 99.743408203125 182.88671875Q98.431884765625 182.57958984375 97.917236328125 182.392822265625Q97.402587890625 182.2060546875 96.987548828125 181.952880859375Q96.572509765625 181.69970703125 96.281982421875 181.3427734375Q95.991455078125 180.98583984375 95.82958984375 180.50439453125Q95.667724609375 180.02294921875 95.667724609375 179.400390625Q95.667724609375 177.81494140625 96.85888671875 176.972412109375Q98.050048828125 176.1298828125 100.324462890625 176.1298828125Q102.499267578125 176.1298828125 103.5908203125 176.810546875Q104.682373046875 177.4912109375 104.997802734375 179.06005859375L102.623779296875 179.3837890625Q102.441162109375 178.62841796875 101.880859375 178.24658203125Q101.320556640625 177.86474609375 100.274658203125 177.86474609375Q98.050048828125 177.86474609375 98.050048828125 179.25927734375Q98.050048828125 179.7158203125 98.28662109375 180.00634765625Q98.523193359375 180.296875 98.988037109375 180.500244140625Q99.452880859375 180.70361328125 100.872314453125 181.0107421875Q102.557373046875 181.36767578125 103.28369140625 181.670654296875Q104.010009765625 181.9736328125 104.433349609375 182.376220703125Q104.856689453125 182.77880859375 105.080810546875 183.339111328125Q105.304931640625 183.8994140625 105.304931640625 184.6298828125Z M113.106201171875 188.0V176.30419921875H122.303466796875V178.19677734375H115.554931640625V181.13525390625H121.797119140625V183.02783203125H115.554931640625V186.107421875H122.643798828125V188.0Z M130.445068359375 188.0V176.30419921875H132.893798828125V186.107421875H139.169189453125V188.0Z"/><g transform="translate(62.8 42.25) scale(3.1)"><path fill="#fff" stroke="#fff" stroke-width="3" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><path fill="#f2b544" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><circle cx="12" cy="9.4" r="3.2" fill="#fff"/></g></g></svg><div><b data-i="brand"></b><span>WASEL</span><small data-i="slogan"></small></div></div><div class="lane"><div class="rk"><div class="rpw" aria-hidden="true"></div><div class="flag" id="flag" aria-hidden="true"></div><svg class="ride" viewBox="12 6 236 88" role="img" aria-label="Wasel rocket">
@@ -399,6 +435,7 @@ html.pk .cdh{background:#9d174d}
 <div id="ofbox" class="topc hide"><div id="ofh" style="font-weight:700;margin-bottom:8px"></div><div id="ofl"></div></div>
 <div id="hbox" class="hbox hide"></div>
 <div id="gbox" class="topc hide"><div class="gh" style="font-weight:700"></div><div class="gs mu" style="margin-top:2px"></div><div class="gch"><button type="button" id="gm"></button><button type="button" id="gf"></button></div></div>
+<div id="hfeat" class="hfeat hide"></div>
 <div class="card">
 <h2 data-i="title"></h2><small data-i="only"></small>
 <div id="offer" class="offer hide"></div>
@@ -418,14 +455,14 @@ html.pk .cdh{background:#9d174d}
 <input id="pko" class="hide" data-ph="pko" style="margin-top:8px">
 <input id="pkl" type="url" inputmode="url" data-ph="pkl" style="margin-top:8px">
 <small data-i="partner"></small>
-<label data-i="items"></label><textarea id="items" rows="3"></textarea>
+<label data-i="items"></label><textarea id="items" rows="3"></textarea><div id="rcpt1"></div>
 <button id="add2" type="button" class="sec hide" data-i="add2"></button>
 <div id="sec2" class="sec2 hide">
 <label data-i="pk2l"></label><select id="pk2"></select>
 <button id="menubtn2" type="button" class="menubtn hide"></button>
 <input id="pko2" class="hide" data-ph="pko" style="margin-top:8px">
 <input id="pkl2" type="url" inputmode="url" data-ph="pkl" style="margin-top:8px">
-<label data-i="items2l"></label><textarea id="items2" rows="3"></textarea>
+<label data-i="items2l"></label><textarea id="items2" rows="3"></textarea><div id="rcpt2"></div>
 <div id="fee2" class="mu"></div><small data-i="cold"></small>
 <button id="rm2" type="button" class="lnk" data-i="rm2"></button>
 </div>
@@ -833,6 +870,8 @@ function send(){
           sb.onclick=function(){shareLink(tu,r.no,sn)};m.appendChild(sb);m.appendChild(sn);
           var h=document.createElement("small");h.style.display="block";h.textContent=t("need4");m.appendChild(h)}
                 }
+      /* بعد الطلب: يدخل على التتبّع على طول */
+      if(r.no){var go2=r.no;setTimeout(function(){try{if(/\/app\/customer\.html$/.test(location.pathname))location.href="track.html?o="+encodeURIComponent(go2);else window.top.location.href=trackUrl(go2)}catch(eG){}},1500)}
       ["pko","pkl","items","dt","dl","nt","items2","pko2","pkl2"].forEach(function(i){$(i).value=""});DIMG="";try{doorUi()}catch(eD){}$("pkl2").dataset.manual="";SEC2=false;sec2Ui();CHG=false;renderMem();COORD=null;locUi();feeUpd();$("pkl").dataset.manual="";autoLink();
     }else if(r.closed){appClosedUi(true,r.msg)}
     else if(r.out){m.style.color="#b45309";m.textContent=t("outA")}
@@ -1401,7 +1440,7 @@ function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null
 function lbl(){$("uobt").textContent=ut("t");$("uott").textContent=ut("t");$("uosub").textContent=ut("sub");$("uonote").textContent=ut("note");
   $("uocnt").textContent=L&&L.length?ut("cnt").replace("{n}",L.length):"";
   var n=L&&L.length;$("uon").textContent=ut("nw");$("uon").classList.toggle("hide",!n)}
-function load(cb){try{google.script.run.withSuccessHandler(function(r){L=(r&&r.ok&&r.list)||[];lbl();cb&&cb()}).withFailureHandler(function(){L=L||[];cb&&cb()}).offersList()}catch(e){L=[];cb&&cb()}}
+function load(cb){try{google.script.run.withSuccessHandler(function(r){L=(r&&r.ok&&r.list)||[];try{if(r&&r.ok)localStorage.setItem("wofc",JSON.stringify({t:Date.now(),l:L}))}catch(eC){}lbl();cb&&cb()}).withFailureHandler(function(){L=L||[];cb&&cb()}).offersList()}catch(e){L=[];cb&&cb()}}
 function ch(o){return (o.store||"؟").replace(/^(مطعم|كافيه|مقهى|أسواق|صيدليات)\s+/,"").charAt(0)}
 function logoEl(o,cls){var lg=el("div",cls||"uolg");if(o.logo){var im=el("img");im.src=o.logo;im.alt="";im.loading="lazy";im.onerror=function(){lg.textContent=ch(o)};lg.appendChild(im)}else lg.textContent=ch(o);return lg}
 function img(src,cls){var im=el("img",cls);im.src=src;im.alt="";im.loading="lazy";im.onerror=function(){im.remove()};return im}
@@ -1439,7 +1478,8 @@ function chips(){var c=$("uoch");c.textContent="";if(!L||!L.length){c.classList.
   [""].concat(cats).forEach(function(k){var b=el("button",k===CAT?"on":"",k?(CI[k]||"")+k:ut("all"));b.type="button";b.onclick=function(){CAT=k;draw()};c.appendChild(b)})}
 function feat(){var f=$("uofeat");f.textContent="";
   var A=(L||[]).filter(function(o){return o.img&&o.price}).slice(0,6);
-  $("uofh").classList.toggle("hide",A.length<2);if(A.length<2)return;
+  try{homeFeat(A)}catch(eH){}
+  $("uofh").classList.add("hide");return;   /* العروض المميزة بقت برّه في الصفحة الرئيسية، وجوه العروض العادية بس */
   $("uofl").textContent=ut("feat");$("uofs").textContent=ut("swipe");
   $("uofs").onclick=function(){var w=(f.firstElementChild?f.firstElementChild.offsetWidth+10:200),rtl=getComputedStyle(f).direction==="rtl",x=Math.abs(f.scrollLeft),mx=f.scrollWidth-f.clientWidth;
     if(x>=mx-5)f.scrollTo({left:0,behavior:"smooth"});else f.scrollBy({left:rtl?-w:w,behavior:"smooth"})};
@@ -1487,7 +1527,22 @@ function close(){dClose();sh.classList.add("hide")}
 $("uob").onclick=open;$("uox").onclick=close;
 document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;if(DT.classList.contains("open"))dClose();else if(!sh.classList.contains("hide"))close()});
 var lb=$("lang");if(lb)lb.addEventListener("click",function(){setTimeout(function(){lbl();if(!sh.classList.contains("hide"))draw()},100)});
-lbl();setTimeout(function(){load()},2500);
+/* العروض المميزة في الصفحة الرئيسية: سلايدر صغير بيتقلب لوحده، والضغط بيفتح تفاصيل العرض */
+var HF=null;
+function homeFeat(A){var h=$("hfeat");if(!h)return;clearInterval(HF);h.textContent="";
+  if(!A||!A.length){h.classList.add("hide");return}h.classList.remove("hide");
+  var tr=el("div","hft"),dots=el("div","hfd");
+  A.forEach(function(o,i){var c=el("div","hfc");c.appendChild(img(o.img,"blur"));c.appendChild(img(o.img,"bg"));c.appendChild(el("div","ov"));
+    c.appendChild(el("span","hfs",ut("feat")));if(o.price)c.appendChild(el("span","uopr",o.price));
+    var tx=el("div","tx"),nm=el("div","nm");nm.appendChild(logoEl(o));nm.appendChild(el("span",null,o.store));tx.appendChild(nm);tx.appendChild(el("div","ti",o.title));c.appendChild(tx);
+    c.onclick=function(){dOpen(o)};tr.appendChild(c);dots.appendChild(el("i",i?"":"on"))});
+  h.appendChild(tr);if(A.length>1)h.appendChild(dots);
+  var k=0;function mark(){var w=tr.clientWidth||1;k=Math.round(Math.abs(tr.scrollLeft)/w);Array.prototype.forEach.call(dots.children,function(d,j){d.classList.toggle("on",j===k)})}
+  tr.addEventListener("scroll",function(){clearTimeout(tr._t);tr._t=setTimeout(mark,80)});
+  if(A.length>1)HF=setInterval(function(){if(document.hidden||!h.offsetParent)return;var w=tr.clientWidth,rtl=getComputedStyle(tr).direction==="rtl";k=(k+1)%A.length;tr.scrollTo({left:(rtl?-1:1)*k*w,behavior:"smooth"})},4000)}
+/* العروض بتظهر على طول من آخر نسخة محفوظة على الجهاز، وبعدها بتتحدث من السيرفر */
+try{var oc=JSON.parse(localStorage.getItem("wofc")||"null");if(oc&&oc.l&&Date.now()-oc.t<12*3600*1000){L=oc.l;feat()}}catch(eC){}
+lbl();setTimeout(function(){load(function(){lbl();feat()})},300);
 })();
 </script>
 <script>
@@ -1569,6 +1624,83 @@ if(d&&d.set)Object.defineProperty(pk,"value",{get:function(){return d.get.call(p
 var lb=document.getElementById("lang");if(lb)lb.addEventListener("click",function(){setTimeout(draw,150)});
 setInterval(function(){var t=pk.selectedIndex+"|"+pk.options.length+"|"+(window.SLOGO?Object.keys(SLOGO).length:0);if(t!==box._t){box._t=t;draw()}},1500);
 draw();
+})();
+</script>
+<div id="livebar" class="hide" role="button" tabindex="0"><span class="pl"></span><span id="lbt"></span><b class="n hide" id="lbn"></b></div>
+<script>
+/* ===== فاتورة الطلب المبدئية: بتحوّل «مكونات الطلب» المكتوبة لسطور واضحة (العدد + الصنف + السعر لو معروف) ===== */
+function rcptNum(s){return String(s==null?"":s).replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)}).replace(/[۰-۹]/g,function(d){return "۰۱۲۳۴۵۶۷۸۹".indexOf(d)})}
+function rcptItem(p){p=String(p||"").replace(/^[\s\-•*·–—]+/,"").trim();if(!p)return null;var q=1,n=p,m;
+  var w={"واحد":1,"وحدة":1,"اتنين":2,"اثنين":2,"ثنين":2,"تلاتة":3,"ثلاثة":3,"ثلاث":3,"أربعة":4,"اربعة":4,"خمسة":5};
+  if((m=/^(\d{1,2})\s*(?:×|x|X|\*|حبة|حبات|علب|علبة|قطع|قطعة|كيلو|ك)?\s+(.+)$/.exec(p))){q=+m[1];n=m[2]}
+  else if((m=/^(.+?)\s*(?:×|x|X|\*)\s*(\d{1,2})$/.exec(p))){n=m[1];q=+m[2]}
+  else if((m=/^(واحد|وحدة|اتنين|اثنين|ثنين|تلاتة|ثلاثة|ثلاث|أربعة|اربعة|خمسة)\s+(.+)$/.exec(p))){q=w[m[1]];n=m[2]}
+  return {q:q>0&&q<100?q:1,name:n.trim()}}
+function rcptParse(txt){var t=rcptNum(txt).trim(),out={store:"",lines:[],total:"",note:""};if(!t)return out;
+  var raw=t.split(/\n/),rest=[],i,L;
+  /* عروض: سطر يبدأ بـ 🔥 وبعده سطور 🔢 🏪 📝 💰 ⏳ */
+  for(i=0;i<raw.length;i++){L=raw[i].trim();
+    if(/^🔥/.test(L)){var o={q:1,name:L.replace(/^🔥\s*[^:：]*[:：]\s*/,"").trim()||L.replace(/^🔥\s*/,""),offer:true,sub:"",price:"",det:""};
+      while(i+1<raw.length&&/^(🔢|🏪|📝|💰|⏳)/.test(raw[i+1].trim())){i++;var x=raw[i].trim(),v=x.replace(/^\S+\s*[^:：]*[:：]\s*/,"").trim();
+        if(/^🔢/.test(x))o.q=parseInt(v,10)||1;else if(/^🏪/.test(x))o.sub=v;else if(/^📝/.test(x))o.det=v;else if(/^💰/.test(x)){var pm=/=\s*([\d.]+)/.exec(v);o.price=pm?pm[1]:((/([\d.]+)/.exec(v)||[])[1]||"")}else if(/^⏳/.test(x))o.end=v}
+      out.lines.push(o)}else if(L)rest.push(L)}
+  t=rest.join("\n");if(!t)return out;
+  /* من المنيو: «المطعم: 2 × صنف ، 1 × صنف | الإجمالي التقديري: 45 ريال» */
+  var mm=/^([^:\n|]{1,60})[:：]\s*([\s\S]+?)(?:\s*\|\s*([^|]*?([\d.]+)[^|]*))?$/.exec(t);
+  if(mm&&/×/.test(mm[2])){out.store=mm[1].trim();if(mm[4])out.total=mm[4];
+    mm[2].split(/\s*[،,]\s*/).forEach(function(p){var it=rcptItem(p);if(it)out.lines.push(it)});return out}
+  /* كلام عادي: كل سطر أو كل جزء بين «،» أو «+» صنف */
+  t.split(/\n|\s*[،,]\s*|\s+\+\s+|\s+و\s*(?=\d)/).forEach(function(p){var it=rcptItem(p);if(it&&it.name.length>0)out.lines.push(it)});
+  return out}
+function rcptEl(txt,o){o=o||{};var P=rcptParse(txt);if(!P.lines.length)return null;
+  var en=o.en,cur=o.cur||"",c=document.createElement("div");c.className="rcpt";
+  var h=document.createElement("div");h.className="rch";h.innerHTML="";var hb=document.createElement("b");hb.textContent=o.title||"🧾";h.appendChild(hb);
+  if(P.store){var hs=document.createElement("span");hs.textContent=P.store;h.appendChild(hs)}c.appendChild(h);
+  P.lines.forEach(function(l){var r=document.createElement("div");r.className="rcr"+(l.offer?" of":"");
+    var q=document.createElement("span");q.className="rcq";q.textContent=l.q+"×";r.appendChild(q);
+    var n=document.createElement("span");n.className="rcn";n.textContent=l.name;
+    if(l.offer||l.sub||l.det){var s=document.createElement("small");s.textContent=(l.offer?"🔥 "+(en?"Offer":"عرض")+(l.sub?" · "+l.sub:""):l.sub)+(l.det?" — "+l.det:"");n.appendChild(s)}
+    r.appendChild(n);
+    if(l.price){var p=document.createElement("span");p.className="rcp";p.textContent=l.price+cur;r.appendChild(p)}
+    c.appendChild(r)});
+  if(P.total){var f=document.createElement("div");f.className="rcf";var a=document.createElement("span");a.textContent=en?"Estimated total":"الإجمالي التقريبي";var b=document.createElement("b");b.textContent=P.total+cur;f.appendChild(a);f.appendChild(b);c.appendChild(f)}
+  if(o.foot){var ft=document.createElement("div");ft.className="rcft";ft.textContent=o.foot;c.appendChild(ft)}
+  return c}
+
+/* فاتورة الطلب المبدئية تحت «مكونات الطلب» (بتتحدث وهو بيكتب أو لما يختار من المنيو أو العروض) */
+(function(){
+function en(){try{return LANG==="en"}catch(e){return false}}
+var last={};
+function upd(id,box){var t=document.getElementById(id),b=document.getElementById(box);if(!t||!b)return;var v=t.value||"";if(last[id]===v+en())return;last[id]=v+en();
+  b.textContent="";var e=rcptEl(v,{en:en(),cur:en()?" EGP":" جنيه",title:en()?"🧾 Your order (preliminary bill)":"🧾 فاتورة طلبك المبدئية",foot:en()?"Final price is the restaurant's invoice. Check your items before sending.":"السعر النهائي حسب فاتورة المطعم. راجع طلبك قبل ما تبعته."});if(e)b.appendChild(e)}
+function all(){upd("items","rcpt1");upd("items2","rcpt2")}
+["items","items2"].forEach(function(i){var t=document.getElementById(i);if(t)t.addEventListener("input",all)});
+setInterval(function(){all();
+  /* لينك موقع الاستلام بيتملى لوحده للمطاعم المعروفة: نخفيه علشان الصفحة ما تتزحمش، ويظهر بس لو اختار «أخرى» أو اللينك فاضي */
+  try{var k=document.getElementById("pk"),l=document.getElementById("pkl");if(k&&l){var auto=k.value&&k.value!=="x"&&l.value&&!l.dataset.manual;l.classList.toggle("hide",!!auto)}}catch(e){}},700);all();
+})();
+/* شريط طلبك الحالي تحت الشاشة: بيظهر بس لو عندك طلب شغال، والضغط عليه يفتح التتبّع */
+(function(){
+var bar=document.getElementById("livebar"),T=null,SK=0,ACC=0,NO="";
+function en(){try{return LANG==="en"}catch(e){return false}}
+var TX={"new":["⏳ بندوّرلك على مندوب","⏳ Finding a courier"],"accepted":["🛵 المندوب قبل طلبك","🛵 A courier accepted your order"],"arrived":["🏪 المندوب في المطعم","🏪 Courier at the restaurant"],"invoiced":["🏪 المندوب عند المطعم","🏪 Courier at the restaurant"],
+  "picked":["📦 المندوب استلم طلبك","📦 Courier picked up your order"],"ontheway":["🛵 طلبك في الطريق ليك","🛵 Your order is on the way"],"atdest":["🚪 المندوب على بابك","🚪 The courier is at your door"]};
+function saved(){try{return JSON.parse(localStorage.getItem("wt")||"null")}catch(e){return null}}
+function hide(){bar.classList.add("hide");document.body.classList.remove("haslb")}
+/* «طلبك الأخير» اللي فوق ملوش لازمة طول ما الشريط ظاهر */
+setInterval(function(){var c=document.getElementById("ctrk");if(c&&!bar.classList.contains("hide"))c.classList.add("hide")},800);
+function tick(){var n=document.getElementById("lbn");if(!ACC){n.classList.add("hide");return}var s=Math.max(0,Math.floor((Date.now()+SK-ACC)/1000));
+  n.textContent=("0"+Math.floor(s/60)).slice(-2)+":"+("0"+s%60).slice(-2);n.classList.remove("hide")}
+function chk(){var w=saved();if(!w||!w.no||!w.p4){hide();return}
+  var dn="";try{dn=localStorage.getItem("wt_done")||""}catch(e){}if(dn===w.no){hide();return}
+  try{google.script.run.withSuccessHandler(function(r){
+    if(!r||!r.ok||!TX[r.code]){hide();if(r&&r.ok&&(r.code==="delivered"||r.status==="ملغي"||r.code==="cancelled")){try{localStorage.setItem("wt_done",w.no)}catch(e){}}return}
+    NO=w.no;ACC=r.accAt||0;SK=r.now?r.now-Date.now():0;document.getElementById("lbt").textContent=TX[r.code][en()?1:0];tick();
+    bar.classList.remove("hide");document.body.classList.add("haslb")}).withFailureHandler(function(){}).trackOrder(w.no,w.p4)}catch(e){}}
+function go(){try{if(/\/app\/customer\.html$/.test(location.pathname))location.href="track.html"+(NO?"?o="+encodeURIComponent(NO):"");else window.top.location.href=trackUrl(NO)}catch(e){}}
+bar.onclick=go;bar.onkeydown=function(e){if(e.key==="Enter")go()};
+setInterval(tick,1000);setTimeout(chk,1800);setInterval(function(){if(!document.hidden)chk()},45000);
+document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});
 })();
 </script>
 </body></html>
