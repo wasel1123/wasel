@@ -28,8 +28,8 @@ function km(a,b,c2,d){var r=Math.PI/180,x=(c2-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Mat
 function el(t,css,tx){var e=document.createElement(t);if(css)e.style.cssText=css;if(tx!=null)e.textContent=tx;return e}
 function show(first){
   var o=document.getElementById("wcity");if(o)o.remove();
-  o=el("div","position:fixed;inset:0;z-index:2147483000;background:#0e4f4c;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;font-family:inherit;direction:rtl");o.id="wcity";
-  var box=el("div","width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px;align-items:stretch");o.appendChild(box);
+  o=el("div","position:fixed;inset:0;z-index:2147483000;background:#0e4f4c;color:#fff;display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 18px;text-align:center;font-family:inherit;direction:rtl;overflow-y:auto");o.id="wcity";
+  var box=el("div","width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px;align-items:stretch;margin:auto 0");o.appendChild(box);
   function perm(){box.textContent="";
     box.appendChild(el("div","font-size:60px","📍"));
     box.appendChild(el("b","font-size:22px","علشان نوصّلك أسرع"));
@@ -46,9 +46,17 @@ function show(first){
     box.appendChild(a);box.appendChild(st);box.appendChild(b)}
   function pick(why){box.textContent="";
     box.appendChild(el("b","font-size:22px","إنت في أنهي مدينة؟"));box.appendChild(el("div","color:#d5ebe8;font-size:14px",why));
-    ["unz","mhl"].forEach(function(k){var x=C[k],bt=el("button","display:flex;align-items:center;gap:12px;border:0;border-radius:18px;padding:14px;background:#fff;color:#0e4f4c;font:inherit;text-align:right;cursor:pointer");bt.type="button";
-      bt.appendChild(el("span","font-size:34px",x.f));var t=el("span");t.appendChild(el("b","display:block;font-size:18px",x.n));t.appendChild(el("small","color:#4f6260",x.s));bt.appendChild(t);
-      bt.onclick=function(){go(k)};box.appendChild(bt)});
+    /* المدن المتاحة + مدن «قريبًا» (باينة بس مقفولة). لما نفتح مدينة جديدة بتتنقل من SOON لـ C */
+    var CO=[["🇸🇦 السعودية","unz",["بريدة","الرياض"]],["🇪🇬 مصر","mhl",["طنطا","القاهرة"]]];
+    CO.forEach(function(cc){box.appendChild(el("div","text-align:right;font-weight:800;font-size:14px;color:#d5ebe8;margin-top:6px",cc[0]));
+      var k=cc[1],x=C[k],bt=el("button","display:flex;align-items:center;gap:12px;border:0;border-radius:18px;padding:12px 14px;background:#fff;color:#0e4f4c;font:inherit;text-align:right;cursor:pointer");bt.type="button";
+      bt.appendChild(el("span","font-size:30px",x.f));var t=el("span","flex:1");t.appendChild(el("b","display:block;font-size:18px",x.n));t.appendChild(el("small","color:#4f6260",x.s));bt.appendChild(t);
+      bt.appendChild(el("span","background:#22c55e;color:#052e16;border-radius:99px;padding:2px 10px;font-size:12px;font-weight:800","متاح ✓"));
+      bt.onclick=function(){go(k)};box.appendChild(bt);
+      var rw=el("div","display:flex;gap:8px");
+      cc[2].forEach(function(n){var d=el("div","flex:1;border-radius:14px;padding:9px 10px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-size:14px;display:flex;justify-content:space-between;align-items:center;cursor:not-allowed");
+        d.appendChild(el("b",null,n));d.appendChild(el("small","font-size:11px;background:rgba(255,255,255,.2);border-radius:99px;padding:1px 8px","قريبًا"));d.setAttribute("aria-disabled","true");rw.appendChild(d)});
+      box.appendChild(rw)});
     box.appendChild(el("div","color:#a9d3cf;font-size:12px","اختيارك بيتحفظ، وتقدر تغيّره من ☰ «🌍 غيّر المدينة»"));
     if(!first){var x=el("button","border:0;background:none;color:#d5ebe8;font:inherit;text-decoration:underline","رجوع");x.type="button";x.onclick=function(){o.remove()};box.appendChild(x)}}
   if(first)perm();else pick("اختار المدينة");
@@ -290,6 +298,19 @@ html.pk .mdh{background:#9d174d}
 .tmr{float:left;background:#f2b544;color:#3b2300;font-weight:800;border-radius:99px;padding:2px 10px;font-size:14px;direction:ltr;font-variant-numeric:tabular-nums}
 .tmr.y{background:#f59e0b;color:#fff}.tmr.r{background:#dc2626;color:#fff}
 .tmrDone{margin:6px 0;font-weight:800;color:#15803d}
+/* فاتورة الطلب المبدئية */
+.rcpt{margin:8px 0;border:1.5px dashed var(--br,#0e4f4c);border-radius:14px;padding:10px 12px;background:var(--card,#fff)}
+.rcpt .rch{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;font-size:14px}
+.rcpt .rch b{color:var(--br,#0e4f4c)}.rcpt .rch span{font-size:13px;font-weight:700;color:var(--mu,#5f6f6d)}
+.rcpt .rcr{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--ln,#e5e7eb)}
+.rcpt .rcq{flex:none;min-width:34px;height:28px;border-radius:9px;background:var(--br,#0e4f4c);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;direction:ltr;padding:0 6px}
+.rcpt .rcr.of .rcq{background:#f2b544;color:#3b2300}
+.rcpt .rcn{flex:1;min-width:0;font-weight:700;font-size:14.5px;line-height:1.45;overflow-wrap:anywhere}
+.rcpt .rcn small{display:block;font-weight:600;font-size:12px;color:var(--mu,#5f6f6d)}
+.rcpt .rcp{flex:none;font-weight:800;color:var(--br,#0e4f4c);font-size:14px}
+.rcpt .rcf{display:flex;justify-content:space-between;align-items:center;border-top:2px solid var(--ln,#e5e7eb);margin-top:4px;padding-top:7px;font-size:14.5px}
+.rcpt .rcf b{color:var(--br,#0e4f4c);font-size:16px}
+.rcpt .rcft{font-size:12px;color:var(--mu,#5f6f6d);margin-top:6px}
 </style></head><body>
 <header><div class="brand"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="18" fill="#fff"/><g transform="translate(2 -3.55) scale(.3)"><path fill="#0e4f4c" d="M13.26,54.00 L42.97,158.00 L85.58,158.00 L100.00,131.44 L114.42,158.00 L157.03,158.00 L186.74,54.00 L155.54,54.00 L133.66,130.57 L100.00,68.56 L66.34,130.57 L44.46,54.00 Z"/><path fill="#0e4f4c" d="M67.315185546875 188.0H64.409912109375L62.824462890625 181.23486328125Q62.533935546875 180.03955078125 62.334716796875 178.736328125Q62.135498046875 179.82373046875 62.010986328125 180.392333984375Q61.886474609375 180.9609375 60.242919921875 188.0H57.337646484375L54.324462890625 176.30419921875H56.806396484375L58.499755859375 183.85791015625L58.881591796875 185.68408203125Q59.114013671875 184.5302734375 59.333984375 183.480224609375Q59.553955078125 182.43017578125 60.989990234375 176.30419921875H63.729248046875L65.206787109375 182.52978515625Q65.381103515625 183.22705078125 65.796142578125 185.68408203125L66.003662109375 184.72119140625L66.443603515625 182.81201171875L67.854736328125 176.30419921875H70.336669921875Z M85.758056640625 188.0 84.720458984375 185.01171875H80.262939453125L79.225341796875 188.0H76.776611328125L81.043212890625 176.30419921875H83.931884765625L88.181884765625 188.0ZM82.487548828125 178.10546875 82.437744140625 178.2880859375Q82.354736328125 178.5869140625 82.238525390625 178.96875Q82.122314453125 179.3505859375 80.810791015625 183.1689453125H84.172607421875L83.018798828125 179.80712890625L82.661865234375 178.67822265625Z M105.304931640625 184.6298828125Q105.304931640625 186.34814453125 104.03076171875 187.257080078125Q102.756591796875 188.166015625 100.291259765625 188.166015625Q98.041748046875 188.166015625 96.763427734375 187.369140625Q95.485107421875 186.572265625 95.119873046875 184.95361328125L97.485595703125 184.5634765625Q97.726318359375 185.4931640625 98.423583984375 185.912353515625Q99.120849609375 186.33154296875 100.357666015625 186.33154296875Q102.922607421875 186.33154296875 102.922607421875 184.77099609375Q102.922607421875 184.27294921875 102.6279296875 183.94921875Q102.333251953125 183.62548828125 101.7978515625 183.40966796875Q101.262451171875 183.19384765625 99.743408203125 182.88671875Q98.431884765625 182.57958984375 97.917236328125 182.392822265625Q97.402587890625 182.2060546875 96.987548828125 181.952880859375Q96.572509765625 181.69970703125 96.281982421875 181.3427734375Q95.991455078125 180.98583984375 95.82958984375 180.50439453125Q95.667724609375 180.02294921875 95.667724609375 179.400390625Q95.667724609375 177.81494140625 96.85888671875 176.972412109375Q98.050048828125 176.1298828125 100.324462890625 176.1298828125Q102.499267578125 176.1298828125 103.5908203125 176.810546875Q104.682373046875 177.4912109375 104.997802734375 179.06005859375L102.623779296875 179.3837890625Q102.441162109375 178.62841796875 101.880859375 178.24658203125Q101.320556640625 177.86474609375 100.274658203125 177.86474609375Q98.050048828125 177.86474609375 98.050048828125 179.25927734375Q98.050048828125 179.7158203125 98.28662109375 180.00634765625Q98.523193359375 180.296875 98.988037109375 180.500244140625Q99.452880859375 180.70361328125 100.872314453125 181.0107421875Q102.557373046875 181.36767578125 103.28369140625 181.670654296875Q104.010009765625 181.9736328125 104.433349609375 182.376220703125Q104.856689453125 182.77880859375 105.080810546875 183.339111328125Q105.304931640625 183.8994140625 105.304931640625 184.6298828125Z M113.106201171875 188.0V176.30419921875H122.303466796875V178.19677734375H115.554931640625V181.13525390625H121.797119140625V183.02783203125H115.554931640625V186.107421875H122.643798828125V188.0Z M130.445068359375 188.0V176.30419921875H132.893798828125V186.107421875H139.169189453125V188.0Z"/><g transform="translate(62.8 42.25) scale(3.1)"><path fill="#fff" stroke="#fff" stroke-width="3" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><path fill="#f2b544" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><circle cx="12" cy="9.4" r="3.2" fill="#fff"/></g></g></svg><div><b>واصل WASEL</b><small id="who"></small></div></div><div><button id="snd" class="hide">🔔</button><button id="lang">EN</button><button id="out" class="hide" data-i="logout"></button><button id="mbtn" class="hide" aria-label="menu">☰<span id="mdot" class="mdot hide"></span><span id="shdot" class="hide"></span></button></div></header>
 <div id="alertBar"></div>
@@ -644,7 +665,9 @@ function card(o,mine){
     else rt2=t("rsNo");
     c.appendChild(el("div",rc,rt2));
     if(mine&&rx.rinv){var iv=el("div","rsx inv");iv.appendChild(document.createTextNode(t("rsInv")));var ib=el("b",null,rx.rinv);ib.dir="ltr";iv.appendChild(ib);c.appendChild(iv)}}
-  row(c,t("itemsK"),o.items);row(c,t("destK"),o.dest);
+  var rce=null;try{rce=rcptEl(o.items,{en:LANG==="en",cur:t("sar"),title:LANG==="en"?"🧾 Order items":"🧾 الطلب"})}catch(eR){}
+  if(rce)c.appendChild(rce);else row(c,t("itemsK"),o.items);
+  row(c,t("destK"),o.dest);
   row(c,t("payK"),o.pay);row(c,t("notesK"),o.notes);
   if(!o.kid){var f=el("div","row");f.appendChild(el("b",null,t("feeK")));f.appendChild(el("span","fee",o.fee+t("sar")));c.appendChild(f)}
   if(!mine){c.appendChild(btn(t("accept"),"",function(b){act("courierAccept",o.no,[],b)}));
@@ -1286,5 +1309,45 @@ setInterval(tmrTick,1000);
     var want=(ok&&typeof CODE!=="undefined"&&CODE&&typeof ONLINE!=="undefined"&&ONLINE&&api)?"on|"+CODE+"|"+api:"off";
     if(want===last)return;last=want;if(want==="off")A.courierOff();else A.courierOn(CODE,api)}catch(e){}}
   setInterval(sync,3000);setTimeout(sync,1500)})();
+</script>
+<script>
+/* ===== فاتورة الطلب المبدئية: بتحوّل «مكونات الطلب» المكتوبة لسطور واضحة (العدد + الصنف + السعر لو معروف) ===== */
+function rcptNum(s){return String(s==null?"":s).replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)}).replace(/[۰-۹]/g,function(d){return "۰۱۲۳۴۵۶۷۸۹".indexOf(d)})}
+function rcptItem(p){p=String(p||"").replace(/^[\s\-•*·–—]+/,"").trim();if(!p)return null;var q=1,n=p,m;
+  var w={"واحد":1,"وحدة":1,"اتنين":2,"اثنين":2,"ثنين":2,"تلاتة":3,"ثلاثة":3,"ثلاث":3,"أربعة":4,"اربعة":4,"خمسة":5};
+  if((m=/^(\d{1,2})\s*(?:×|x|X|\*|حبة|حبات|علب|علبة|قطع|قطعة|كيلو|ك)?\s+(.+)$/.exec(p))){q=+m[1];n=m[2]}
+  else if((m=/^(.+?)\s*(?:×|x|X|\*)\s*(\d{1,2})$/.exec(p))){n=m[1];q=+m[2]}
+  else if((m=/^(واحد|وحدة|اتنين|اثنين|ثنين|تلاتة|ثلاثة|ثلاث|أربعة|اربعة|خمسة)\s+(.+)$/.exec(p))){q=w[m[1]];n=m[2]}
+  return {q:q>0&&q<100?q:1,name:n.trim()}}
+function rcptParse(txt){var t=rcptNum(txt).trim(),out={store:"",lines:[],total:"",note:""};if(!t)return out;
+  var raw=t.split(/\n/),rest=[],i,L;
+  /* عروض: سطر يبدأ بـ 🔥 وبعده سطور 🔢 🏪 📝 💰 ⏳ */
+  for(i=0;i<raw.length;i++){L=raw[i].trim();
+    if(/^🔥/.test(L)){var o={q:1,name:L.replace(/^🔥\s*[^:：]*[:：]\s*/,"").trim()||L.replace(/^🔥\s*/,""),offer:true,sub:"",price:"",det:""};
+      while(i+1<raw.length&&/^(🔢|🏪|📝|💰|⏳)/.test(raw[i+1].trim())){i++;var x=raw[i].trim(),v=x.replace(/^\S+\s*[^:：]*[:：]\s*/,"").trim();
+        if(/^🔢/.test(x))o.q=parseInt(v,10)||1;else if(/^🏪/.test(x))o.sub=v;else if(/^📝/.test(x))o.det=v;else if(/^💰/.test(x)){var pm=/=\s*([\d.]+)/.exec(v);o.price=pm?pm[1]:((/([\d.]+)/.exec(v)||[])[1]||"")}else if(/^⏳/.test(x))o.end=v}
+      out.lines.push(o)}else if(L)rest.push(L)}
+  t=rest.join("\n");if(!t)return out;
+  /* من المنيو: «المطعم: 2 × صنف ، 1 × صنف | الإجمالي التقديري: 45 ريال» */
+  var mm=/^([^:\n|]{1,60})[:：]\s*([\s\S]+?)(?:\s*\|\s*([^|]*?([\d.]+)[^|]*))?$/.exec(t);
+  if(mm&&/×/.test(mm[2])){out.store=mm[1].trim();if(mm[4])out.total=mm[4];
+    mm[2].split(/\s*[،,]\s*/).forEach(function(p){var it=rcptItem(p);if(it)out.lines.push(it)});return out}
+  /* كلام عادي: كل سطر أو كل جزء بين «،» أو «+» صنف */
+  t.split(/\n|\s*[،,]\s*|\s+\+\s+|\s+و\s*(?=\d)/).forEach(function(p){var it=rcptItem(p);if(it&&it.name.length>0)out.lines.push(it)});
+  return out}
+function rcptEl(txt,o){o=o||{};var P=rcptParse(txt);if(!P.lines.length)return null;
+  var en=o.en,cur=o.cur||"",c=document.createElement("div");c.className="rcpt";
+  var h=document.createElement("div");h.className="rch";h.innerHTML="";var hb=document.createElement("b");hb.textContent=o.title||"🧾";h.appendChild(hb);
+  if(P.store){var hs=document.createElement("span");hs.textContent=P.store;h.appendChild(hs)}c.appendChild(h);
+  P.lines.forEach(function(l){var r=document.createElement("div");r.className="rcr"+(l.offer?" of":"");
+    var q=document.createElement("span");q.className="rcq";q.textContent=l.q+"×";r.appendChild(q);
+    var n=document.createElement("span");n.className="rcn";n.textContent=l.name;
+    if(l.offer||l.sub||l.det){var s=document.createElement("small");s.textContent=(l.offer?"🔥 "+(en?"Offer":"عرض")+(l.sub?" · "+l.sub:""):l.sub)+(l.det?" — "+l.det:"");n.appendChild(s)}
+    r.appendChild(n);
+    if(l.price){var p=document.createElement("span");p.className="rcp";p.textContent=l.price+cur;r.appendChild(p)}
+    c.appendChild(r)});
+  if(P.total){var f=document.createElement("div");f.className="rcf";var a=document.createElement("span");a.textContent=en?"Estimated total":"الإجمالي التقريبي";var b=document.createElement("b");b.textContent=P.total+cur;f.appendChild(a);f.appendChild(b);c.appendChild(f)}
+  if(o.foot){var ft=document.createElement("div");ft.className="rcft";ft.textContent=o.foot;c.appendChild(ft)}
+  return c}
 </script>
 </body></html>
