@@ -28,8 +28,8 @@ function km(a,b,c2,d){var r=Math.PI/180,x=(c2-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Mat
 function el(t,css,tx){var e=document.createElement(t);if(css)e.style.cssText=css;if(tx!=null)e.textContent=tx;return e}
 function show(first){
   var o=document.getElementById("wcity");if(o)o.remove();
-  o=el("div","position:fixed;inset:0;z-index:2147483000;background:#0e4f4c;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;font-family:inherit;direction:rtl");o.id="wcity";
-  var box=el("div","width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px;align-items:stretch");o.appendChild(box);
+  o=el("div","position:fixed;inset:0;z-index:2147483000;background:#0e4f4c;color:#fff;display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 18px;text-align:center;font-family:inherit;direction:rtl;overflow-y:auto");o.id="wcity";
+  var box=el("div","width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px;align-items:stretch;margin:auto 0");o.appendChild(box);
   function perm(){box.textContent="";
     box.appendChild(el("div","font-size:60px","📍"));
     box.appendChild(el("b","font-size:22px","علشان نوصّلك أسرع"));
@@ -46,9 +46,17 @@ function show(first){
     box.appendChild(a);box.appendChild(st);box.appendChild(b)}
   function pick(why){box.textContent="";
     box.appendChild(el("b","font-size:22px","إنت في أنهي مدينة؟"));box.appendChild(el("div","color:#d5ebe8;font-size:14px",why));
-    ["unz","mhl"].forEach(function(k){var x=C[k],bt=el("button","display:flex;align-items:center;gap:12px;border:0;border-radius:18px;padding:14px;background:#fff;color:#0e4f4c;font:inherit;text-align:right;cursor:pointer");bt.type="button";
-      bt.appendChild(el("span","font-size:34px",x.f));var t=el("span");t.appendChild(el("b","display:block;font-size:18px",x.n));t.appendChild(el("small","color:#4f6260",x.s));bt.appendChild(t);
-      bt.onclick=function(){go(k)};box.appendChild(bt)});
+    /* المدن المتاحة + مدن «قريبًا» (باينة بس مقفولة). لما نفتح مدينة جديدة بتتنقل من SOON لـ C */
+    var CO=[["🇸🇦 السعودية","unz",["بريدة","الرياض"]],["🇪🇬 مصر","mhl",["طنطا","القاهرة"]]];
+    CO.forEach(function(cc){box.appendChild(el("div","text-align:right;font-weight:800;font-size:14px;color:#d5ebe8;margin-top:6px",cc[0]));
+      var k=cc[1],x=C[k],bt=el("button","display:flex;align-items:center;gap:12px;border:0;border-radius:18px;padding:12px 14px;background:#fff;color:#0e4f4c;font:inherit;text-align:right;cursor:pointer");bt.type="button";
+      bt.appendChild(el("span","font-size:30px",x.f));var t=el("span","flex:1");t.appendChild(el("b","display:block;font-size:18px",x.n));t.appendChild(el("small","color:#4f6260",x.s));bt.appendChild(t);
+      bt.appendChild(el("span","background:#22c55e;color:#052e16;border-radius:99px;padding:2px 10px;font-size:12px;font-weight:800","متاح ✓"));
+      bt.onclick=function(){go(k)};box.appendChild(bt);
+      var rw=el("div","display:flex;gap:8px");
+      cc[2].forEach(function(n){var d=el("div","flex:1;border-radius:14px;padding:9px 10px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-size:14px;display:flex;justify-content:space-between;align-items:center;cursor:not-allowed");
+        d.appendChild(el("b",null,n));d.appendChild(el("small","font-size:11px;background:rgba(255,255,255,.2);border-radius:99px;padding:1px 8px","قريبًا"));d.setAttribute("aria-disabled","true");rw.appendChild(d)});
+      box.appendChild(rw)});
     box.appendChild(el("div","color:#a9d3cf;font-size:12px","اختيارك بيتحفظ، وتقدر تغيّره من ☰ «🌍 غيّر المدينة»"));
     if(!first){var x=el("button","border:0;background:none;color:#d5ebe8;font:inherit;text-decoration:underline","رجوع");x.type="button";x.onclick=function(){o.remove()};box.appendChild(x)}}
   if(first)perm();else pick("اختار المدينة");
