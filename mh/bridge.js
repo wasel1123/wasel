@@ -3,6 +3,7 @@
    ومرة واحدة بس: بينقل البيانات المحفوظة على الجهاز من الصفحات القديمة (الاسم والرقم ورمز المندوب...). */
 (function () {
   var API = "https://script.google.com/macros/s/AKfycbw6vRRRa_9l9K1OvtWcfQXyXBtrCY5wGXSsuSgx0eiUku0smp-Q6TLedPxq1_9blW1T/exec";
+  try { window.WASEL_API = API; } catch (e) {}   // لتطبيق أندرويد: يبعت موقع المندوب لنفس السيرفر
 
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
 
