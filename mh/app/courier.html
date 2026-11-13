@@ -1370,6 +1370,12 @@ function rcptEl(txt,o){o=o||{};var P=rcptParse(txt);if(!P.lines.length)return nu
   if(P.total){var f=document.createElement("div");f.className="rcf";var a=document.createElement("span");a.textContent=en?"Estimated total":"الإجمالي التقريبي";var b=document.createElement("b");b.textContent=P.total+cur;f.appendChild(a);f.appendChild(b);c.appendChild(f)}
   if(o.foot){var ft=document.createElement("div");ft.className="rcft";ft.textContent=o.foot;c.appendChild(ft)}
   return c}
+/* إشعارات الموبايل: لو الصفحة جوه تطبيق واصل على أندرويد، بنسجّل الجهاز (مرة في اليوم) علشان توصله الإشعارات (ملف Push.gs) */
+(function(){function tryReg(){try{var A=window.WaselApp;if(!A||!A.token)return;var tk=String(A.token()||"");if(tk.length<60)return;
+  var role="k",id=(typeof CODE!=="undefined"?CODE:"");if(!id)return;
+  var day=new Date().toISOString().slice(0,10),sig=role+"|"+id+"|"+tk.slice(-12)+"|"+day,old="";try{old=localStorage.getItem("wpr")||""}catch(e){}
+  if(old===sig)return;google.script.run.withSuccessHandler(function(r){if(r&&r.ok){try{localStorage.setItem("wpr",sig)}catch(e){}}}).withFailureHandler(function(){}).pushReg(role,tk,id)}catch(e){}}
+  setTimeout(tryReg,4000);setInterval(tryReg,60000)})();
 </script>
 
 </body></html>
