@@ -1440,7 +1440,7 @@ function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null
 function lbl(){$("uobt").textContent=ut("t");$("uott").textContent=ut("t");$("uosub").textContent=ut("sub");$("uonote").textContent=ut("note");
   $("uocnt").textContent=L&&L.length?ut("cnt").replace("{n}",L.length):"";
   var n=L&&L.length;$("uon").textContent=ut("nw");$("uon").classList.toggle("hide",!n)}
-function load(cb){try{google.script.run.withSuccessHandler(function(r){L=(r&&r.ok&&r.list)||[];lbl();cb&&cb()}).withFailureHandler(function(){L=L||[];cb&&cb()}).offersList()}catch(e){L=[];cb&&cb()}}
+function load(cb){try{google.script.run.withSuccessHandler(function(r){L=(r&&r.ok&&r.list)||[];try{if(r&&r.ok)localStorage.setItem("wofc",JSON.stringify({t:Date.now(),l:L}))}catch(eC){}lbl();cb&&cb()}).withFailureHandler(function(){L=L||[];cb&&cb()}).offersList()}catch(e){L=[];cb&&cb()}}
 function ch(o){return (o.store||"؟").replace(/^(مطعم|كافيه|مقهى|أسواق|صيدليات)\s+/,"").charAt(0)}
 function logoEl(o,cls){var lg=el("div",cls||"uolg");if(o.logo){var im=el("img");im.src=o.logo;im.alt="";im.loading="lazy";im.onerror=function(){lg.textContent=ch(o)};lg.appendChild(im)}else lg.textContent=ch(o);return lg}
 function img(src,cls){var im=el("img",cls);im.src=src;im.alt="";im.loading="lazy";im.onerror=function(){im.remove()};return im}
@@ -1540,7 +1540,9 @@ function homeFeat(A){var h=$("hfeat");if(!h)return;clearInterval(HF);h.textConte
   var k=0;function mark(){var w=tr.clientWidth||1;k=Math.round(Math.abs(tr.scrollLeft)/w);Array.prototype.forEach.call(dots.children,function(d,j){d.classList.toggle("on",j===k)})}
   tr.addEventListener("scroll",function(){clearTimeout(tr._t);tr._t=setTimeout(mark,80)});
   if(A.length>1)HF=setInterval(function(){if(document.hidden||!h.offsetParent)return;var w=tr.clientWidth,rtl=getComputedStyle(tr).direction==="rtl";k=(k+1)%A.length;tr.scrollTo({left:(rtl?-1:1)*k*w,behavior:"smooth"})},4000)}
-lbl();setTimeout(function(){load(function(){lbl();feat()})},2500);
+/* العروض بتظهر على طول من آخر نسخة محفوظة على الجهاز، وبعدها بتتحدث من السيرفر */
+try{var oc=JSON.parse(localStorage.getItem("wofc")||"null");if(oc&&oc.l&&Date.now()-oc.t<12*3600*1000){L=oc.l;feat()}}catch(eC){}
+lbl();setTimeout(function(){load(function(){lbl();feat()})},300);
 })();
 </script>
 <style>
