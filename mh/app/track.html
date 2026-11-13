@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl"><head>
 <!-- صفحة سريعة على GitHub: نفس ملف Track.html في Apps Script + bridge.js -->
 <script src="../bridge.js"></script>
+<script>(function(){try{var SP=Storage.prototype,PF="mh_",SH={wcity:1,wcity_nb:1,wl:1,wth:1,wgd:1,wss:1,ws:1,wloc:1};var gi=SP.getItem,si=SP.setItem,ri=SP.removeItem;function key(st,k){return (st===window.localStorage&&!SH[k])?PF+k:k}SP.getItem=function(k){return gi.call(this,key(this,String(k)))};SP.setItem=function(k,v){return si.call(this,key(this,String(k)),v)};SP.removeItem=function(k){return ri.call(this,key(this,String(k)))}}catch(e){}})();</script>
 <link rel="icon" href="../../icon.svg" type="image/svg+xml">
 <title>واصل - تابع طلبي (المحلة)</title>
 <meta charset="utf-8">
@@ -167,6 +168,15 @@ header #lang{padding:6px 10px!important;margin:0 3px!important}
 .adab{margin-top:14px;text-align:start;background:rgba(242,181,68,.10);border:1px solid #f2b544;border-radius:16px;padding:12px 14px;line-height:1.75;font-size:15px}
 .adab .adh{font-weight:700;margin-bottom:6px}.adab .adl{display:flex;gap:8px;align-items:flex-start;margin:6px 0}.adab .adl>span{font-size:18px;line-height:1.6}
 .adab .adf{margin-top:8px;font-weight:700;color:var(--br,#0e4f4c)}
+/* ساعة التوصيل + صورة الباب + صفحة أصغر */
+.tmrw{display:flex;align-items:center;gap:12px}
+.tmrn{background:var(--br,#0e4f4c);color:#fff;border-radius:14px;padding:8px 12px;font:800 28px/1 ui-monospace,Menlo,monospace;direction:ltr;font-variant-numeric:tabular-nums}
+.tmrn.y{background:#d97706}.tmrn.r{background:#dc2626}.tmrn.ok{background:#15803d;font-size:22px}
+#doorbox{border:2px solid #f2b544}
+.tlinks{display:flex;justify-content:center;gap:18px;margin:12px 0;font-weight:700;font-size:14px}.tlinks a{color:var(--br,#0e4f4c)}
+#rno.hide{display:none}
+#stc .ch{cursor:pointer;display:flex;justify-content:space-between;align-items:center}#stc .ch::after{content:"▾";font-size:20px;transition:transform .2s}
+#stc.fold .steps{display:none}#stc.fold{padding-top:12px;padding-bottom:12px}#stc:not(.fold) .ch::after{transform:rotate(180deg)}
 </style></head><body>
 <header><div class="brand"><svg width="44" height="44" viewBox="0 0 64 64" aria-hidden="true" style="flex:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))"><rect width="64" height="64" rx="18" fill="#fff"/><g transform="translate(2 -3.55) scale(.3)"><path fill="#0e4f4c" d="M13.26,54.00 L42.97,158.00 L85.58,158.00 L100.00,131.44 L114.42,158.00 L157.03,158.00 L186.74,54.00 L155.54,54.00 L133.66,130.57 L100.00,68.56 L66.34,130.57 L44.46,54.00 Z"/><path fill="#0e4f4c" d="M67.315185546875 188.0H64.409912109375L62.824462890625 181.23486328125Q62.533935546875 180.03955078125 62.334716796875 178.736328125Q62.135498046875 179.82373046875 62.010986328125 180.392333984375Q61.886474609375 180.9609375 60.242919921875 188.0H57.337646484375L54.324462890625 176.30419921875H56.806396484375L58.499755859375 183.85791015625L58.881591796875 185.68408203125Q59.114013671875 184.5302734375 59.333984375 183.480224609375Q59.553955078125 182.43017578125 60.989990234375 176.30419921875H63.729248046875L65.206787109375 182.52978515625Q65.381103515625 183.22705078125 65.796142578125 185.68408203125L66.003662109375 184.72119140625L66.443603515625 182.81201171875L67.854736328125 176.30419921875H70.336669921875Z M85.758056640625 188.0 84.720458984375 185.01171875H80.262939453125L79.225341796875 188.0H76.776611328125L81.043212890625 176.30419921875H83.931884765625L88.181884765625 188.0ZM82.487548828125 178.10546875 82.437744140625 178.2880859375Q82.354736328125 178.5869140625 82.238525390625 178.96875Q82.122314453125 179.3505859375 80.810791015625 183.1689453125H84.172607421875L83.018798828125 179.80712890625L82.661865234375 178.67822265625Z M105.304931640625 184.6298828125Q105.304931640625 186.34814453125 104.03076171875 187.257080078125Q102.756591796875 188.166015625 100.291259765625 188.166015625Q98.041748046875 188.166015625 96.763427734375 187.369140625Q95.485107421875 186.572265625 95.119873046875 184.95361328125L97.485595703125 184.5634765625Q97.726318359375 185.4931640625 98.423583984375 185.912353515625Q99.120849609375 186.33154296875 100.357666015625 186.33154296875Q102.922607421875 186.33154296875 102.922607421875 184.77099609375Q102.922607421875 184.27294921875 102.6279296875 183.94921875Q102.333251953125 183.62548828125 101.7978515625 183.40966796875Q101.262451171875 183.19384765625 99.743408203125 182.88671875Q98.431884765625 182.57958984375 97.917236328125 182.392822265625Q97.402587890625 182.2060546875 96.987548828125 181.952880859375Q96.572509765625 181.69970703125 96.281982421875 181.3427734375Q95.991455078125 180.98583984375 95.82958984375 180.50439453125Q95.667724609375 180.02294921875 95.667724609375 179.400390625Q95.667724609375 177.81494140625 96.85888671875 176.972412109375Q98.050048828125 176.1298828125 100.324462890625 176.1298828125Q102.499267578125 176.1298828125 103.5908203125 176.810546875Q104.682373046875 177.4912109375 104.997802734375 179.06005859375L102.623779296875 179.3837890625Q102.441162109375 178.62841796875 101.880859375 178.24658203125Q101.320556640625 177.86474609375 100.274658203125 177.86474609375Q98.050048828125 177.86474609375 98.050048828125 179.25927734375Q98.050048828125 179.7158203125 98.28662109375 180.00634765625Q98.523193359375 180.296875 98.988037109375 180.500244140625Q99.452880859375 180.70361328125 100.872314453125 181.0107421875Q102.557373046875 181.36767578125 103.28369140625 181.670654296875Q104.010009765625 181.9736328125 104.433349609375 182.376220703125Q104.856689453125 182.77880859375 105.080810546875 183.339111328125Q105.304931640625 183.8994140625 105.304931640625 184.6298828125Z M113.106201171875 188.0V176.30419921875H122.303466796875V178.19677734375H115.554931640625V181.13525390625H121.797119140625V183.02783203125H115.554931640625V186.107421875H122.643798828125V188.0Z M130.445068359375 188.0V176.30419921875H132.893798828125V186.107421875H139.169189453125V188.0Z"/><g transform="translate(62.8 42.25) scale(3.1)"><path fill="#fff" stroke="#fff" stroke-width="3" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><path fill="#f2b544" d="M12 1.5c-4.4 0-8 3.5-8 7.9 0 5.9 8 13.1 8 13.1s8-7.2 8-13.1c0-4.4-3.6-7.9-8-7.9z"/><circle cx="12" cy="9.4" r="3.2" fill="#fff"/></g></g></svg><div><b>واصل WASEL</b><small data-i="sub"></small></div></div><button id="lang">EN</button></header>
 <main>
@@ -183,6 +193,7 @@ header #lang{padding:6px 10px!important;margin:0 3px!important}
 <div class="hm" id="rmeta"></div>
 <div class="seg hide" id="seg" aria-hidden="true"></div>
 </div>
+<div class="card hide" id="tmrbox"><div class="tmrw"><div class="tmrn" id="tmrn">00:00</div><div><b id="tmrt"></b><div class="mu" id="tmrs"></div></div></div></div>
 <div id="rrest" class="hide"></div>
 <div class="card hide" id="ccard">
 <div class="cr"><div class="av" id="cav"></div><div><div class="mu" data-i="cT"></div><div class="cn" id="cname"></div></div></div>
@@ -192,6 +203,7 @@ header #lang{padding:6px 10px!important;margin:0 3px!important}
 <div class="card hide" id="cmap"><div class="big" data-i="mapT"></div><div class="mu" id="mapInfo"></div><div class="mm hide" id="mapBox" style="margin-top:8px"></div><div class="mu" style="margin-top:6px" data-i="mapNote"></div></div>
 <div class="card hide" id="stc"><div class="ch" data-i="stT"></div><ul class="steps" id="st"></ul></div>
 <div class="card bill hide" id="bill"></div>
+<div class="card hide" id="doorbox"><div class="big" id="doort"></div><img id="doori" alt="" style="display:none;width:100%;max-height:280px;object-fit:cover;border-radius:12px;margin-top:8px"><div class="mu" id="doorm"></div></div>
 <div class="card hide" id="pinbox" style="text-align:center"><div id="gdeC" class="hide" style="margin:0 0 10px;padding:10px 12px;border-radius:12px;background:#fef3c7;color:#78350f;border:1px solid #f59e0b;font-weight:700;font-size:15px;line-height:1.6"></div><div class="mu" data-i="pinT"></div><div id="pinv" dir="ltr" style="font-size:40px;letter-spacing:12px;font-weight:700;color:var(--br)"></div><div class="mu" data-i="pinH"></div></div>
 <div class="card hide" id="tipbox">
  <div class="big" data-i="tipT"></div>
@@ -211,6 +223,7 @@ header #lang{padding:6px 10px!important;margin:0 3px!important}
 <div class="card hide" id="tgbox"><div class="big" data-i="tgT"></div><div class="mu" data-i="tgD"></div><a id="tgGo" class="tgb" target="_blank" rel="noopener" data-i="tgB"></a></div>
 <div class="card hide" id="cancelbox"><label data-i="cnWhy"></label><select id="cnr"></select><input id="cnn" maxlength="120" style="margin-top:8px"><button id="cancelgo" data-i="cancelB"></button><div class="mu" id="cancelmsg" style="color:#dc2626"></div></div>
 <div class="mu ctr" data-i="auto"></div>
+<div class="tlinks"><a href="#" id="othr"></a><a id="neword" target="_top" rel="noopener" href="https://wasel1123.github.io/wasel/"></a></div>
 </div>
 <div class="card hide" id="thanks" style="text-align:center"><div style="font-size:44px">🙏</div><div class="big" data-i="thx1"></div><div class="mu" data-i="thx2"></div>
 <div class="adab"><div class="adh" data-i="adH"></div>
@@ -707,4 +720,38 @@ try{google.script.url.getLocation(function(l){var g=l&&l.parameter&&l.parameter.
 /* كود التسليم: بيظهر للعميل من قبول المندوب لحد التسليم */
 (function(){var _r=window.render;if(typeof _r!=="function")return;
 window.render=function(r){var x=_r.apply(this,arguments);try{var b=document.getElementById("pinbox");if(r&&r.pin){document.getElementById("pinv").textContent=r.pin;b.classList.remove("hide")}else b.classList.add("hide");var gd=document.getElementById("gdeC");if(r&&r.pin&&r.code==="atdest"){var en=LANG==="en",cash=!r.wallet&&/كاش|cash/i.test(r.pay||"")&&!/فودافون|vodafone/i.test(r.pay||"")&&r.total>0;gd.textContent=r.wallet?(en?"📌 Transfer with Vodafone Cash and upload the screenshot, give the courier the delivery code, then receive your order":"📌 حوّل فودافون كاش وارفع صورة التحويل، وادّي المندوب كود التسليم، واستلم طلبك"):cash?(en?"📌 Give the courier the amount ("+r.total+" EGP) and the delivery code, then receive your order":"📌 ادّي المندوب الفلوس ("+r.total+" جنيه) وكود التسليم، واستلم طلبك"):(en?"📌 Give the courier the delivery code and receive your order":"📌 ادّي المندوب كود التسليم واستلم طلبك");gd.classList.remove("hide")}else gd.classList.add("hide")}catch(e){}return x}})();
-</script></body></html>
+</script><script>
+/* ساعة التوصيل + صورة الباب + إخفاء خانات البحث بعد ما الطلب يفتح */
+(function(){
+var TM=null,SK=0,DOORNO="";
+function en(){try{return LANG==="en"}catch(e){return false}}
+function $i(i){return document.getElementById(i)}
+function fmt(s){var m=Math.floor(s/60),x=s%60;return (m<10?"0":"")+m+":"+(x<10?"0":"")+x}
+function tick(){var b=$i("tmrbox");if(!TM||!TM.accAt){b.classList.add("hide");return}
+  b.classList.remove("hide");var n=$i("tmrn");
+  if(TM.doneAt){var mm=Math.max(1,Math.round((TM.doneAt-TM.accAt)/60000));n.textContent=mm+(en()?" min":" د");n.className="tmrn ok";
+    $i("tmrt").textContent=en()?"Delivered in "+mm+" minutes":"✅ طلبك وصل في "+mm+" دقيقة";$i("tmrs").textContent="";return}
+  var s=Math.max(0,Math.floor((Date.now()+SK-TM.accAt)/1000)),m=Math.floor(s/60);
+  n.textContent=fmt(s);n.className="tmrn"+(m>=40?" r":m>=20?" y":"");
+  $i("tmrt").textContent=en()?"Delivery time":"⏱ وقت التوصيل";$i("tmrs").textContent=en()?"Since the courier accepted your order":"من ساعة ما المندوب قبل طلبك"}
+setInterval(tick,1000);
+function door(r){var b=$i("doorbox");if(!r||!r.door){b.classList.add("hide");return}
+  b.classList.remove("hide");$i("doort").textContent=en()?"📸 Your door, photographed by the courier: make sure it's yours":"📸 صورة بابك من المندوب: اتأكد إنه بابك";
+  if(DOORNO===r.no)return;DOORNO=r.no;$i("doorm").textContent=en()?"Loading…":"بيحمّل…";
+  try{google.script.run.withSuccessHandler(function(x){if(x&&x.ok&&x.img){$i("doori").src=x.img;$i("doori").style.display="block";$i("doorm").textContent=""}else{DOORNO="";$i("doorm").textContent=""}})
+    .withFailureHandler(function(){DOORNO="";$i("doorm").textContent=""}).trackDoorImage(cur.no,cur.p4)}catch(e){}}
+var _r=window.render;if(typeof _r!=="function")return;
+window.render=function(r){var x=_r.apply(this,arguments);
+  try{TM=r&&r.accAt?{accAt:r.accAt,doneAt:r.doneAt||0}:null;SK=r&&r.now?r.now-Date.now():0;tick();door(r);
+    if(r&&r.no){$i("f").classList.add("hide");$i("rno").classList.add("hide")}}catch(e){}
+  return x};
+function lnk(){$i("othr").textContent=en()?"🔎 Track another order":"🔎 تتبّع طلب تاني";$i("neword").textContent=en()?"🛵 New order":"🛵 طلب جديد"}
+lnk();var lb=$i("lang");if(lb)lb.addEventListener("click",function(){setTimeout(function(){lnk();tick()},50)});
+/* ترتيب أصغر: الساعة ← صورة الباب ← كود التسليم فوق، ومراحل الطلب مقفولة (تفتح بالضغط) */
+try{var tb=$i("tmrbox");tb.parentNode.insertBefore($i("pinbox"),tb.nextSibling);tb.parentNode.insertBefore($i("doorbox"),tb.nextSibling);
+  var stc=$i("stc"),ch=stc.querySelector(".ch"),ul=$i("st");stc.classList.add("fold");ch.setAttribute("role","button");ch.tabIndex=0;
+  ch.onclick=function(){stc.classList.toggle("fold")};}catch(e){}
+$i("othr").onclick=function(e){e.preventDefault();var f=$i("f");f.classList.remove("hide");$i("no").value="";$i("p4").value="";try{f.scrollIntoView({behavior:"smooth"})}catch(x){}};
+})();
+</script>
+</body></html>
