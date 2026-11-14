@@ -723,7 +723,7 @@ window.render=function(r){var x=_r.apply(this,arguments);try{var b=document.getE
 </script><script>
 /* ساعة التوصيل + صورة الباب + إخفاء خانات البحث بعد ما الطلب يفتح */
 (function(){
-var TM=null,SK=0,DOORNO="";
+var TM=null,SK=0,DOORNO="",ETA_MIN=35;   // الوقت المتوقع للتوصيل (دقيقة) من وقت قبول المندوب
 function en(){try{return LANG==="en"}catch(e){return false}}
 function $i(i){return document.getElementById(i)}
 function fmt(s){var m=Math.floor(s/60),x=s%60;return (m<10?"0":"")+m+":"+(x<10?"0":"")+x}
@@ -731,9 +731,12 @@ function tick(){var b=$i("tmrbox");if(!TM||!TM.accAt){b.classList.add("hide");re
   b.classList.remove("hide");var n=$i("tmrn");
   if(TM.doneAt){var mm=Math.max(1,Math.round((TM.doneAt-TM.accAt)/60000));n.textContent=mm+(en()?" min":" د");n.className="tmrn ok";
     $i("tmrt").textContent=en()?"Delivered in "+mm+" minutes":"✅ طلبك وصل في "+mm+" دقيقة";$i("tmrs").textContent="";return}
-  var s=Math.max(0,Math.floor((Date.now()+SK-TM.accAt)/1000)),m=Math.floor(s/60);
-  n.textContent=fmt(s);n.className="tmrn"+(m>=40?" r":m>=20?" y":"");
-  $i("tmrt").textContent=en()?"Delivery time":"⏱ وقت التوصيل";$i("tmrs").textContent=en()?"Since the courier accepted your order":"من ساعة ما المندوب قبل طلبك"}
+  /* عدّ تنازلي تقريبي: الطلب بيوصل في حدود ETA_MIN دقيقة من وقت ما المندوب قبله، ولو عدّاها بنعرض الوقت اللي فات */
+  var s=Math.max(0,Math.floor((Date.now()+SK-TM.accAt)/1000)),m=Math.floor(s/60),left=Math.ceil((TM.accAt+ETA_MIN*60000-Date.now()-SK)/60000);
+  if(left>0){n.textContent=left+(en()?" min":" د");n.className="tmrn";
+    $i("tmrt").textContent=en()?"Arriving in about "+left+" min":"يوصلك تقريبًا خلال "+left+" دقيقة"}
+  else{n.textContent=fmt(s);n.className="tmrn"+(m>=50?" r":" y");$i("tmrt").textContent=en()?"Almost there… thanks for waiting":"قرّب يوصل… متشكرين على صبرك"}
+  $i("tmrs").textContent="⏱ "+fmt(s)+" "+(en()?"since the courier accepted your order":"من ساعة ما المندوب قبل طلبك")}
 setInterval(tick,1000);
 function door(r){var b=$i("doorbox");if(!r||!r.door){b.classList.add("hide");return}
   b.classList.remove("hide");$i("doort").textContent=en()?"📸 Your door, photographed by the courier: make sure it's yours":"📸 صورة بابك من المندوب: اتأكد إنه بابك";
@@ -749,9 +752,20 @@ function lnk(){$i("othr").textContent=en()?"🔎 Track another order":"🔎 تت
 lnk();var lb=$i("lang");if(lb)lb.addEventListener("click",function(){setTimeout(function(){lnk();tick()},50)});
 /* ترتيب أصغر: الساعة ← صورة الباب ← كود التسليم فوق، ومراحل الطلب مقفولة (تفتح بالضغط) */
 try{var tb=$i("tmrbox");tb.parentNode.insertBefore($i("pinbox"),tb.nextSibling);tb.parentNode.insertBefore($i("doorbox"),tb.nextSibling);
-  var stc=$i("stc"),ch=stc.querySelector(".ch"),ul=$i("st");stc.classList.add("fold");ch.setAttribute("role","button");ch.tabIndex=0;
+  var stc=$i("stc"),ch=stc.querySelector(".ch"),ul=$i("st");/* مراحل الطلب ظاهرة (وتتقفل بالضغط) */ch.setAttribute("role","button");ch.tabIndex=0;
   ch.onclick=function(){stc.classList.toggle("fold")};}catch(e){}
 $i("othr").onclick=function(e){e.preventDefault();var f=$i("f");f.classList.remove("hide");$i("no").value="";$i("p4").value="";try{f.scrollIntoView({behavior:"smooth"})}catch(x){}};
 })();
 </script>
+<style>
+/* ===== الشكل الجديد (مرحلة 3): التتبع ===== */
+.hero .big,#tmrt,.ch{font-family:"Readex Pro","IBM Plex Sans Arabic",Tahoma,sans-serif}
+#tmrbox{border:2px solid var(--br)}
+#tmrbox .tmrw{gap:14px}#tmrbox .tmrn{font:700 30px/1 "Readex Pro",ui-monospace,monospace;padding:12px 14px;min-width:92px;text-align:center}
+#tmrbox #tmrt{font-size:17px;display:block}#tmrbox #tmrs{font-size:12.5px;margin-top:2px}
+.steps li.now i{animation:wpl 1.6s infinite}@keyframes wpl{0%,100%{box-shadow:0 0 0 0 rgba(14,79,76,.35)}50%{box-shadow:0 0 0 7px rgba(14,79,76,0)}}
+@media(prefers-reduced-motion:reduce){.steps li.now i{animation:none}}
+#cchat{width:100%;border-radius:14px;padding:13px;font-weight:700;font-size:16px}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@500;700&display=swap" rel="stylesheet">
 </body></html>
