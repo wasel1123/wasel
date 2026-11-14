@@ -479,7 +479,7 @@ function $(i){return document.getElementById(i)}
 function el(tg,c,x){var e=document.createElement(tg);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
 function put(p,x){var re=/https?:\/\/\S+/g,last=0,m;
   while((m=re.exec(x))){if(m.index>last)p.appendChild(document.createTextNode(x.slice(last,m.index)));
-    var a=el("a",null,t("openLoc"));a.href=m[0];a.target="_blank";a.rel="noopener noreferrer";p.appendChild(a);last=m.index+m[0].length}
+    var a=el("a",null,/drive\.google\./.test(m[0])?(LANG==="en"?"📎 Open":"📎 افتح"):t("openLoc"));a.href=m[0];a.target="_blank";a.rel="noopener noreferrer";p.appendChild(a);last=m.index+m[0].length}
   if(last<x.length)p.appendChild(document.createTextNode(x.slice(last)))}
 function row(card,k,v){if(!v)return;var r=el("div","row");r.appendChild(el("b",null,k));var s=el("span");put(s,v);r.appendChild(s);card.appendChild(r)}
 /* أسباب رفض المندوب: القيمة عربي للسيرفر، والعرض حسب اللغة */
