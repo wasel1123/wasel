@@ -2079,4 +2079,81 @@ var lb=$x("lang");if(lb)lb.addEventListener("click",function(){setTimeout(labels
 labels();
 })();
 </script>
+<style>
+/* ===== الطلب الجماعي ===== */
+#grpb{margin-top:10px}
+#grpx{margin-top:8px;padding:10px 12px;border-radius:14px;border:1.5px solid var(--br);background:var(--br2)}
+#grpx .gl{display:flex;gap:6px;margin-top:6px}#grpx .gl input{flex:1;min-width:0;margin:0;font-size:13px;direction:ltr}#grpx .gl button{width:auto;margin:0;padding:8px 12px}
+#grpx ul{margin:8px 0 0;padding-inline-start:18px;font-size:14px}#grpx li{margin:3px 0}#grpx .mu{font-size:13px}
+#grpov{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom,0px))}
+#grpov .gw{width:100%;max-width:440px;background:var(--card);color:var(--tx);border-radius:20px;padding:16px;max-height:90vh;overflow:auto}
+#grpov h3{margin:0 0 4px;font-family:"Readex Pro","IBM Plex Sans Arabic",Tahoma,sans-serif}#grpov .gx{float:left;width:auto;margin:0;padding:4px 10px;background:transparent;color:var(--mu);border:1px solid var(--ln)}
+</style>
+<script>
+/* ===== 👥 الطلب الجماعي: صاحب الطلب يبعت لينك، وصحابه يضيفوا طلباتهم، وهو يضمّها لطلبه ويبعته مرة واحدة ===== */
+(function(){
+var PAGE="https://wasel1123.github.io/wasel/mh/app/customer.html";
+var Y={b:["👥 طلب جماعي: خلّي صحابك يضيفوا طلباتهم","👥 Group order: let friends add their items"],need:["اختار المطعم الأول (الخطوة 1)","Choose the restaurant first (step 1)"],
+ mk:["جاري تجهيز الرابط…","Preparing the link…"],sh:["📤 شارك","📤 Share"],cp:["✓ انسخ","✓ Copied"],
+ how:["ابعت اللينك لصحابك، وأي حد يضيف طلبه هيظهر هنا:","Send the link to your friends; their items show up here:"],none:["لسه محدش ضاف","No one has added yet"],
+ add:["➕ ضيف طلباتهم لطلبي","➕ Add their items to my order"],added:["✓ اتضافت","✓ Added"],end:["إنهاء الطلب الجماعي","End group order"],
+ shT:["انضم لطلبي من ","Join my order from "],shX:[" على واصل وضيف طلبك 👇"," on Wasel and add your items 👇"],
+ ft:["👥 طلب جماعي من ","👥 Group order from "],fs:["اكتب اسمك وطلبك، وصاحب الطلب هيضيفه ويبعته","Write your name and items; the host will add it and send"],
+ fn:["اسمك","Your name"],fi:["عايز إيه؟","What do you want?"],fg:["أضف طلبي","Add my items"],fok:["✓ طلبك اتضاف، صاحب الطلب هيبعته","✓ Added! The host will send it"],
+ bad:["الطلب الجماعي خلص أو اللينك غلط","This group order ended or the link is wrong"],fail:["حصلت مشكلة، جرّب تاني","Something went wrong, try again"],sofar:["اللي ضافوا:","Added so far:"]};
+function y(k){return Y[k][LANG==="en"?1:0]}
+function $g(i){return document.getElementById(i)}
+function mk(t,c,tx){var e=document.createElement(t);if(c)e.className=c;if(tx!=null)e.textContent=tx;return e}
+function run(fn,args,ok,bad){try{var r=google.script.run.withSuccessHandler(ok).withFailureHandler(bad||function(){});r[fn].apply(r,args)}catch(e){bad&&bad()}}
+/* زرار 🎤 مش شغّال في تطبيق الأندرويد الحالي (محتاج نسخة 1.4)، فبنخفيه هناك بس */
+try{if(window.WaselApp||/; wv\)/.test(navigator.userAgent)){var rb=$g("xrec");if(rb)rb.classList.add("hide");var hn=$g("xhint");if(hn)hn.classList.add("hide")}}catch(e){}
+/* ---------- صاحب الطلب ---------- */
+var items=$g("items"),anchor=$g("xstat")||$g("rcpt1");
+if(items&&anchor){
+  var B=mk("button","sec");B.type="button";B.id="grpb";var X=mk("div","hide");X.id="grpx";
+  anchor.parentNode.insertBefore(B,anchor.nextSibling);B.parentNode.insertBefore(X,B.nextSibling);
+  var CODE="",LIST=[],DONE={},PT=0;try{CODE=sessionStorage.getItem("wgrp")||""}catch(e){}
+  function store(){var v=$g("pk").value;return v==="x"?($g("pko").value||"").trim():v}
+  function link(){return PAGE+"?g="+CODE}
+  function draw(){B.textContent=y("b");B.classList.toggle("hide",!!CODE);X.classList.toggle("hide",!CODE);if(!CODE)return;X.textContent="";
+    X.appendChild(mk("div","mu",y("how")));
+    var gl=mk("div","gl"),inp=mk("input");inp.readOnly=true;inp.value=link();inp.onfocus=function(){this.select()};gl.appendChild(inp);
+    var sb=mk("button",null,y("sh"));sb.type="button";sb.onclick=function(){var t=y("shT")+store()+y("shX");
+      if(navigator.share){try{navigator.share({title:"واصل",text:t,url:link()}).catch(function(){})}catch(e){}return}
+      try{navigator.clipboard.writeText(t+"\n"+link()).then(function(){sb.textContent=y("cp")},function(){inp.select()})}catch(e){inp.select()}};
+    gl.appendChild(sb);X.appendChild(gl);
+    var ul=mk("ul");if(!LIST.length)X.appendChild(mk("div","mu",y("none")));
+    LIST.forEach(function(e){ul.appendChild(mk("li",null,(DONE[e.at]?"✓ ":"")+e.n+": "+e.x))});X.appendChild(ul);
+    var nw=LIST.filter(function(e){return !DONE[e.at]});
+    if(nw.length){var ab=mk("button",null,y("add"));ab.type="button";ab.onclick=function(){
+      var add=nw.map(function(e){DONE[e.at]=1;return "— "+e.n+": "+e.x}).join("\n");
+      items.value=(items.value.trim()?items.value.trim()+"\n":"")+add;items.dispatchEvent(new Event("input"));draw()};X.appendChild(ab)}
+    var eb=mk("button","lnk",y("end"));eb.type="button";eb.onclick=function(){CODE="";LIST=[];DONE={};try{sessionStorage.removeItem("wgrp")}catch(e){}clearInterval(PT);draw()};X.appendChild(eb)}
+  function poll(){if(!CODE)return;run("groupGet",[CODE],function(r){if(r&&r.ok){LIST=r.list||[];draw()}else if(r&&r.gone){CODE="";try{sessionStorage.removeItem("wgrp")}catch(e){}draw()}})}
+  B.onclick=function(){var s=store();if(!s){B.textContent=y("need");setTimeout(draw,2500);return}
+    B.disabled=true;B.textContent=y("mk");
+    run("groupNew",[s],function(r){B.disabled=false;if(r&&r.ok){CODE=r.code;try{sessionStorage.setItem("wgrp",CODE)}catch(e){}clearInterval(PT);PT=setInterval(poll,10000);draw()}else{B.textContent=y("fail");setTimeout(draw,2500)}},
+      function(){B.disabled=false;B.textContent=y("fail");setTimeout(draw,2500)})};
+  if(CODE){PT=setInterval(poll,10000);poll()}
+  draw();
+  var _j=window.jset;if(typeof _j==="function")window.jset=function(k){var r=_j.apply(this,arguments);if(k==="wlo"&&CODE){CODE="";LIST=[];DONE={};try{sessionStorage.removeItem("wgrp")}catch(e){}clearInterval(PT);draw()}return r};
+  var lb=$g("lang");if(lb)lb.addEventListener("click",function(){setTimeout(draw,0)});
+}
+/* ---------- الصاحب اللي فتح اللينك ---------- */
+function friend(code){code=String(code||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8);if(!code||$g("grpov"))return;
+  var ov=mk("div");ov.id="grpov";var w=mk("div","gw");ov.appendChild(w);document.body.appendChild(ov);
+  var x=mk("button","gx","✕");x.type="button";x.onclick=function(){ov.remove()};w.appendChild(x);
+  var h=mk("h3",null,"👥");w.appendChild(h);w.appendChild(mk("div","mu",y("fs")));
+  var n=mk("input");n.maxLength=40;n.placeholder=y("fn");try{var p=JSON.parse(localStorage.getItem("wp")||"null");if(p&&p.name)n.value=p.name}catch(e){}
+  var t=mk("textarea");t.rows=3;t.placeholder=y("fi");var g=mk("button",null,y("fg"));g.type="button";var m=mk("div","mu");var ul=mk("ul");
+  [n,t,g,m,ul].forEach(function(e){w.appendChild(e)});
+  function show(r){h.textContent=y("ft")+(r.store||"");ul.textContent="";if(r.list&&r.list.length){ul.appendChild(mk("b",null,y("sofar")));r.list.forEach(function(e){ul.appendChild(mk("li",null,e.n+": "+e.x))})}}
+  run("groupGet",[code],function(r){if(r&&r.ok)show(r);else{h.textContent="👥";m.textContent=y("bad");n.classList.add("hide");t.classList.add("hide");g.classList.add("hide")}},function(){m.textContent=y("fail")});
+  g.onclick=function(){if(!n.value.trim()||!t.value.trim()){(n.value.trim()?t:n).focus();return}g.disabled=true;
+    run("groupAdd",[code,n.value.trim(),t.value.trim()],function(r){g.disabled=false;
+      if(r&&r.ok){m.textContent=y("fok");t.value="";show(r)}else m.textContent=(r&&r.msg)||y("bad")},function(){g.disabled=false;m.textContent=y("fail")})}}
+try{var q=new URLSearchParams(location.search).get("g");if(q)friend(q)}catch(e){}
+try{google.script.url.getLocation(function(l){var q2=l&&l.parameter&&l.parameter.g;if(q2)friend(q2)})}catch(e){}
+})();
+</script>
 </body></html>
