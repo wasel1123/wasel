@@ -839,7 +839,7 @@ function send(){
     items:$("items").value,hood:"",dtext:$("dt").value,dlink:($("dm").value==="here"&&COORD)?("https://www.google.com/maps?q="+COORD):$("dl").value,
     pay:$("pay").value,notes:$("nt").value,website:$("website").value};
   if(isRB()){o.rno=$("rno").value;o.rname=$("rname").value;if(RIMG)o.rimg=RIMG}
-  if(DIMG)o.dimg=DIMG;
+  if(DIMG)o.dimg=DIMG;try{if(window.waselExtra)window.waselExtra(o)}catch(eX){}
   if(SEC2){var s2=$("pk2").value;o.second={pickup:s2==="x"?$("pko2").value:s2,pickupLink:$("pkl2").value,items:$("items2").value}}
   var rc=$("refc").value.trim().toUpperCase();if(rc)o.ref=rc;
   if($("schc").checked){var sc=schVal();if(!sc){var mm1=$("msg");mm1.style.color="#dc2626";mm1.textContent=t("schBad");return}o.sched=sc}
@@ -1956,6 +1956,127 @@ var _j=window.jset;if(typeof _j==="function")window.jset=function(k){var r=_j.ap
 var lg=$w("lang");if(lg)lg.addEventListener("click",function(){setTimeout(labels,0)});
 $w("items").addEventListener("input",function(){ERR[1].classList.add("hide")});
 show(1,true);
+})();
+</script>
+<style>
+/* ===== إضافات الطلب: صورة الطلب، رسالة صوتية، لشخص تاني، المفضلة، الوقت المتوقع ===== */
+#xtools{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}#xtools button{flex:1;min-width:130px;margin:0}
+#xhint{display:block;margin-top:6px}
+.xst{display:flex;align-items:center;gap:8px;margin-top:8px;padding:8px 10px;border-radius:12px;background:var(--br2);font-size:13.5px}
+.xst span{flex:1;min-width:0}.xst img{width:44px;height:44px;border-radius:8px;object-fit:cover}.xst audio{max-width:170px;height:34px}
+.xst button{width:auto;margin:0;padding:4px 10px;font-size:13px}
+#xrec.on{background:#dc2626;color:#fff}
+#xgift,#xfav{margin-top:12px;padding:10px 12px;border-radius:14px;border:1.5px dashed var(--ln)}
+#xgift .lr,#xfav .lr{display:flex;gap:10px;align-items:center;font-size:15px;font-weight:600;margin:0}
+#xgift input[type=checkbox],#xfav input[type=checkbox]{width:20px;height:20px;flex:none}
+#xfavs{margin:10px 0 2px}#xfavs b{display:block;font-size:14px;margin-bottom:6px}
+#xfavs .fc{display:flex;gap:6px;flex-wrap:wrap}#xfavs .fc button{width:auto;margin:0;padding:7px 12px;border-radius:99px;font-size:14px}
+#xfavs .fc button.x{padding:7px 9px;background:transparent;color:var(--mu);border:1px solid var(--ln)}
+#xeta{margin-top:8px;padding:9px 12px;border-radius:12px;background:var(--br2);font-weight:700;font-size:14.5px}
+</style>
+<script>
+(function(){
+var X={ph:["📷 صوّر ورقة الطلب","📷 Photo of your list"],rec:["🎤 سجّل طلبك بصوتك","🎤 Record your order"],stop:["⏹ وقّف التسجيل","⏹ Stop recording"],
+ hint:["ممكن تكتب، أو تصوّر الورقة، أو تسجّل بصوتك","You can type, take a photo of the list, or record your voice"],
+ noRec:["التسجيل مش شغال هنا، صوّر الطلب أو اكتبه","Recording isn't available here, take a photo or type it"],
+ phOk:["✓ صورة الطلب جاهزة","✓ Order photo ready"],vOk:["✓ الرسالة الصوتية جاهزة","✓ Voice message ready"],rm:["✕ شيل","✕ Remove"],
+ bad:["الملف ما اتجهزش، جرّب تاني","Couldn't prepare the file, try again"],long:["الرسالة طويلة، خليها أقل من دقيقة","Too long, keep it under a minute"],
+ itP:["📷 الطلب في الصورة","📷 Order is in the photo"],itV:["🎤 الطلب في الرسالة الصوتية","🎤 Order is in the voice message"],
+ gift:["🎁 الطلب لحد تاني (هدية)","🎁 Order for someone else (gift)"],gn:["اسمه","Their name"],gp:["رقم موبايله","Their phone"],gm:["رسالة تتكتب له مع الطلب (اختياري)","A note for them (optional)"],
+ gh:["حدد مكانه من «📍 مكان تاني»، والمندوب هيكلمه هو","Set their location with «📍 Another place»; the courier will contact them"],
+ fav:["⭐ احفظ الطلب ده في المفضلة","⭐ Save this order to my favorites"],fn:["اسم للطلب (مثلاً: فطار الشغل)","Name it (e.g. Work breakfast)"],
+ favT:["⭐ طلباتك المفضلة (بدوسة)","⭐ Your favorites (one tap)"],favOk:["✓ اتحفظ في المفضلة","✓ Saved to favorites"],
+ eta:["⏱ يوصلك تقريبًا خلال {a}–{b} دقيقة","⏱ Arrives in about {a}–{b} min"],eta0:["⏱ عادةً يوصل خلال 30–45 دقيقة","⏱ Usually arrives in 30–45 min"]};
+function x(k){return X[k][LANG==="en"?1:0]}
+function $x(i){return document.getElementById(i)}
+function mk(t,c,tx){var e=document.createElement(t);if(c)e.className=c;if(tx!=null)e.textContent=tx;return e}
+var items=$x("items"),rc=$x("rcpt1");if(!items||!rc)return;
+var LIMG="",VOICE="",VSEC=0,REC=null,STREAM=null,TMR=0;
+/* ===== 1) صورة ورقة الطلب + رسالة صوتية (في خطوة «وش تبي؟») ===== */
+var tools=mk("div");tools.id="xtools";
+var bP=mk("button","sec");bP.type="button";bP.id="xph";var bR=mk("button","sec");bR.type="button";bR.id="xrec";
+var fP=mk("input");fP.type="file";fP.accept="image/*";fP.className="hide";
+tools.appendChild(bP);tools.appendChild(bR);tools.appendChild(fP);
+var hint=mk("small");hint.id="xhint";var st=mk("div");st.id="xstat";
+rc.parentNode.insertBefore(tools,rc.nextSibling);tools.parentNode.insertBefore(hint,tools.nextSibling);hint.parentNode.insertBefore(st,hint.nextSibling);
+if(!(window.MediaRecorder&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia))bR.classList.add("hide");
+function autoTxt(on,k){var v=items.value.trim();if(on&&!v){items.value=x(k);items.dispatchEvent(new Event("input"))}
+  if(!on&&(v===X[k][0]||v===X[k][1])){items.value="";items.dispatchEvent(new Event("input"))}}
+function stUi(){st.textContent="";
+  if(LIMG){var r=mk("div","xst"),im=mk("img");im.src=LIMG;im.alt="";r.appendChild(im);r.appendChild(mk("span",null,x("phOk")));
+    var b=mk("button","lnk",x("rm"));b.type="button";b.onclick=function(){LIMG="";autoTxt(false,"itP");stUi()};r.appendChild(b);st.appendChild(r)}
+  if(VOICE){var r2=mk("div","xst"),au=mk("audio");au.controls=true;au.src=VOICE;r2.appendChild(mk("span",null,x("vOk")+" ("+VSEC+(LANG==="en"?" s)":" ث)")));r2.appendChild(au);
+    var b2=mk("button","lnk",x("rm"));b2.type="button";b2.onclick=function(){VOICE="";VSEC=0;autoTxt(false,"itV");stUi()};r2.appendChild(b2);st.appendChild(r2)}
+  bP.textContent=x("ph");bR.textContent=REC?x("stop")+" "+VSEC+"″":x("rec");bR.classList.toggle("on",!!REC);hint.textContent=x("hint")}
+function msg(t){var r=mk("div","xst");r.appendChild(mk("span",null,t));st.appendChild(r)}
+bP.onclick=function(){fP.click()};
+fP.onchange=function(){var f=this.files&&this.files[0];this.value="";if(!f||!/^image\//.test(f.type))return;
+  var u=URL.createObjectURL(f),im=new Image();
+  im.onload=function(){try{var sc=Math.min(1,1200/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement("canvas");c.width=Math.round(im.naturalWidth*sc);c.height=Math.round(im.naturalHeight*sc);
+    var g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);
+    var d=c.toDataURL("image/jpeg",.7);if(d.length>650000)d=c.toDataURL("image/jpeg",.5);LIMG=d.length<=700000?d:"";
+    if(LIMG)autoTxt(true,"itP");stUi();if(!LIMG)msg(x("bad"))}catch(e){LIMG="";stUi();msg(x("bad"))}URL.revokeObjectURL(u)};
+  im.onerror=function(){URL.revokeObjectURL(u);stUi();msg(x("bad"))};im.src=u};
+function stopAll(){try{STREAM&&STREAM.getTracks().forEach(function(t){t.stop()})}catch(e){}STREAM=null;clearInterval(TMR)}
+bR.onclick=function(){
+  if(REC){try{REC.stop()}catch(e){}return}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(s){
+    STREAM=s;var mt=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg"].filter(function(m){try{return MediaRecorder.isTypeSupported(m)}catch(e){return false}})[0];
+    var ch=[];REC=mt?new MediaRecorder(s,{mimeType:mt,audioBitsPerSecond:32000}):new MediaRecorder(s);VSEC=0;
+    REC.ondataavailable=function(e){if(e.data&&e.data.size)ch.push(e.data)};
+    REC.onstop=function(){var r=REC;REC=null;stopAll();var base=String((r&&r.mimeType)||mt||"audio/webm").split(";")[0];
+      var bl=new Blob(ch,{type:base}),fr=new FileReader();
+      fr.onload=function(){var d=String(fr.result||"");d="data:"+base+";base64,"+d.split(",")[1];
+        if(d.length>2000000){VOICE="";stUi();msg(x("long"));return}VOICE=d;autoTxt(true,"itV");stUi()};
+      fr.onerror=function(){stUi();msg(x("bad"))};fr.readAsDataURL(bl)};
+    REC.start(1000);stUi();
+    TMR=setInterval(function(){VSEC++;if(VSEC>=60){try{REC.stop()}catch(e){}}stUi()},1000);
+  }).catch(function(){REC=null;stopAll();stUi();msg(x("noRec"))})};
+stUi();
+/* ===== 2) الطلب لحد تاني (في آخر خطوة) ===== */
+var nl=document.querySelector('label[data-i="nt"]'),G=null;
+if(nl){G=mk("div");G.id="xgift";
+  G.innerHTML='<label class="lr"><input type="checkbox" id="xgc"><span id="xgt"></span></label><div id="xgb" class="hide"><input id="xgn" maxlength="60"><input id="xgp" type="tel" inputmode="tel" maxlength="20" dir="ltr" style="margin-top:8px"><input id="xgm" maxlength="150" style="margin-top:8px"><small id="xgh" style="display:block;margin-top:6px"></small></div>';
+  nl.parentNode.insertBefore(G,nl);
+  $x("xgc").onchange=function(){$x("xgb").classList.toggle("hide",!this.checked)}}
+/* ===== 3) المفضلة: تحفظ الطلب وتكرره بضغطة ===== */
+var FK="wfav",go=$x("go"),F=mk("div");F.id="xfav";
+F.innerHTML='<label class="lr"><input type="checkbox" id="xfc"><span id="xft"></span></label><input id="xfn" class="hide" maxlength="30" style="margin-top:8px">';
+go.parentNode.insertBefore(F,go);
+$x("xfc").onchange=function(){$x("xfn").classList.toggle("hide",!this.checked);if(this.checked)$x("xfn").focus()};
+function favs(){try{var a=JSON.parse(localStorage.getItem(FK)||"[]");return Array.isArray(a)?a:[]}catch(e){return []}}
+function favSet(a){try{localStorage.setItem(FK,JSON.stringify(a.slice(0,6)))}catch(e){}}
+var FB=mk("div");FB.id="xfavs";var s1=$x("wz1");if(s1)s1.insertBefore(FB,s1.firstChild);
+function favUi(){FB.textContent="";var a=favs();FB.classList.toggle("hide",!a.length);if(!a.length)return;
+  FB.appendChild(mk("b",null,x("favT")));var c=mk("div","fc");FB.appendChild(c);
+  a.forEach(function(f,i){var b=mk("button",null,"⭐ "+f.n);b.type="button";
+    b.onclick=function(){var old=null;try{old=localStorage.getItem("wlo");localStorage.setItem("wlo",JSON.stringify(f.lo))}catch(e){}
+      try{$x("again").click()}finally{try{if(old!=null)localStorage.setItem("wlo",old);else localStorage.removeItem("wlo")}catch(e){}}};
+    var d=mk("button","x","✕");d.type="button";d.setAttribute("aria-label","delete");d.onclick=function(){var b2=favs();b2.splice(i,1);favSet(b2);favUi()};
+    c.appendChild(b);c.appendChild(d)})}
+/* ===== 4) الوقت المتوقع قبل الإرسال (تحت رسوم التوصيل) ===== */
+var fb=$x("feebox"),E=mk("div");E.id="xeta";
+if(fb){fb.parentNode.insertBefore(E,fb.nextSibling)}
+function etaUi(){if(!fb)return;var m=/(\d+(?:\.\d+)?)\s*(?:كم|km)/i.exec(fb.textContent||""),a,b;
+  if(m){var km=parseFloat(m[1]);a=Math.max(20,Math.round((20+km*2.5)/5)*5);b=a+10;E.textContent=x("eta").replace("{a}",a).replace("{b}",b)}else E.textContent=x("eta0")}
+if(fb)try{new MutationObserver(etaUi).observe(fb,{childList:true,characterData:true,subtree:true})}catch(e){}
+/* ===== الإرسال: بنضيف الصورة والصوت والهدية للطلب ===== */
+window.waselExtra=function(o){
+  if(LIMG)o.limg=LIMG;if(VOICE)o.voice=VOICE;
+  if($x("xgc")&&$x("xgc").checked){var g={name:$x("xgn").value.trim(),phone:$x("xgp").value.trim(),msg:$x("xgm").value.trim()};if(g.name||g.phone)o.gift=g}
+  PEND={fav:$x("xfc").checked?($x("xfn").value.trim()||(o.pickup||"")).slice(0,30):""}};
+var PEND=null;
+var _j=window.jset;if(typeof _j==="function")window.jset=function(k,v){var r=_j.apply(this,arguments);
+  if(k==="wlo"){var p=PEND;PEND=null;
+    if(p&&p.fav){var a=favs().filter(function(f){return f.n!==p.fav});a.unshift({n:p.fav,lo:v});favSet(a);favUi();
+      try{var mm=$x("msg"),sm=mk("small",null,x("favOk"));sm.style.cssText="display:block;color:#15803d;font-weight:700";mm.appendChild(sm)}catch(e){}}
+    LIMG="";VOICE="";VSEC=0;stUi();if($x("xgc")){$x("xgc").checked=false;$x("xgb").classList.add("hide");["xgn","xgp","xgm"].forEach(function(i){$x(i).value=""})}
+    $x("xfc").checked=false;$x("xfn").value="";$x("xfn").classList.add("hide")}
+  return r};
+function labels(){stUi();if(G){$x("xgt").textContent=x("gift");$x("xgn").placeholder=x("gn");$x("xgp").placeholder=x("gp");$x("xgm").placeholder=x("gm");$x("xgh").textContent=x("gh")}
+  $x("xft").textContent=x("fav");$x("xfn").placeholder=x("fn");favUi();etaUi()}
+var lb=$x("lang");if(lb)lb.addEventListener("click",function(){setTimeout(labels,0)});
+labels();
 })();
 </script>
 </body></html>
