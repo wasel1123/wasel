@@ -1379,4 +1379,13 @@ function rcptEl(txt,o){o=o||{};var P=rcptParse(txt);if(!P.lines.length)return nu
   setTimeout(tryReg,4000);setInterval(tryReg,60000)})();
 </script>
 
+<script>
+/* زرار «⇄ مندوب/عميل» العايم اللي تحت في تطبيق الأندرويد: مش لازم للعميل وبيزحم الشاشة، فبنخفيه (التحويل لسه موجود من زرار الرجوع ← «التحويل») */
+(function(){function h(){try{if(window.parent&&window.parent!==window){var s=window.parent.document.getElementById("sw");if(s)s.style.display="none"}}catch(e){}}h();setTimeout(h,800);setTimeout(h,3000)})();
+</script>
+<style>
+/* المحادثة: خانة الكتابة وزرار «إرسال» مرفوعين شوية علشان مفيش أي زرار عايم يغطي عليهم */
+#dw .chatR{padding-bottom:calc(56px + env(safe-area-inset-bottom,0px));position:relative;z-index:2}
+#dw .chatR button{position:relative;z-index:3}
+</style>
 </body></html>
