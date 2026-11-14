@@ -2058,8 +2058,9 @@ function favUi(){FB.textContent="";var a=favs();FB.classList.toggle("hide",!a.le
 var fb=$x("feebox"),E=mk("div");E.id="xeta";
 if(fb){fb.parentNode.insertBefore(E,fb.nextSibling)}
 function etaUi(){if(!fb)return;var m=/(\d+(?:\.\d+)?)\s*(?:كم|km)/i.exec(fb.textContent||""),a,b;
-  if(m){var km=parseFloat(m[1]);a=Math.max(20,Math.round((20+km*2.5)/5)*5);b=a+10;E.textContent=x("eta").replace("{a}",a).replace("{b}",b)}else E.textContent=x("eta0")}
+  if(m){var km=parseFloat(m[1]);a=Math.max(15,Math.round((20+km*2.5+(window.WETA_ADD||0))/5)*5);b=a+10;E.textContent=x("eta").replace("{a}",a).replace("{b}",b)}else E.textContent=x("eta0")}
 if(fb)try{new MutationObserver(etaUi).observe(fb,{childList:true,characterData:true,subtree:true})}catch(e){}
+window.waselEtaUi=etaUi;
 /* ===== الإرسال: بنضيف الصورة والصوت والهدية للطلب ===== */
 window.waselExtra=function(o){
   if(LIMG)o.limg=LIMG;if(VOICE)o.voice=VOICE;
@@ -2100,6 +2101,7 @@ var Y={b:["👥 طلب جماعي: خلّي صحابك يضيفوا طلباته
  shT:["انضم لطلبي من ","Join my order from "],shX:[" على واصل وضيف طلبك 👇"," on Wasel and add your items 👇"],
  ft:["👥 طلب جماعي من ","👥 Group order from "],fs:["اكتب اسمك وطلبك، وصاحب الطلب هيضيفه ويبعته","Write your name and items; the host will add it and send"],
  fn:["اسمك","Your name"],fi:["عايز إيه؟","What do you want?"],fg:["أضف طلبي","Add my items"],fok:["✓ طلبك اتضاف، صاحب الطلب هيبعته","✓ Added! The host will send it"],
+ addr:["📍 الطلب هيوصل لعنوان صاحب الطلب","📍 It will be delivered to the host’s address"],
  bad:["الطلب الجماعي خلص أو اللينك غلط","This group order ended or the link is wrong"],fail:["حصلت مشكلة، جرّب تاني","Something went wrong, try again"],sofar:["اللي ضافوا:","Added so far:"]};
 function y(k){return Y[k][LANG==="en"?1:0]}
 function $g(i){return document.getElementById(i)}
@@ -2143,7 +2145,7 @@ if(items&&anchor){
 function friend(code){code=String(code||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8);if(!code||$g("grpov"))return;
   var ov=mk("div");ov.id="grpov";var w=mk("div","gw");ov.appendChild(w);document.body.appendChild(ov);
   var x=mk("button","gx","✕");x.type="button";x.onclick=function(){ov.remove()};w.appendChild(x);
-  var h=mk("h3",null,"👥");w.appendChild(h);w.appendChild(mk("div","mu",y("fs")));
+  var h=mk("h3",null,"👥");w.appendChild(h);w.appendChild(mk("div","mu",y("fs")));w.appendChild(mk("div","mu",y("addr")));
   var n=mk("input");n.maxLength=40;n.placeholder=y("fn");try{var p=JSON.parse(localStorage.getItem("wp")||"null");if(p&&p.name)n.value=p.name}catch(e){}
   var t=mk("textarea");t.rows=3;t.placeholder=y("fi");var g=mk("button",null,y("fg"));g.type="button";var m=mk("div","mu");var ul=mk("ul");
   [n,t,g,m,ul].forEach(function(e){w.appendChild(e)});
@@ -2154,6 +2156,48 @@ function friend(code){code=String(code||"").toUpperCase().replace(/[^A-Z0-9]/g,"
       if(r&&r.ok){m.textContent=y("fok");t.value="";show(r)}else m.textContent=(r&&r.msg)||y("bad")},function(){g.disabled=false;m.textContent=y("fail")})}}
 try{var q=new URLSearchParams(location.search).get("g");if(q)friend(q)}catch(e){}
 try{google.script.url.getLocation(function(l){var q2=l&&l.parameter&&l.parameter.g;if(q2)friend(q2)})}catch(e){}
+})();
+</script>
+<style>
+/* ===== ضغط الطلبات + الفكة ===== */
+#xload{margin-top:10px;padding:9px 12px;border-radius:12px;font-size:14px;font-weight:700;background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+#xcashw{margin-top:8px}#xcashw small{display:block;margin-top:4px}
+</style>
+<script>
+/* ===== 🟢 حالة المناديب قبل الطلب + 💵 «معاك فكة؟» + ⏱ وقت تجهيز المطعم في الوقت المتوقع ===== */
+(function(){
+var Z={busy:["⏳ فيه ضغط طلبات دلوقتي، ممكن طلبك يتأخر شوية","⏳ We're busy right now, your order may take a bit longer"],
+ none:["😴 مفيش مندوب فاضي دلوقتي، ممكن طلبك يتأخر","😴 No courier is free right now, your order may be delayed"],
+ cash:["💵 هتدفع كام؟ (اختياري)","💵 How much will you pay with? (optional)"],cashPh:["مثلاً 100","e.g. 100"],
+ cashH:["عشان المندوب يجهزلك الباقي","So the courier brings your change"]};
+function z(k){return Z[k][LANG==="en"?1:0]}
+function $z(i){return document.getElementById(i)}
+function mk(t,c,tx){var e=document.createElement(t);if(c)e.className=c;if(tx!=null)e.textContent=tx;return e}
+/* وقت تجهيز تقريبي حسب نوع المكان (دقايق) */
+function prep(){try{var v=$z("pk").value;if(!v||v==="x")return 12;var c=(typeof catsOf==="function"?catsOf(v):[]).join(" ");
+  if(/بيتزا|مشويات|شعبي|مندي|بخاري|كبسة|أسماك|سمك/.test(c))return 20;
+  if(/كافي|قهوة|حلويات|آيس|عصير/.test(c))return 6;
+  if(/صيدلي/.test(c))return 5;
+  if(/برجر|شاورما|سندوي|سريعة|فطور/.test(c))return 10;
+  return 12}catch(e){return 12}}
+var LOAD="ok";
+function etaAdd(){window.WETA_ADD=(prep()-10)+(LOAD==="busy"?10:LOAD==="none"?15:0);try{window.waselEtaUi&&window.waselEtaUi()}catch(e){}}
+/* لافتة الضغط: فوق الخطوات، بتظهر بس لو فيه ضغط */
+var B=mk("div","hide");B.id="xload";var h=$z("wzh");if(h)h.parentNode.insertBefore(B,h.nextSibling);
+function bUi(){B.classList.toggle("hide",LOAD==="ok");if(LOAD!=="ok")B.textContent=z(LOAD)}
+function load(){try{google.script.run.withSuccessHandler(function(r){if(r&&r.ok){LOAD=r.level||"ok";bUi();etaAdd()}}).withFailureHandler(function(){}).courierLoad()}catch(e){}}
+load();setInterval(function(){if(!document.hidden)load()},120000);
+var pk=$z("pk");if(pk)pk.addEventListener("change",etaAdd);etaAdd();
+/* «معاك فكة؟»: تحت طريقة الدفع، للكاش بس */
+var pay=$z("pay"),W=mk("div");W.id="xcashw";
+W.innerHTML='<label id="xcashl" style="margin-top:8px"></label><input id="xcash" type="number" inputmode="numeric" min="1" max="5000" dir="ltr"><small id="xcashh"></small>';
+if(pay){var after=pay.nextElementSibling&&pay.nextElementSibling.matches('small[data-i="cash"]')?pay.nextElementSibling:pay;after.parentNode.insertBefore(W,after.nextSibling)}
+function cUi(){var cash=pay&&/كاش|cash/i.test(pay.value);W.classList.toggle("hide",!cash);$z("xcashl").textContent=z("cash");$z("xcash").placeholder=z("cashPh");$z("xcashh").textContent=z("cashH")}
+if(pay)pay.addEventListener("change",cUi);cUi();
+var _we=window.waselExtra;
+window.waselExtra=function(o){if(typeof _we==="function")_we(o);var v=Math.round(Number($z("xcash").value||0));if(v>0&&v<=5000&&!W.classList.contains("hide"))o.cash=v};
+var _j=window.jset;if(typeof _j==="function")window.jset=function(k){var r=_j.apply(this,arguments);if(k==="wlo")$z("xcash").value="";return r};
+var lb=$z("lang");if(lb)lb.addEventListener("click",function(){setTimeout(function(){bUi();cUi()},0)});
 })();
 </script>
 </body></html>
