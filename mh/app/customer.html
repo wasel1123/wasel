@@ -2200,4 +2200,18 @@ var _j=window.jset;if(typeof _j==="function")window.jset=function(k){var r=_j.ap
 var lb=$z("lang");if(lb)lb.addEventListener("click",function(){setTimeout(function(){bUi();cUi()},0)});
 })();
 </script>
+<script>
+/* زرار «⇄ مندوب/عميل» العايم اللي تحت في تطبيق الأندرويد: مش لازم للعميل وبيزحم الشاشة، فبنخفيه (التحويل لسه موجود من زرار الرجوع ← «التحويل») */
+(function(){function h(){try{if(window.parent&&window.parent!==window){var s=window.parent.document.getElementById("sw");if(s)s.style.display="none"}}catch(e){}}h();setTimeout(h,800);setTimeout(h,3000)})();
+</script>
+<style>#gchg{display:none!important}</style>
+<script>
+/* «🎨 غيّر مودك» اللي تحت اتشال (كان بيفتح كارت متشال أصلًا). اختيار الشكل موجود في القايمة ☰.
+   والتحويل لـ«أنا مندوب» بقى في القايمة ☰ (في تطبيق الأندرويد بس) بدل الزرار العايم */
+(function(){try{if(!window.WaselApp||typeof WaselApp.switchRole!=="function")return;var l=document.querySelector("#cdw .clist");if(!l)return;
+  var b=document.createElement("button");b.type="button";var s=document.createElement("span");b.appendChild(s);
+  function tx(){s.textContent=(typeof LANG!=="undefined"&&LANG==="en")?"⇄ I'm a courier":"⇄ أنا مندوب"}tx();
+  b.onclick=function(){try{WaselApp.switchRole()}catch(e){}};l.appendChild(b);
+  var lg=document.getElementById("lang");if(lg)lg.addEventListener("click",function(){setTimeout(tx,0)})}catch(e){}})();
+</script>
 </body></html>
