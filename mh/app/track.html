@@ -768,4 +768,13 @@ $i("othr").onclick=function(e){e.preventDefault();var f=$i("f");f.classList.remo
 #cchat{width:100%;border-radius:14px;padding:13px;font-weight:700;font-size:16px}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* المحادثة: خانة الكتابة وزرار «إرسال» مرفوعين شوية علشان مفيش أي زرار عايم يغطي عليهم */
+#dw .chatR{padding-bottom:calc(56px + env(safe-area-inset-bottom,0px));position:relative;z-index:2}
+#dw .chatR button{position:relative;z-index:3}
+</style>
+<script>
+/* زرار «⇄» العايم بتاع تطبيق الأندرويد كان بيغطي على زرار «إرسال» في المحادثة، فبنخفيه */
+(function(){function h(){try{if(window.parent&&window.parent!==window){var s=window.parent.document.getElementById("sw");if(s)s.style.display="none"}}catch(e){}}h();setTimeout(h,800);setTimeout(h,3000)})();
+</script>
 </body></html>
