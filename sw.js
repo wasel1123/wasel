@@ -13,7 +13,7 @@ self.addEventListener("fetch", function (e) {
   if (u.origin !== self.location.origin) return;          // السيرفر والخطوط وغيره: من غير تدخل
   e.respondWith(caches.open(C).then(function (c) {
     return c.match(r).then(function (hit) {
-      var net = fetch(r).then(function (res) { if (res && res.ok) c.put(r, res.clone()); return res; }).catch(function () { return hit; });
+      var net = fetch(r, { cache: "no-cache" }).then(function (res) { if (res && res.ok) c.put(r, res.clone()); return res; }).catch(function () { return hit; });
       return hit || net;
     });
   }));
