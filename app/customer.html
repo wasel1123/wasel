@@ -2202,4 +2202,65 @@ var lb=$z("lang");if(lb)lb.addEventListener("click",function(){setTimeout(functi
   b.onclick=function(){try{WaselApp.switchRole()}catch(e){}};l.appendChild(b);
   var lg=document.getElementById("lang");if(lg)lg.addEventListener("click",function(){setTimeout(tx,0)})}catch(e){}})();
 </script>
+<style>
+/* ===== نوع الطلب أولًا ===== */
+#otype{margin:12px 0 4px}#otype h3{margin:4px 0 10px;font-family:"Readex Pro","IBM Plex Sans Arabic",Tahoma,sans-serif;font-size:19px}
+.oto{display:flex;align-items:center;gap:12px;width:100%;text-align:start;margin:0 0 10px;background:var(--card);color:var(--tx);border:1.5px solid var(--ln);border-radius:18px;padding:12px 14px;font:inherit;cursor:pointer}
+.oto:hover,.oto:focus-visible{border-color:var(--br)}
+.oto .e{width:46px;height:46px;border-radius:14px;background:var(--br2);display:grid;place-items:center;font-size:24px;flex:none}
+.oto b{display:block;font-size:15.5px;font-family:"Readex Pro","IBM Plex Sans Arabic",Tahoma,sans-serif}.oto small{color:var(--mu);font-size:12.5px;font-weight:500}
+#otpill{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:13px}#otpill span{background:var(--br2);color:var(--br);border-radius:99px;padding:3px 12px;font-weight:700}
+#otpill button{width:auto;margin:0;padding:3px 10px;font-size:13px;background:transparent;color:var(--br);border:0;text-decoration:underline}
+.card.otc #wzh,.card.otc #wz1,.card.otc #wz2,.card.otc #wz3,.card.otc #again{display:none!important}
+.card:not(.otc) #otype{display:none!important}
+.card:not([data-ot="two"]) #add2{display:none!important}
+.card:not([data-ot="gift"]) #xgift{display:none!important}
+.card:not([data-ot="group"]) #grpb,.card:not([data-ot="group"]) #grpx{display:none!important}
+</style>
+<script>
+/* ===== نوع الطلب أولًا: طلب لي / من مكانين / هدية / جماعي. وبعد الاختيار بيظهر اللي يخصه بس ===== */
+(function(){
+var O={t:["وش نوع طلبك؟","What kind of order?"],ch:["تغيير","Change"],
+ self:["🛍️","طلب لي","For me","من مطعم أو محل لين بابك","From any restaurant or store to your door"],
+ two:["🍱","من مكانين","From two places","مثلاً أكل من مطعم وحلا من محل ثاني","e.g. food from one place, dessert from another"],
+ gift:["🎁","هدية لشخص يعز عليك","A gift for someone","يوصله لبيته، مع رسالة منك","Delivered to them, with your note"],
+ group:["👥","طلب جماعي مع أصحابك","Group order with friends","كل واحد يضيف طلبه، والتوصيل مرة وحدة","Everyone adds items, one delivery"]};
+function en(){return typeof LANG!=="undefined"&&LANG==="en"}
+function $o(i){return document.getElementById(i)}
+var go=$o("go"),card=go&&go.closest(".card"),wzh=$o("wzh");if(!card||!wzh)return;
+var MODE="";
+var box=document.createElement("div");box.id="otype";card.insertBefore(box,wzh);
+var fav=$o("xfavs");
+var pill=document.createElement("div");pill.id="otpill";wzh.appendChild(pill);
+function multiOk(){try{return !!(OFFER&&OFFER.multi)}catch(e){return false}}
+function draw(){box.textContent="";if(fav)box.appendChild(fav);
+  var h=document.createElement("h3");h.textContent=O.t[en()?1:0];box.appendChild(h);
+  ["self","two","gift","group"].forEach(function(k){if(k==="two"&&!multiOk())return;var o=O[k],b=document.createElement("button");b.type="button";b.className="oto";
+    b.innerHTML='<span class="e"></span><span><b></b><small></small></span>';b.querySelector(".e").textContent=o[0];b.querySelector("b").textContent=o[en()?2:1];b.querySelector("small").textContent=o[en()?4:3];
+    b.onclick=function(){pick(k)};box.appendChild(b)});
+  pill.textContent="";if(MODE){var s=document.createElement("span");s.textContent=O[MODE][0]+" "+O[MODE][en()?2:1];pill.appendChild(s);
+    var c=document.createElement("button");c.type="button";c.textContent=O.ch[en()?1:0];c.onclick=chooser;pill.appendChild(c)}}
+function toStep1(){for(var i=0;i<3;i++){var w1=$o("wz1");if(!w1||!w1.classList.contains("hide"))break;
+  var v=[$o("wz2"),$o("wz3")].filter(function(d){return d&&!d.classList.contains("hide")})[0];var bk=v&&v.querySelector('.wzn [data-k="bk"]');if(!bk)break;bk.click()}}
+function leave(old){
+  if(old==="two"){try{if(typeof SEC2!=="undefined"&&SEC2)$o("rm2").click()}catch(e){}}
+  if(old==="gift"){var g=$o("xgc");if(g&&g.checked){g.checked=false;g.dispatchEvent(new Event("change"))}}}
+function pick(k){var old=MODE;if(old&&old!==k)leave(old);MODE=k;card.dataset.ot=k;card.classList.remove("otc");
+  if(k==="two"){try{if(typeof SEC2==="undefined"||!SEC2)$o("add2").click()}catch(e){}}
+  if(k==="gift"){var g=$o("xgc");if(g&&!g.checked){g.checked=true;g.dispatchEvent(new Event("change"))}
+    try{var ch=document.querySelectorAll("#adb .adc button");if(ch.length)ch[ch.length-1].click()}catch(e){}}
+  if(!old)toStep1();draw();try{wzh.scrollIntoView({behavior:"smooth",block:"start"})}catch(e){}}
+function chooser(){card.classList.add("otc");draw();try{box.scrollIntoView({behavior:"smooth",block:"start"})}catch(e){}}
+/* الطلب الجماعي: أول ما يوصل لخطوة «وش تبي؟» اللينك يتعمل لوحده */
+var w2=$o("wz2");if(w2)try{new MutationObserver(function(){if(MODE==="group"&&!w2.classList.contains("hide")){var gx=$o("grpx"),gb=$o("grpb");if(gx&&gx.classList.contains("hide")&&gb&&!gb.disabled)gb.click()}}).observe(w2,{attributes:true,attributeFilter:["class"]})}catch(e){}
+/* المفضلة و«اطلب نفس آخر طلب» = طلب لي على طول */
+if(fav)fav.addEventListener("click",function(e){if(e.target.closest("button")&&!e.target.closest(".x")){MODE="self";card.dataset.ot="self";card.classList.remove("otc");draw()}},true);
+var ag=$o("again");if(ag)ag.addEventListener("click",function(){if(!MODE){MODE="self";card.dataset.ot="self"}card.classList.remove("otc");draw()},true);
+/* بعد ما الطلب يتبعت: نرجع لاختيار نوع الطلب */
+var _j=window.jset;if(typeof _j==="function")window.jset=function(k){var r=_j.apply(this,arguments);if(k==="wlo"){leave(MODE);MODE="";delete card.dataset.ot;setTimeout(function(){card.classList.add("otc");draw()},120)}return r};
+var lb=$o("lang");if(lb)lb.addEventListener("click",function(){setTimeout(draw,0)});
+card.classList.add("otc");draw();
+var n=0,iv=setInterval(function(){draw();if(++n>=5)clearInterval(iv)},2000);   // «من مكانين» بيظهر لما إعدادات العرض توصل
+})();
+</script>
 </body></html>
