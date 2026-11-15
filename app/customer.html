@@ -2240,6 +2240,10 @@ function draw(){box.textContent="";if(fav)box.appendChild(fav);
     b.onclick=function(){pick(k)};box.appendChild(b)});
   pill.textContent="";if(MODE){var s=document.createElement("span");s.textContent=O[MODE][0]+" "+O[MODE][en()?2:1];pill.appendChild(s);
     var c=document.createElement("button");c.type="button";c.textContent=O.ch[en()?1:0];c.onclick=chooser;pill.appendChild(c)}}
+/* زرار «رجوع» في الخطوة 1 بيرجّع لقايمة أنواع الطلب */
+function back1(){var n=document.querySelector("#wz1 .wzn");if(!n)return;var b=$o("otbk");
+  if(!b){b=document.createElement("button");b.type="button";b.id="otbk";b.className="sec wzk";b.onclick=chooser;n.insertBefore(b,n.firstChild)}
+  b.textContent=en()?"Back":"رجوع"}
 function toStep1(){for(var i=0;i<3;i++){var w1=$o("wz1");if(!w1||!w1.classList.contains("hide"))break;
   var v=[$o("wz2"),$o("wz3")].filter(function(d){return d&&!d.classList.contains("hide")})[0];var bk=v&&v.querySelector('.wzn [data-k="bk"]');if(!bk)break;bk.click()}}
 function leave(old){
@@ -2258,8 +2262,8 @@ if(fav)fav.addEventListener("click",function(e){if(e.target.closest("button")&&!
 var ag=$o("again");if(ag)ag.addEventListener("click",function(){if(!MODE){MODE="self";card.dataset.ot="self"}card.classList.remove("otc");draw()},true);
 /* بعد ما الطلب يتبعت: نرجع لاختيار نوع الطلب */
 var _j=window.jset;if(typeof _j==="function")window.jset=function(k){var r=_j.apply(this,arguments);if(k==="wlo"){leave(MODE);MODE="";delete card.dataset.ot;setTimeout(function(){card.classList.add("otc");draw()},120)}return r};
-var lb=$o("lang");if(lb)lb.addEventListener("click",function(){setTimeout(draw,0)});
-card.classList.add("otc");draw();
+var lb=$o("lang");if(lb)lb.addEventListener("click",function(){setTimeout(function(){draw();back1()},0)});
+card.classList.add("otc");draw();back1();
 var n=0,iv=setInterval(function(){draw();if(++n>=5)clearInterval(iv)},2000);   // «من مكانين» بيظهر لما إعدادات العرض توصل
 })();
 </script>
