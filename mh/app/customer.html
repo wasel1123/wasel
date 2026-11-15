@@ -2251,7 +2251,9 @@ var MODE="";
 var box=document.createElement("div");box.id="otype";card.insertBefore(box,wzh);
 var fav=$o("xfavs");
 var pill=document.createElement("div");pill.id="otpill";wzh.appendChild(pill);
-function multiOk(){try{return !!(OFFER&&OFFER.multi)}catch(e){return false}}
+/* «من مكانين» بيظهر من أول لحظة (آخر إعداد متحفظ على الجهاز)، علشان الاختيارات ما تتغيرش قدام العميل */
+var MULTI=true;try{MULTI=localStorage.getItem("wmulti")!=="0"}catch(e){}
+function multiOk(){try{if(typeof OFFER!=="undefined"&&OFFER){var v=!!OFFER.multi;if(v!==MULTI){MULTI=v;try{localStorage.setItem("wmulti",v?"1":"0")}catch(e){}}}}catch(e){}return MULTI}
 function draw(){box.textContent="";if(fav)box.appendChild(fav);
   var h=document.createElement("h3");h.textContent=O.t[en()?1:0];box.appendChild(h);
   ["self","two","gift","group"].forEach(function(k){if(k==="two"&&!multiOk())return;var o=O[k],b=document.createElement("button");b.type="button";b.className="oto";
@@ -2283,7 +2285,7 @@ var ag=$o("again");if(ag)ag.addEventListener("click",function(){if(!MODE){MODE="
 var _j=window.jset;if(typeof _j==="function")window.jset=function(k){var r=_j.apply(this,arguments);if(k==="wlo"){leave(MODE);MODE="";delete card.dataset.ot;setTimeout(function(){card.classList.add("otc");draw()},120)}return r};
 var lb=$o("lang");if(lb)lb.addEventListener("click",function(){setTimeout(function(){draw();back1()},0)});
 card.classList.add("otc");draw();back1();
-var n=0,iv=setInterval(function(){draw();if(++n>=5)clearInterval(iv)},2000);   // «من مكانين» بيظهر لما إعدادات العرض توصل
+var n=0,iv=setInterval(function(){var was=MULTI;multiOk();if(was!==MULTI&&card.classList.contains("otc"))draw();if(++n>=5)clearInterval(iv)},2000);   // بيعيد الرسم بس لو الإعداد اتغيّر فعلًا
 })();
 </script>
 </body></html>
