@@ -1028,10 +1028,12 @@ function act(fn,no,args,b,okcb){
   if(busy)return;
   busy=true;b.disabled=true;$("msg").className="";$("msg").textContent="";
   var lbl=b.textContent;b.textContent=t(GEOFN[fn]?"fixing":"doing");
+  /* لو السيرفر اتأخر: رسالة هادية بدل ما المندوب يقلق، ومنعرضش «مشغول» */
+  var slowT=setTimeout(function(){if(busy){$("msg").className="";$("msg").textContent=LANG==="en"?"⏳ A few seconds… confirming":"⏳ ثواني… بنأكد"}},4000);
   /* قبول الطلب: نعرض الطلب مقبولًا فورًا (والخادم هو اللي يقرر؛ لو رفض نرجّع الصورة الصحيحة ونعرض السبب) */
   if(fn==="courierAccept"&&LAST&&LAST.available){var ao=null;LAST.available.forEach(function(x){if(x.no===no)ao=x});
     if(ao){ao.status="مقبول";ao.stage="accepted";LAST.mine=(LAST.mine||[]).concat([ao]);LAST.available=[];LAST.busy=true;LASTSIG="";try{render(LAST)}catch(e){}}}
-  var done=function(r){busy=false;editTs=0;PSIG="";
+  var done=function(r){clearTimeout(slowT);busy=false;editTs=0;PSIG="";
     if(r&&r.ok){$("msg").textContent=t("done");if(okcb)okcb(r);
       if(fn==="courierAccept"){try{google.script.run.withSuccessHandler(function(){}).withFailureHandler(function(){}).courierTakenNotice(CODE,no)}catch(e){}}
       var ns=NEXTST[fn];
@@ -1039,7 +1041,7 @@ function act(fn,no,args,b,okcb){
         if(oo){oo.stage=ns;if(fn==="courierArrived")oo.arrived=true;LASTSIG="";try{render(LAST)}catch(e){}}}
     }else{$("msg").className="err";$("msg").textContent=tm(r&&r.msg)||t("noExec");b.disabled=false;b.textContent=lbl;LASTSIG=""}
     load(true)};
-  var fail=function(){busy=false;b.disabled=false;b.textContent=lbl;LASTSIG="";$("msg").className="err";$("msg").textContent=t("noExec2");load(true)};
+  var fail=function(){clearTimeout(slowT);busy=false;b.disabled=false;b.textContent=lbl;LASTSIG="";$("msg").className="err";$("msg").textContent=t("noExec2");load(true)};
   var run=function(extra){var g=google.script.run.withSuccessHandler(done).withFailureHandler(fail);g[fn].apply(g,[CODE,no].concat(extra||[],args||[]))};
   if(GEOFN[fn]){freshFix(function(p){b.textContent=t("doing");run(p?[p.la,p.ln,Math.round(p.ac)]:[null,null,null])})}
   else run()}
