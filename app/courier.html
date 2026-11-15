@@ -657,6 +657,9 @@ function card(o,mine){
   if(mine&&o.accAt){var tk=el("span","tmr","00:00");tk.dataset.acc=o.accAt;tk.title=t("tmrT");c.appendChild(tk);tmrTick()}
   if(o.kid)c.appendChild(el("div","rsx a",t("kidTag")+o.kid));
   else if(o.kidNo)c.appendChild(el("div","rsx a",t("mainK")));
+  /* الشكل الجديد: من وين ← لوين، وأجره ونوع الدفع بشكل واضح. والتفاصيل للطلبات المتاحة متقفلة (تتفتح بالضغط) */
+  try{c.appendChild(ocRoute(o,mine))}catch(eRt){}
+  var c0=c;if(!mine){var det=document.createElement("details");det.className="ocd";var smy=document.createElement("summary");smy.textContent=ocT("det");det.appendChild(smy);c.appendChild(det);c=det}
   row(c,t("pickFrom"),o.pickup);
   if(o.rs){var rx=o.rs,rc="rsx",rt2="";
     if(rx.rst==="جاهز"){rc+=" r";rt2=t("rsRdy")}
@@ -670,6 +673,7 @@ function card(o,mine){
   row(c,t("destK"),o.dest);
   row(c,t("payK"),o.pay);row(c,t("notesK"),o.notes);
   if(!o.kid){var f=el("div","row");f.appendChild(el("b",null,t("feeK")));f.appendChild(el("span","fee",o.fee+t("sar")));c.appendChild(f)}
+  c=c0;
   if(!mine){c.appendChild(btn(t("accept"),"",function(b){act("courierAccept",o.no,[],b)}));
     if(LAST&&LAST.rejLeft>0){var rbx=el("div",RJO.no===o.no?"":"hide");
       var rsl=document.createElement("select");var r0=document.createElement("option");r0.value="";r0.textContent=t("rjPick");rsl.appendChild(r0);
@@ -687,7 +691,9 @@ function card(o,mine){
   var place=o.pickupName||t("place");
   var g=o.stage;
   var nv=(g==="accepted"||g==="arrived"||g==="invoiced")?[t("navP")+place,navUrl(o.pickup,o.pickupName)]:(g==="picked"||g==="ontheway"||g==="atdest")?[t("navD"),navUrl(o.dest)]:null;
+  try{c.appendChild(ocProg(g))}catch(ePg){}
   if(nv&&nv[1]){var na=el("a","nav",nv[0]);na.href=nv[1];na.target="_blank";na.rel="noopener noreferrer";c.appendChild(na)}
+  if(o.chatOn){c.appendChild(btn(ocT("chat"),"sec occh",function(){openDw("c",o.no)}))}
   if(g==="accepted"){
     step(c,t("arrQ1")+place+t("arrQ2"));
     c.appendChild(btn(t("arrBtn"),"",function(b){act("courierArrived",o.no,[],b)}));
@@ -715,6 +721,8 @@ function card(o,mine){
   }else if(g==="atdest"){
     bill(c,o);
     c.appendChild(el("div","gde",o.isCash?t("gdeC1")+o.total+t("sar")+t("gdeC2"):t("gdeT")));
+    try{var pdm=/هيدفع:\s*(\d+)/.exec(o.notes||""),pdv=pdm?Number(pdm[1]):0,chg=Math.round((pdv-Number(o.total))*100)/100;
+      if(o.isCash&&pdv&&chg>0){var cb=el("div","occash");cb.appendChild(document.createTextNode(ocT("pays")+pdv+t("sar")+" ← "+ocT("chg")));var cbb=el("b",null,chg+t("sar"));cb.appendChild(cbb);c.appendChild(cb)}}catch(eCh){}
     if(o.atdestAt)waitBox(c,o);
     step(c,t("delH"));
     var pin=field(c,t("pinL"),"tel",null,t("pinP"));pin.maxLength=4;pin.inputMode="numeric";pin.dir="ltr";
@@ -1364,5 +1372,33 @@ function rcptEl(txt,o){o=o||{};var P=rcptParse(txt);if(!P.lines.length)return nu
 /* المحادثة: خانة الكتابة وزرار «إرسال» مرفوعين شوية علشان مفيش أي زرار عايم يغطي عليهم */
 #dw .chatR{padding-bottom:calc(56px + env(safe-area-inset-bottom,0px));position:relative;z-index:2}
 #dw .chatR button{position:relative;z-index:3}
+</style>
+<script>
+/* ===== الشكل الجديد لصفحة المندوب: كارت أوضح وهو سايق ===== */
+var OCT={det:["التفاصيل ▾","Details ▾"],fee:["أجرك ","Your fee "],cash:["💵 كاش","💵 Cash"],paid:["💳 مدفوع","💳 Paid"],near:["📍 موقع العميل على الخريطة","📍 Customer location on map"],
+ s1:["قبلت","Accepted"],s2:["استلمت","Picked up"],s3:["في الطريق","On the way"],s4:["عند العميل","At customer"],
+ pays:["💵 العميل بيدفع ","💵 Customer pays "],chg:["جهّز الباقي ","Bring change "],chat:["💬 راسل العميل","💬 Message customer"]};
+function ocT(k){return OCT[k][LANG==="en"?1:0]}
+function ocRoute(o,mine){var w=el("div","ocr"),ln=el("div","ocl");ln.appendChild(el("i"));ln.appendChild(el("span"));ln.appendChild(el("i","d"));w.appendChild(ln);
+  var tx=el("div","oct"),dest=String(o.dest||"").split(/https?:\/\//)[0].replace(/[|،,\s]+$/,"").trim().slice(0,70)||ocT("near");
+  tx.appendChild(el("b",null,o.pickupName||String(o.pickup||"").split(/https?:\/\//)[0].trim().slice(0,50)));tx.appendChild(el("b",null,dest));w.appendChild(tx);
+  var box=el("div");box.appendChild(w);
+  if(!o.kid){var m=el("div","ocm");m.appendChild(el("span","f",ocT("fee")+o.fee+t("sar")));m.appendChild(el("span",null,o.isCash?ocT("cash"):ocT("paid")));box.appendChild(m)}
+  return box}
+function ocProg(g){var n=(g==="accepted"||g==="arrived"||g==="invoiced")?1:g==="picked"?2:g==="ontheway"?3:g==="atdest"?4:0,w=el("div","ocp"),b=el("div","bar");
+  for(var i=1;i<=4;i++)b.appendChild(el("i",i<=n?"on":""));w.appendChild(b);
+  var l=el("div","lb");["s1","s2","s3","s4"].forEach(function(k,i){l.appendChild(el("span",i+1===n?"on":"",ocT(k)))});w.appendChild(l);return w}
+</script>
+<style>
+.ocr{display:flex;gap:10px;margin:10px 0 6px}.ocl{display:flex;flex-direction:column;align-items:center;padding-top:6px}
+.ocl i{width:12px;height:12px;border-radius:50%;background:#f2b544;flex:none}.ocl i.d{background:var(--br)}.ocl span{flex:1;width:2px;min-height:16px;background:var(--ln);margin:3px 0}
+.oct{display:flex;flex-direction:column;gap:12px;min-width:0}.oct b{font-family:"Readex Pro","IBM Plex Sans Arabic",Tahoma,sans-serif;font-size:16px;line-height:1.3;overflow-wrap:anywhere}
+.ocm{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 2px}.ocm span{background:var(--br2,#e1eeec);color:var(--br);border-radius:99px;padding:3px 11px;font-size:13px;font-weight:700}
+.ocm span.f{background:#f2b544;color:#3b2300}
+details.ocd{margin-top:6px}details.ocd summary{cursor:pointer;color:var(--br);font-weight:700;font-size:14px;padding:4px 0}
+.ocp{margin:10px 0 4px}.ocp .bar{display:flex;gap:4px}.ocp .bar i{flex:1;height:6px;border-radius:6px;background:var(--ln)}.ocp .bar i.on{background:var(--br)}
+.ocp .lb{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mu);margin-top:4px}.ocp .lb span.on{color:var(--br);font-weight:800}
+.occash{margin-top:10px;padding:10px 12px;border-radius:14px;background:#fef9c3;border:1.5px solid #fde047;color:#713f12;font-weight:700;font-size:15px}.occash b{font-size:19px}
+.oc>button:not(.sec){padding:15px;font-size:17px}
 </style>
 </body></html>
