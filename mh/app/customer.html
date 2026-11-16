@@ -2288,4 +2288,15 @@ card.classList.add("otc");draw();back1();
 var n=0,iv=setInterval(function(){var was=MULTI;multiOk();if(was!==MULTI&&card.classList.contains("otc"))draw();if(++n>=5)clearInterval(iv)},2000);   // بيعيد الرسم بس لو الإعداد اتغيّر فعلًا
 })();
 </script>
+<style>
+.card[data-ot="gift"] label[data-i="pay"],.card[data-ot="gift"] #pay,.card[data-ot="gift"] small[data-i="cash"],.card[data-ot="gift"] #xcashw{display:none!important}
+#giftpn{display:none;margin-top:12px;padding:10px 12px;border-radius:14px;border:1.5px solid #f2b544;background:rgba(242,181,68,.12);font-weight:700;font-size:14px}
+.card[data-ot="gift"] #giftpn{display:block}
+</style>
+<script>
+/* 🎁 الهدية: مفيش كاش (المستلم مش هو اللي بيدفع)، صاحب الهدية بيحوّل بعد الفاتورة من صفحة التتبع */
+(function(){var p=document.getElementById("pay");if(!p)return;var n=document.createElement("div");n.id="giftpn";
+  function tx(){var e=false;try{e=LANG==="en"}catch(x){}n.textContent=e?"🎁 Gifts aren't paid in cash: after the courier uploads the restaurant invoice, you'll see the amount and transfer details on the tracking page.":"🎁 الهدية مش بتتدفع كاش: بعد ما المندوب يرفع فاتورة المطعم، هيظهرلك المبلغ وطريقة التحويل في صفحة التتبع."}
+  tx();p.parentNode.insertBefore(n,p);var lb=document.getElementById("lang");if(lb)lb.addEventListener("click",function(){setTimeout(tx,0)})})();
+</script>
 </body></html>
