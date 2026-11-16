@@ -819,11 +819,15 @@ ui();
 #giftbox{border:2px solid #f2b544;background:rgba(242,181,68,.10)}#giftbox .gt{font-weight:800;font-size:17px}#giftbox .ga{font-size:20px;font-weight:800;margin:6px 0;color:var(--br)}
 #giftbox pre{white-space:pre-wrap;font:inherit;background:var(--card);border:1px dashed var(--ln);border-radius:12px;padding:10px;margin:6px 0;direction:auto}
 #giftbox .gs{margin-top:8px;font-weight:700}
+#giftbox .gpm{background:var(--card);border:1.5px solid var(--ln);border-radius:14px;padding:10px 12px;margin:8px 0}
+#giftbox .gpn{font-size:13px;font-weight:800;color:var(--mu);margin-bottom:4px}
+#giftbox .gpr{display:flex;align-items:center;gap:8px}#giftbox .gpv{flex:1;min-width:0;font-size:18px;letter-spacing:.5px;overflow-wrap:anywhere;text-align:left;font-variant-numeric:tabular-nums}
+#giftbox .gpc{width:auto;margin:0;padding:8px 14px;font-size:14px;flex:none}
 </style>
 <script>
 /* ===== 🎁 الهدية: صاحب الهدية بيحوّل بعد الفاتورة ويرفع صورة التحويل ===== */
 (function(){
-var G={title:["🎁 ادفع تمن الهدية","🎁 Pay for the gift"],amt:["المبلغ المطلوب: ","Amount: "],amt2:[" (الفاتورة + التوصيل)"," (invoice + delivery)"],to:["حوّل على:","Transfer to:"],up:["📷 ارفع صورة التحويل","📷 Upload transfer photo"],chg:["📷 غيّر الصورة","📷 Change photo"],
+var G={cp:["📋 نسخ","📋 Copy"],cpd:["✓ اتنسخ","✓ Copied"],title:["🎁 ادفع تمن الهدية","🎁 Pay for the gift"],amt:["المبلغ المطلوب: ","Amount: "],amt2:[" (الفاتورة + التوصيل)"," (invoice + delivery)"],to:["حوّل على:","Transfer to:"],up:["📷 ارفع صورة التحويل","📷 Upload transfer photo"],chg:["📷 غيّر الصورة","📷 Change photo"],
  wait:["⏳ الصورة وصلت، بنأكد التحويل ونبلّغ المندوب","⏳ Got it, we're confirming the transfer"],ok:["✅ التحويل اتأكد، والمندوب في الطريق للي هيستلم","✅ Transfer confirmed, the courier is on the way"],no:["❌ مقدرناش نأكد التحويل، كلّم خدمة العملاء أو ارفع صورة تانية","❌ We couldn't confirm the transfer, contact support or upload another photo"],
  pre:["🎁 بعد ما المندوب يرفع فاتورة المطعم، هيظهرلك هنا المبلغ وطريقة التحويل","🎁 After the courier uploads the restaurant invoice, the amount and transfer details appear here"],bad:["الصورة ما اترفعتش، جرّب تاني","Upload failed, try again"],send:["بنرفع…","Uploading…"]};
 function g(k){var e=false;try{e=LANG==="en"}catch(x){}return G[k][e?1:0]}
@@ -838,7 +842,14 @@ function draw(){var r=LR;B.textContent="";if(!r||!r.gift||r.status==="تم ال�
   if(r.giftSt==="ok"){B.appendChild(el("div","gs",g("ok")));return}
   if(!r.giftReady){B.appendChild(el("div","mu",g("pre")));return}
   B.appendChild(el("div","ga",g("amt")+r.giftTotal+" جنيه"));B.appendChild(el("div","mu",g("amt2")));
-  if(r.giftPay){B.appendChild(el("div",null,g("to")));B.appendChild(el("pre",null,r.giftPay))}
+  if(r.giftPay){B.appendChild(el("div",null,g("to")));
+    /* كل طريقة تحويل في كارت لوحدها: اسمها، والرقم كبير وواضح، وزرار نسخ */
+    String(r.giftPay).split(/\n+/).forEach(function(line){line=line.trim();if(!line)return;var i=line.indexOf(":"),nm=i>0?line.slice(0,i).trim():"",vl=(i>0?line.slice(i+1):line).trim();
+      var k=el("div","gpm");if(nm)k.appendChild(el("div","gpn",nm));var row=el("div","gpr"),v=el("b","gpv",vl);v.dir="ltr";row.appendChild(v);
+      var cb=el("button","gpc",g("cp"));cb.type="button";cb.onclick=function(){var ok=function(){cb.textContent=g("cpd");setTimeout(function(){cb.textContent=g("cp")},2000)};
+        try{navigator.clipboard.writeText(vl).then(ok,function(){fb()})}catch(e){fb()}
+        function fb(){try{var ta=document.createElement("textarea");ta.value=vl;ta.style.cssText="position:fixed;opacity:0";document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();ok()}catch(x){}}};
+      row.appendChild(cb);k.appendChild(row);B.appendChild(k)})}
   if(r.giftSt==="wait"){B.appendChild(el("div","gs",g("wait")))}
   else{if(r.giftSt==="no")B.appendChild(el("div","gs",g("no")));
     var b=el("button",null,g("up"));b.type="button";b.onclick=function(){F.click()};B.appendChild(b)}
