@@ -673,6 +673,7 @@ function card(o,mine){
   else if(o.kidNo)c.appendChild(el("div","rsx a",t("mainK")));
   /* الشكل الجديد: من وين ← لوين، وأجره ونوع الدفع بشكل واضح. والتفاصيل للطلبات المتاحة متقفلة (تتفتح بالضغط) */
   try{c.appendChild(ocRoute(o,mine))}catch(eRt){}
+  if(/هدية/.test(o.pay||"")){var gbn=el("div","occash");gbn.textContent=LANG==="en"?"🎁 Gift: paid by bank transfer by the sender. Do not collect anything from the recipient.":"🎁 هدية: الفلوس بتتحول من صاحب الهدية. متاخدش أي فلوس من المستلم.";c.appendChild(gbn)}
   var c0=c;if(!mine){var det=document.createElement("details");det.className="ocd";var smy=document.createElement("summary");smy.textContent=ocT("det");det.appendChild(smy);c.appendChild(det);c=det}
   row(c,t("pickFrom"),o.pickup);
   if(o.rs){var rx=o.rs,rc="rsx",rt2="";
@@ -757,6 +758,7 @@ function card(o,mine){
         if(confirm(LANG==="en"?"Did you see the transfer success message on the customer's phone?":"شفت رسالة التحويل على موبايل العميل؟"))act("courierDeliver",o.no,["","","",pin.value.trim()],b)}));
     }else{
       var rf=field(c,t("ref"),"text",null,t("refP"));
+      if(/هدية/.test(o.pay||""))rf.value="هدية مدفوعة";
       var ph2=photo(c,t("photoTr"));
       c.appendChild(btn(t("trBtn"),"",function(b){
         if(!pinOk())return;
