@@ -1405,4 +1405,22 @@ details.ocd{margin-top:6px}details.ocd summary{cursor:pointer;color:var(--br);fo
 .occash{margin-top:10px;padding:10px 12px;border-radius:14px;background:#fef9c3;border:1.5px solid #fde047;color:#713f12;font-weight:700;font-size:15px}.occash b{font-size:19px}
 .oc>button:not(.sec){padding:15px;font-size:17px}
 </style>
+<script>
+/* ===== 📞 نغمة التنبيه: رنّة تليفون (رنّتين سريعتين) لكل التنبيهات ===== */
+(function(){
+function ring(){
+  try{navigator.vibrate&&navigator.vibrate([400,120,400,120,400])}catch(e){}
+  try{if(typeof SND!=="undefined"&&!SND)return}catch(e){}
+  var A=null;try{A=AC}catch(e){}
+  try{if(!A){var C=window.AudioContext||window.webkitAudioContext;if(!C)return;A=new C();try{AC=A}catch(e){}}if(A.state==="suspended")A.resume()}catch(e){return}
+  try{var t0=A.currentTime+.03;
+    [0,1.2].forEach(function(st){var s=t0+st,o1=A.createOscillator(),o2=A.createOscillator(),g1=A.createGain(),g2=A.createGain(),m=A.createGain();
+      o1.type="triangle";o2.type="sine";o1.connect(g1);o2.connect(g2);g1.connect(m);g2.connect(m);m.connect(A.destination);g1.gain.value=1;g2.gain.value=.35;
+      m.gain.setValueAtTime(.0001,s);m.gain.exponentialRampToValueAtTime(.45,s+.02);m.gain.setValueAtTime(.45,s+.88);m.gain.exponentialRampToValueAtTime(.0001,s+.96);
+      for(var k=0;k<32;k++){var tt=s+k*.03;o1.frequency.setValueAtTime(k%2?1560:1240,tt);o2.frequency.setValueAtTime(k%2?3120:2480,tt)}
+      o1.start(s);o2.start(s);o1.stop(s+.98);o2.stop(s+.98)})}catch(e){}}
+if(typeof window.beep==="function")window.beep=ring;
+if(typeof window.beepA==="function")window.beepA=ring;
+})();
+</script>
 </body></html>
