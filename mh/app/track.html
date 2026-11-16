@@ -815,4 +815,44 @@ var lb=document.getElementById("lang");if(lb)lb.addEventListener("click",functio
 ui();
 })();
 </script>
+<style>
+#giftbox{border:2px solid #f2b544;background:rgba(242,181,68,.10)}#giftbox .gt{font-weight:800;font-size:17px}#giftbox .ga{font-size:20px;font-weight:800;margin:6px 0;color:var(--br)}
+#giftbox pre{white-space:pre-wrap;font:inherit;background:var(--card);border:1px dashed var(--ln);border-radius:12px;padding:10px;margin:6px 0;direction:auto}
+#giftbox .gs{margin-top:8px;font-weight:700}
+</style>
+<script>
+/* ===== 🎁 الهدية: صاحب الهدية بيحوّل بعد الفاتورة ويرفع صورة التحويل ===== */
+(function(){
+var G={title:["🎁 ادفع تمن الهدية","🎁 Pay for the gift"],amt:["المبلغ المطلوب: ","Amount: "],amt2:[" (الفاتورة + التوصيل)"," (invoice + delivery)"],to:["حوّل على:","Transfer to:"],up:["📷 ارفع صورة التحويل","📷 Upload transfer photo"],chg:["📷 غيّر الصورة","📷 Change photo"],
+ wait:["⏳ الصورة وصلت، بنأكد التحويل ونبلّغ المندوب","⏳ Got it, we're confirming the transfer"],ok:["✅ التحويل اتأكد، والمندوب في الطريق للي هيستلم","✅ Transfer confirmed, the courier is on the way"],no:["❌ مقدرناش نأكد التحويل، كلّم خدمة العملاء أو ارفع صورة تانية","❌ We couldn't confirm the transfer, contact support or upload another photo"],
+ pre:["🎁 بعد ما المندوب يرفع فاتورة المطعم، هيظهرلك هنا المبلغ وطريقة التحويل","🎁 After the courier uploads the restaurant invoice, the amount and transfer details appear here"],bad:["الصورة ما اترفعتش، جرّب تاني","Upload failed, try again"],send:["بنرفع…","Uploading…"]};
+function g(k){var e=false;try{e=LANG==="en"}catch(x){}return G[k][e?1:0]}
+var R=document.getElementById("r");if(!R)return;
+var B=document.createElement("div");B.className="card hide";B.id="giftbox";
+var anchor=document.getElementById("tsg")||R.querySelector(".hero");if(anchor)anchor.parentNode.insertBefore(B,anchor.nextSibling);else R.insertBefore(B,R.firstChild);
+var F=document.createElement("input");F.type="file";F.accept="image/*";F.className="hide";document.body.appendChild(F);
+var LR=null,MSG="";
+function draw(){var r=LR;B.textContent="";if(!r||!r.gift||r.status==="تم التسليم"||r.status==="ملغي"){B.classList.add("hide");return}B.classList.remove("hide");
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+  B.appendChild(el("div","gt",g("title")));
+  if(r.giftSt==="ok"){B.appendChild(el("div","gs",g("ok")));return}
+  if(!r.giftReady){B.appendChild(el("div","mu",g("pre")));return}
+  B.appendChild(el("div","ga",g("amt")+r.giftTotal+" جنيه"));B.appendChild(el("div","mu",g("amt2")));
+  if(r.giftPay){B.appendChild(el("div",null,g("to")));B.appendChild(el("pre",null,r.giftPay))}
+  if(r.giftSt==="wait"){B.appendChild(el("div","gs",g("wait")))}
+  else{if(r.giftSt==="no")B.appendChild(el("div","gs",g("no")));
+    var b=el("button",null,g("up"));b.type="button";b.onclick=function(){F.click()};B.appendChild(b)}
+  if(MSG)B.appendChild(el("div","mu",MSG))}
+F.onchange=function(){var f=this.files&&this.files[0];this.value="";if(!f||!/^image\//.test(f.type)||!LR)return;
+  var u=URL.createObjectURL(f),im=new Image();
+  im.onload=function(){var d="";try{var sc=Math.min(1,1200/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement("canvas");c.width=Math.round(im.naturalWidth*sc);c.height=Math.round(im.naturalHeight*sc);
+    var x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);d=c.toDataURL("image/jpeg",.7);if(d.length>650000)d=c.toDataURL("image/jpeg",.5)}catch(e){d=""}
+    URL.revokeObjectURL(u);if(!d||d.length>700000){MSG=g("bad");draw();return}
+    MSG=g("send");draw();
+    try{google.script.run.withSuccessHandler(function(x){MSG="";if(x&&x.ok){LR.giftSt=x.st||"wait"}else MSG=g("bad");draw()}).withFailureHandler(function(){MSG=g("bad");draw()}).trackGiftProof(cur.no,cur.p4,d)}catch(e){MSG=g("bad");draw()}};
+  im.onerror=function(){URL.revokeObjectURL(u);MSG=g("bad");draw()};im.src=u};
+var _r=window.render;if(typeof _r==="function")window.render=function(r){var x=_r.apply(this,arguments);try{LR=r;draw()}catch(e){}return x};
+var lb=document.getElementById("lang");if(lb)lb.addEventListener("click",function(){setTimeout(draw,0)});
+})();
+</script>
 </body></html>
