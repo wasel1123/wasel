@@ -1177,8 +1177,7 @@ function tPaint(){tw.textContent="";if(TSEL<0){for(var k=0;k<TT.length;k++){if(T
     b.onclick=function(){TSEL=i;ty.selectedIndex=x[3];ty.dispatchEvent(new Event("change"));tPaint()};tw.appendChild(b)})}
 ty.addEventListener("change",function(){if(TSEL<0||TT[TSEL][3]!==ty.selectedIndex){TSEL=-1;tPaint()}});
 try{new MutationObserver(function(){tPaint()}).observe(document.documentElement,{attributes:true,attributeFilter:["lang"]})}catch(e){}
-/* 3) لو المطعم الشريك عنده منيو: المنيو بيفتح لوحده عشان يختار بـ ➕ و ➖ بدل الكتابة */
-var pk=$i("pk");if(pk)pk.addEventListener("change",function(){var v=pk.value;try{if(v&&v!=="x"&&MR.indexOf(v)>=0&&!CLOSED[v]&&!$i("items").value.trim()){MTGT="items";mOpen(v)}}catch(e){}});
+/* المنيو ما يفتحش لوحده لما العميل يختار المطعم: يفتح بس من زر «📖 شوف منيو» في خطوة «وش تبي؟» */
 tPaint();
 })();
 </script>
