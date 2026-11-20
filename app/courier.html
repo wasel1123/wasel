@@ -1423,4 +1423,28 @@ if(typeof window.beep==="function")window.beep=ring;
 if(typeof window.beepA==="function")window.beepA=ring;
 })();
 </script>
+<style>
+#xcph{display:flex;gap:6px;margin:6px 0 2px}
+#xcph button{width:auto;margin:0;padding:6px 12px;border-radius:99px;font-size:13px;font-weight:800}
+</style>
+<script>
+/* ===== المحادثة مع العميل: 📷 صورة (باب البيت مثلاً) ===== */
+(function(){
+function $c(i){return document.getElementById(i)}
+var q=$c("cqr"),err=$c("cerr");if(!q||typeof pickImg!=="function")return;
+var row=document.createElement("div");row.id="xcph";var b=document.createElement("button");b.type="button";
+var fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.className="hide";
+row.appendChild(b);row.appendChild(fi);q.parentNode.insertBefore(row,q.nextSibling);
+function lbl(){b.textContent=(typeof LANG!=="undefined"&&LANG==="en")?"📷 Photo":"📷 صورة"}lbl();
+var lb=$c("lang");if(lb)lb.addEventListener("click",function(){setTimeout(lbl,150)});
+b.onclick=function(){fi.click()};
+fi.onchange=function(){var o=typeof curOrder==="function"?curOrder():null;if(!o){fi.value="";return}
+  pickImg(fi,function(d){fi.value="";if(!d){err.textContent=(typeof t==="function"?t("noExec"):"");return}
+    b.disabled=true;err.textContent="…";
+    google.script.run.withSuccessHandler(function(r){b.disabled=false;
+      if(r&&r.ok){err.textContent="";o.chat=r.chat;try{drawUi()}catch(e){}}else err.textContent=(typeof tm==="function"?tm(r&&r.msg):(r&&r.msg))||""})
+    .withFailureHandler(function(){b.disabled=false;err.textContent=(typeof t==="function"?t("noConn"):"")}).courierChatPhoto(CODE,o.no,d)})};
+})();
+</script>
+
 </body></html>
