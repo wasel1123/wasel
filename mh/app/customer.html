@@ -2354,6 +2354,8 @@ list.addEventListener("click",function(e){if(e.target.closest(".pkr[data-i]")&&s
 #xmore.on #xmoreb{border-style:solid!important;border-color:var(--br)!important;border-radius:12px 12px 0 0}
 #xmorec{display:none;border:1.5px solid var(--br);border-top:0;border-radius:0 0 12px 12px;padding:4px 12px 12px}
 #xmore.on #xmorec{display:block}
+/* صورة باب البيت بقت في المحادثة مع المندوب */
+label[data-i="door"],#doorb,#doors{display:none!important}
 </style>
 <script>
 (function(){
@@ -2379,12 +2381,12 @@ var q=function(s){return document.querySelector(s)};
 var et=$m("xeta");if(et&&et.parentNode===w3)w3.insertBefore(et,box.nextSibling);
 function txt(){var on=box.classList.contains("on");b.innerHTML="";var s=document.createElement("span");
   s.textContent=(on?"➖ ":"➕ ")+(en()?"More details":"تفاصيل إضافية");var sm=document.createElement("small");sm.textContent=en()?"optional":"اختياري";b.appendChild(s);b.appendChild(sm)}
-b.onclick=function(){box.classList.toggle("on");txt()};txt();
+var TOUCH=false;b.onclick=function(){TOUCH=true;box.classList.toggle("on");txt()};txt();
 var lb=$m("lang");if(lb)lb.addEventListener("click",function(){setTimeout(txt,150)});
 /* لو فيه حاجة متكتبة أو متعلّمة جوّا، يفتح لوحده عشان ما تضيعش */
-function filled(){var f=false;c.querySelectorAll("input,textarea").forEach(function(e){if(e.type==="file"||e.type==="hidden"||e.classList.contains("hide"))return;if(e.type==="checkbox"?e.checked:(e.value||"").trim())f=true});
-  var ds=$m("doors");if(ds&&(ds.textContent||"").trim())f=true;return f}
-setInterval(function(){if(!box.classList.contains("on")&&filled()){box.classList.add("on");txt()}},1200);
+/* يفتح لوحده بس لو العميل كتب حاجة بنفسه (وصف المكان، بتدفع كم، ملاحظات)، ولو قفلها مايفتحش تاني */
+function filled(){var f=false;["dt","xcash","nt"].forEach(function(i){var e=$m(i);if(e&&(e.value||"").trim())f=true});return f}
+setInterval(function(){if(!TOUCH&&!box.classList.contains("on")&&filled()){box.classList.add("on");txt()}},1200);
 })();
 </script>
 
