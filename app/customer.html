@@ -519,7 +519,7 @@ c1:["🚀 توصيل سريع","🚀 Fast delivery"],c2:["📍 تتبّع طلب
 sp0:["أهلًا بك في واصل 👋","Welcome to Wasel 👋"],sp1:["من أي مطعم أو متجر في عنيزة… لين باب بيتك.","From any restaurant or store in Unayzah… to your door."],sp2:["💰 سعر المطعم الحقيقي، بدون زيادة على الأصناف.","💰 The restaurant's real price, no markup on items."],sp3:["🧾 رسوم توصيل واضحة قبل التأكيد، بدون رسوم خفية.","🧾 A clear delivery fee before you confirm, no hidden fees."],sp4:["📸 تتبّع طلبك وشوف فاتورته خطوة بخطوة.","📸 Track your order and see its invoice step by step."],sp5:["🚀 واصل… دايم متواصل معك","🚀 Wasel… always connected with you"],spSkip:["تخطي ›","Skip ›"],spOn:["🔊 صوت","🔊 Sound"],spOff:["🔇 صوت","🔇 Sound"],spTap:["🔊 اضغط لتشغيل الصوت","🔊 Tap for sound"],
 title:["اطلب توصيل","Order a delivery"],only:["الخدمة داخل مدينة عنيزة فقط.","Delivery within Unayzah city only."],
 wb:["👋 أهلاً بك يا ","👋 Welcome, "],schC:["⏰ تبي الطلب يوصلك في وقت معيّن؟","⏰ Deliver at a specific time"],schT:["اليوم","Today"],schTm:["بكرة","Tomorrow"],schBad:["اختر موعد بعد ساعة على الأقل من الحين","Choose a time at least one hour from now"],schH:["بنرسل الطلب للمندوب قبل الموعد بشوي","The order goes to a courier shortly before that time"],refL:["كود دعوة من خويّك (اختياري)","Friend's invite code (optional)"],refMy:["🎁 كود دعوتك: ","🎁 Your invite code: "],refH:["أرسله لخويّك، وإذا كمّل أول طلب له تاخذون أنتم الثنين {p} نقطة","Send it to a friend; when they complete their first order you both get {p} points"],refCp:["نسخ","Copy"],refOk:["✓ تم النسخ","✓ Copied"],rbT:["🧾 بيانات طلبك الجاهز","🧾 Your ready order details"],rbH:["طلبت من تطبيق المطعم وتبينا نستلمه؟ اكتب رقم الطلب أو الاسم اللي عليه، أو ارفع صورة الفاتورة (وحدة على الأقل).","Ordered from the restaurant app and want us to pick it up? Enter the order number or the name on it, or upload the invoice photo (at least one)."],rbNo:["رقم الطلب في تطبيق المطعم","Order number in the restaurant app"],rbName:["الطلب باسم مين","Name on the order"],rbImg:["صورة الفاتورة أو الطلب","Invoice or order photo"],rbPick:["📷 اختر / صوّر الصورة","📷 Choose / take photo"],rbChg:["📷 تغيير الصورة","📷 Change photo"],rbReady:["✓ الصورة جاهزة","✓ Photo ready"],rbBad:["تعذر تجهيز الصورة، جرّب صورة أخرى","Could not prepare the photo, try another"],rbNeed:["اكتب رقم الطلب أو الاسم اللي عليه، أو ارفع صورة الفاتورة","Enter the order number or the name on it, or upload the invoice photo"],wbc:["ليس أنت؟ تغيير الاسم أو الرقم","Not you? Change name or number"],name:["الاسم","Name"],phone:["رقم الجوال","Phone number"],type:["نوع الطلب","Order type"],pickup:["موقع الاستلام","Pickup location"],
-pko:["اكتب اسم المكان","Type the place name"],pkl:["رابط موقع الاستلام (يُعبّأ تلقائيًا للمطاعم المعروفة)","Pickup location link (auto-filled for known restaurants)"],
+pko:["اكتب اسم المكان","Type the place name"],pkl:["📍 الصق موقع المتجر أو موقع استلام الطلب","📍 Paste the store or pickup location link"],
 pks:["🔍 ابحث عن المطعم أو المتجر…","🔍 Search for a restaurant or store…"],pkLg:["📋 = عنده منيو تطلب منه مباشرة","📋 = has a menu you can order from"],
 pkNone:["ما فيه نتيجة بهالاسم. اختر «أخرى» من القائمة واكتب الاسم.","No match. Choose “Other” from the list and type the name."],
 loyPts:["⭐ نقاطك: {p} من {n} — باقي {r} نقطة للتوصيل المجاني","⭐ Your points: {p} of {n} — {r} more for free delivery"],
@@ -2294,4 +2294,38 @@ var n=0,iv=setInterval(function(){var was=MULTI;multiOk();if(was!==MULTI&&card.c
 window.mRender=function(rest){var x=_m.apply(this,arguments);try{if(!PART[rest]){var b=document.getElementById("mbody"),p=document.createElement("p");p.className="mnp";
   p.textContent=LANG==="en"?"ℹ️ This restaurant isn't a Wasel partner. Prices are from its menu and may differ slightly; the courier pays the real price on the invoice.":"ℹ️ المطعم هذا مو شريك لواصل. الأسعار من منيو المطعم وممكن تختلف شوي، والمندوب يدفع السعر الحقيقي اللي في الفاتورة.";b.insertBefore(p,b.firstChild)}}catch(e){}return x}})();
 </script>
+<style>
+/* ===== صفحة العميل أخف: نوع الطلب أزرار صغيرة، والبحث جوّا خانة اختيار المطعم ===== */
+.wtiles{display:flex!important;flex-wrap:wrap;gap:6px;margin-top:6px}
+.wtile{flex-direction:row!important;padding:7px 14px!important;border-radius:99px!important;font-size:14px!important;box-shadow:none!important;border-width:1.5px!important;gap:0!important}
+.wtile i{display:none!important}
+#pkBox .pkw{display:none;padding:8px 8px 4px;border:1px solid var(--ln);border-bottom:0;border-radius:14px 14px 0 0;margin-top:6px;background:var(--card,var(--bg))}
+#pkBox.open .pkw{display:block}
+#pkBox.open .pkl{margin-top:0;border-top:0;border-radius:0 0 14px 14px}
+#pkBox .pkw .pks{margin:0 0 6px}#pkBox .pkw .cats{margin:2px 0 4px}
+#pkBox .pkf{display:none;padding:8px 4px 2px;text-align:center}
+#pkBox.open .pkf{display:block}
+#pkBox .pkf small{display:block;color:var(--mu);font-size:12px;line-height:1.6}
+</style>
+<script>
+(function(){
+var box=document.getElementById("pkBox"),pk=document.getElementById("pk");if(!box||!pk)return;
+var cur=box.querySelector(".pkc"),list=box.querySelector(".pkl");if(!cur||!list)return;
+function en(){try{return LANG==="en"}catch(e){return false}}
+/* البحث والتصنيفات جوّا الخانة نفسها */
+var w=document.createElement("div");w.className="pkw";box.insertBefore(w,list);
+["pks","pkn","cats"].forEach(function(id){var e=document.getElementById(id);if(e)w.appendChild(e)});
+/* تحت القايمة: سطور الشرح («غير موجود في القائمة» موجود أصلاً جوّا القايمة) */
+var f=document.createElement("div");f.className="pkf";box.appendChild(f);
+var lg=document.getElementById("pkm"),pt=document.querySelector('small[data-i="partner"]');
+if(lg)f.appendChild(lg);if(pt)f.appendChild(pt);
+/* لما تفتح الخانة: البحث جاهز. والبحث ما يقفلش القايمة وهي فاضية */
+var s=document.getElementById("pks");
+cur.addEventListener("click",function(){if(box.classList.contains("open")&&s&&window.innerWidth>700)setTimeout(function(){try{s.focus()}catch(e){}},30)});
+if(s)s.addEventListener("input",function(){box.classList.add("open")});
+/* اختيار مطعم: القايمة تقفل والبحث يتمسح */
+list.addEventListener("click",function(e){if(e.target.closest(".pkr[data-i]")&&s&&s.value){s.value="";try{s.dispatchEvent(new Event("input",{bubbles:true}))}catch(e2){}box.classList.remove("open")}});
+})();
+</script>
+
 </body></html>
