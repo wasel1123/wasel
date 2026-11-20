@@ -837,4 +837,55 @@ var _r=window.render;if(typeof _r==="function")window.render=function(r){var x=_
 var lb=document.getElementById("lang");if(lb)lb.addEventListener("click",function(){setTimeout(draw,0)});
 })();
 </script>
+<style>
+#xcht{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 2px}
+#xcht button{width:auto;margin:0;padding:6px 12px;border-radius:99px;font-size:13px;background:var(--br2,rgba(14,79,76,.1));color:var(--br);border:0;font-weight:800}
+#xcht small{flex-basis:100%;color:var(--mu);font-size:11.5px}
+.chatL .b a{font-weight:800;text-decoration:underline;color:inherit}
+</style>
+<script>
+/* ===== المحادثة مع المندوب: 📷 صورة (باب البيت مثلاً) + 📍 موقعي الصحيح + الروابط تنفتح ===== */
+(function(){
+var T={ph:["📷 صورة","📷 Photo"],loc:["📍 أرسل موقعي","📍 Send my location"],
+ hint:["الموقع غلط؟ دوس 📍 أو الصق رابط من خرائط جوجل. تقدر ترسل صورة باب البيت هنا.","Wrong location? Tap 📍 or paste a Google Maps link. You can send a photo of your door here."],
+ send:["جاري الإرسال…","Sending…"],bad:["ما انرسلت، جرّب مرة ثانية","Not sent, try again"],gps:["فعّل الموقع في جوالك وجرّب مرة ثانية","Turn on location and try again"],
+ oImg:["📷 افتح الصورة","📷 Open photo"],oLoc:["📍 افتح الموقع","📍 Open location"]};
+function tx(k){try{return T[k][LANG==="en"?1:0]}catch(e){return T[k][0]}}
+function $t(i){return document.getElementById(i)}
+/* الروابط في الرسايل تنفتح */
+var _f=window.fillList;
+if(typeof _f==="function")window.fillList=function(box,list,me){_f.apply(this,arguments);
+  try{box.querySelectorAll(".b > span").forEach(function(s){var x=s.textContent;if(!/https?:\/\//.test(x))return;
+    s.textContent="";var re=/https?:\/\/\S+/g,last=0,m;
+    while((m=re.exec(x))){if(m.index>last)s.appendChild(document.createTextNode(x.slice(last,m.index)));
+      var a=document.createElement("a");a.href=m[0];a.target="_blank";a.rel="noopener noreferrer";a.textContent=/drive\.google\./.test(m[0])?tx("oImg"):tx("oLoc");s.appendChild(a);last=m.index+m[0].length}
+    if(last<x.length)s.appendChild(document.createTextNode(x.slice(last)))})}catch(e){}};
+/* الأزرار */
+var qr=$t("qr"),err=$t("cerr");if(!qr)return;
+var row=document.createElement("div");row.id="xcht";
+var bP=document.createElement("button");bP.type="button";var bL=document.createElement("button");bL.type="button";var h=document.createElement("small");
+var fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.className="hide";
+row.appendChild(bP);row.appendChild(bL);row.appendChild(h);row.appendChild(fi);qr.parentNode.insertBefore(row,qr.nextSibling);
+function lbl(){bP.textContent=tx("ph");bL.textContent=tx("loc");h.textContent=tx("hint")}lbl();
+var lb=$t("lang");if(lb)lb.addEventListener("click",function(){setTimeout(lbl,150)});
+function done(x){bP.disabled=bL.disabled=false;
+  if(x&&x.ok){err.textContent="";if(window.LAST)LAST.chat=x.chat;try{drawUi()}catch(e){}}else err.textContent=(x&&x.msg)?(typeof tm==="function"?tm(x.msg):x.msg):tx("bad")}
+function fail(){bP.disabled=bL.disabled=false;err.textContent=tx("bad")}
+bP.onclick=function(){fi.click()};
+fi.onchange=function(){var f=this.files&&this.files[0];this.value="";if(!f||!/^image\//.test(f.type)||!window.cur)return;
+  var u=URL.createObjectURL(f),im=new Image();
+  im.onload=function(){var d="";try{var sc=Math.min(1,1200/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement("canvas");c.width=Math.round(im.naturalWidth*sc);c.height=Math.round(im.naturalHeight*sc);
+    var g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);d=c.toDataURL("image/jpeg",.7);if(d.length>650000)d=c.toDataURL("image/jpeg",.5)}catch(e){d=""}
+    URL.revokeObjectURL(u);if(!d||d.length>850000){err.textContent=tx("bad");return}
+    bP.disabled=bL.disabled=true;err.textContent=tx("send");
+    google.script.run.withSuccessHandler(done).withFailureHandler(fail).trackChatPhoto(cur.no,cur.p4,d)};
+  im.onerror=function(){URL.revokeObjectURL(u);err.textContent=tx("bad")};im.src=u};
+bL.onclick=function(){if(!window.cur)return;if(!navigator.geolocation){err.textContent=tx("gps");return}
+  bP.disabled=bL.disabled=true;err.textContent=tx("send");
+  navigator.geolocation.getCurrentPosition(function(p){
+    google.script.run.withSuccessHandler(done).withFailureHandler(fail).trackChatLoc(cur.no,cur.p4,p.coords.latitude,p.coords.longitude)},
+    function(){bP.disabled=bL.disabled=false;err.textContent=tx("gps")},{enableHighAccuracy:true,timeout:15000,maximumAge:0})};
+})();
+</script>
+
 </body></html>
