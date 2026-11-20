@@ -2390,4 +2390,19 @@ setInterval(function(){if(!TOUCH&&!box.classList.contains("on")&&filled()){box.c
 })();
 </script>
 
+<style>
+/* ===== وضع الطلب: لما العميل يبدأ يطلب، الإعلانات والصاروخ يختفوا وتركيزه يبقى على الطلب (اللوجو بس فوق) ===== */
+body.wfocus header .lane{display:none!important}
+body.wfocus header{padding-top:10px!important;padding-bottom:10px!important}
+body.wfocus #hfeat,body.wfocus #offer{display:none!important}
+</style>
+<script>
+(function(){
+var card=document.querySelector(".card");if(!card)return;
+function sync(){document.body.classList.toggle("wfocus",!card.classList.contains("otc"))}
+try{new MutationObserver(sync).observe(card,{attributes:true,attributeFilter:["class"]})}catch(e){}
+sync();
+})();
+</script>
+
 </body></html>
