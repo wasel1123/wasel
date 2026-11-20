@@ -1976,7 +1976,7 @@ show(1,true);
 </style>
 <script>
 (function(){
-var X={ph:["📷 صوّر ورقة الطلب","📷 Photo of your list"],rec:["🎤 سجّل طلبك بصوتك","🎤 Record your order"],stop:["⏹ وقّف التسجيل","⏹ Stop recording"],
+var X={ph:["📷 صورة","📷 Photo"],rec:["🎤 صوت","🎤 Voice"],stop:["⏹ وقّف التسجيل","⏹ Stop recording"],
  hint:["ممكن تكتب، أو تصوّر الورقة، أو تسجّل بصوتك","You can type, take a photo of the list, or record your voice"],
  noRec:["التسجيل مش شغال هنا، صوّر الطلب أو اكتبه","Recording isn't available here, take a photo or type it"],
  phOk:["✓ صورة الطلب جاهزة","✓ Order photo ready"],vOk:["✓ الرسالة الصوتية جاهزة","✓ Voice message ready"],rm:["✕ شيل","✕ Remove"],
@@ -2337,6 +2337,54 @@ cur.addEventListener("click",function(){if(box.classList.contains("open")&&s&&wi
 if(s)s.addEventListener("input",function(){box.classList.add("open")});
 /* اختيار مطعم: القايمة تقفل والبحث يتمسح */
 list.addEventListener("click",function(e){if(e.target.closest(".pkr[data-i]")&&s&&s.value){s.value="";try{s.dispatchEvent(new Event("input",{bubbles:true}))}catch(e2){}box.classList.remove("open")}});
+})();
+</script>
+
+<style>
+/* ===== خطوة «وش تبي؟»: الصورة والصوت أزرار صغيرة جوّا خانة الطلب ===== */
+#xiw{position:relative}
+#xiw #items{padding-bottom:52px}
+#xiw #xtools{position:absolute;bottom:10px;inset-inline-start:10px;display:flex;gap:6px;margin:0;width:auto}
+#xiw #xtools button{width:auto!important;margin:0!important;padding:6px 11px!important;border-radius:99px!important;font-size:13px!important;box-shadow:none!important}
+#xhint{display:none!important}
+/* ===== آخر خطوة: الخانات الاختيارية تحت «تفاصيل إضافية» ===== */
+#xmore{margin-top:12px}
+#xmoreb{width:100%;margin:0;display:flex;justify-content:space-between;align-items:center;background:transparent!important;color:var(--br)!important;border:1.5px dashed var(--ln)!important;border-radius:12px;padding:11px 13px;font-weight:800;font-size:14.5px;box-shadow:none!important}
+#xmoreb small{color:var(--mu);font-weight:600;font-size:12.5px}
+#xmore.on #xmoreb{border-style:solid!important;border-color:var(--br)!important;border-radius:12px 12px 0 0}
+#xmorec{display:none;border:1.5px solid var(--br);border-top:0;border-radius:0 0 12px 12px;padding:4px 12px 12px}
+#xmore.on #xmorec{display:block}
+</style>
+<script>
+(function(){
+function $m(i){return document.getElementById(i)}
+function en(){try{return LANG==="en"}catch(e){return false}}
+/* 1) الصورة والصوت جوّا خانة الطلب */
+var it=$m("items"),tl=$m("xtools");
+if(it&&tl){var w=document.createElement("div");w.id="xiw";it.parentNode.insertBefore(w,it);w.appendChild(it);w.appendChild(tl)}
+/* 2) تفاصيل إضافية (اختياري) */
+var go=$m("go"),w3=$m("wz3"),pay=$m("pay");if(!go||!w3)return;
+var box=document.createElement("div");box.id="xmore";
+var b=document.createElement("button");b.type="button";b.id="xmoreb";
+var c=document.createElement("div");c.id="xmorec";box.appendChild(b);box.appendChild(c);
+var anchor=$m("xeta")&&$m("xeta").parentNode===w3?$m("xeta"):go;
+/* بعد طريقة الدفع وسطر الكاش */
+var cashNote=pay?pay.nextElementSibling:null;
+while(cashNote&&cashNote.tagName!=="SMALL"&&cashNote!==go)cashNote=cashNote.nextElementSibling;
+var after=(cashNote&&cashNote.tagName==="SMALL")?cashNote:pay;
+if(after&&after.parentNode)after.parentNode.insertBefore(box,after.nextSibling);else w3.insertBefore(box,go);
+var q=function(s){return document.querySelector(s)};
+[q('label[data-i="dt"]'),$m("dt"),q('label[data-i="door"]'),$m("doorb"),$m("doorf"),$m("doors"),$m("xcashw"),
+ q('label[data-i="nt"]'),$m("nt"),($m("schb")&&$m("schb").previousElementSibling&&$m("schb").previousElementSibling.tagName==="LABEL"?$m("schb").previousElementSibling:null),$m("schb"),$m("schm"),$m("refl"),$m("refc"),$m("xfav")].forEach(function(e){if(e)c.appendChild(e)});
+var et=$m("xeta");if(et&&et.parentNode===w3)w3.insertBefore(et,box.nextSibling);
+function txt(){var on=box.classList.contains("on");b.innerHTML="";var s=document.createElement("span");
+  s.textContent=(on?"➖ ":"➕ ")+(en()?"More details":"تفاصيل إضافية");var sm=document.createElement("small");sm.textContent=en()?"optional":"اختياري";b.appendChild(s);b.appendChild(sm)}
+b.onclick=function(){box.classList.toggle("on");txt()};txt();
+var lb=$m("lang");if(lb)lb.addEventListener("click",function(){setTimeout(txt,150)});
+/* لو فيه حاجة متكتبة أو متعلّمة جوّا، يفتح لوحده عشان ما تضيعش */
+function filled(){var f=false;c.querySelectorAll("input,textarea").forEach(function(e){if(e.type==="file"||e.type==="hidden"||e.classList.contains("hide"))return;if(e.type==="checkbox"?e.checked:(e.value||"").trim())f=true});
+  var ds=$m("doors");if(ds&&(ds.textContent||"").trim())f=true;return f}
+setInterval(function(){if(!box.classList.contains("on")&&filled()){box.classList.add("on");txt()}},1200);
 })();
 </script>
 
