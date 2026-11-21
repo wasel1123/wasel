@@ -23,8 +23,22 @@
   }
 
   /* نداء دالة على السيرفر */
+/* ⚡ SUPA */
+  /* ⚡ الدوال السريعة (المتاجر والمنيو والعروض) من سيرفر Supabase، ولو وقع نرجع لـ Apps Script على طول */
+  var SUPA = API.indexOf("AKfycbwmS0DX") >= 0 ? "https://ozrxprkzkezpybxivjfc.supabase.co/functions/v1/api-" : "";
+  var SUPA_FN = {"storeList":1,"offersList":1,"getMenu":1,"getOffer":1,"legalLinks":1};
   function call(fn, args, ok, bad, uo) {
-    var tries = 0;
+    if (SUPA && SUPA_FN[fn]) {
+      fetch(SUPA, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ fn: fn, args: args }), cache: "no-store" })
+        .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function (d) { if (!d || d.r === undefined) throw 0; if (ok) ok(d.r, uo); })
+        .catch(function () { call0(fn, args, ok, bad, uo); });
+      return;
+    }
+    call0(fn, args, ok, bad, uo);
+  }
+  function call0(fn, args, ok, bad, uo) {
+    var tries = 0;/* ⚡ /SUPA */
     function go() {
       tries++;
       fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ fn: fn, args: args }), redirect: "follow", cache: "no-store" })
