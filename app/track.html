@@ -359,7 +359,7 @@ function MiniMap(box){
   var tl=document.createElement("div"),ml=document.createElement("div"),zc=document.createElement("div"),at=document.createElement("div"),tp=document.createElement("div");
   box.textContent="";box.appendChild(tl);box.appendChild(ml);box.appendChild(tp);
   tp.className="mtip";tp.style.display="none";
-  zc.className="mz";at.className="mat";at.textContent="© OpenStreetMap";
+  zc.className="mz";at.className="mat";at.textContent="© Esri";
   function mkBtn(tx,lab,fn){var e=document.createElement("button");e.type="button";e.textContent=tx;e.setAttribute("aria-label",lab);e.onclick=fn;zc.appendChild(e)}
   mkBtn("+","zoom in",function(){zoomAt(1)});
   mkBtn("−","zoom out",function(){zoomAt(-1)});
@@ -370,7 +370,7 @@ function MiniMap(box){
   function Y(lat,zz){var r=lat*Math.PI/180;return (1-Math.log(Math.tan(r)+1/Math.cos(r))/Math.PI)/2*Math.pow(2,zz)*256}
   function LN(x,zz){return x/256/Math.pow(2,zz)*360-180}
   function LA(y,zz){var n=Math.PI-2*Math.PI*y/256/Math.pow(2,zz);return 180/Math.PI*Math.atan(0.5*(Math.exp(n)-Math.exp(-n)))}
-  function url(zz,x,y){return carto?"https://a.basemaps.cartocdn.com/light_all/"+zz+"/"+x+"/"+y+".png":"https://tile.openstreetmap.org/"+zz+"/"+x+"/"+y+".png"}
+  function url(zz,x,y){return carto?"https://tile.openstreetmap.org/"+zz+"/"+x+"/"+y+".png":"https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/"+zz+"/"+y+"/"+x}
   function sched(){if(!raf)raf=requestAnimationFrame(function(){raf=0;draw()})}
   function rm(k){if(tiles[k].parentNode)tiles[k].parentNode.removeChild(tiles[k]);delete tiles[k]}
   function draw(){
@@ -381,7 +381,7 @@ function MiniMap(box){
         keep[key]=1;
         if(!im){im=new Image();im.alt="";im.draggable=false;im._z=z;im._x=x;im._y=y;
           im.onload=sched;
-          im.onerror=function(){if(!carto){carto=true;at.textContent="© OpenStreetMap © CARTO";for(var q in tiles)rm(q);draw()}};
+          im.onerror=function(){if(!carto){carto=true;at.textContent="© OpenStreetMap";for(var q in tiles)rm(q);draw()}};
           im.src=url(z,wx,y);tl.appendChild(im);tiles[key]=im}
         if(!(im.complete&&im.naturalWidth))ready=false}}
     for(k in tiles){
