@@ -2393,4 +2393,43 @@ sync();
 })();
 </script>
 
+<style>
+/* ===== ⭐ التقييم إجباري: طلب اتسلّم ومتقيّمش ← لازم يتقيّم قبل طلب جديد ===== */
+#wrate{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+#wrate .bx{background:var(--card,#fff);color:var(--tx,#14211f);border-radius:20px;padding:18px;max-width:380px;width:100%;text-align:center}
+#wrate h3{margin:0 0 4px}#wrate .s{font-size:34px;letter-spacing:6px;direction:ltr;cursor:pointer;color:#cbd5e1;user-select:none}#wrate .s span.on{color:#f59e0b}
+#wrate .l{font-weight:700;margin-top:10px}#wrate input{width:100%;box-sizing:border-box;margin-top:10px;padding:11px;border-radius:12px;border:1px solid #cbd5e1;font:inherit}
+#wrate button{width:100%;margin-top:12px;padding:13px;border:0;border-radius:14px;background:#0e4f4c;color:#fff;font:inherit;font-weight:800;font-size:16px}
+#wrate .e{color:#dc2626;font-weight:700;margin-top:6px;min-height:1em}
+</style>
+<script>
+(function(){
+var X={h:"⭐ قيّم طلبك اللي فات",d:"عشان نقدر نطلب لك من جديد، قيّم طلبك الأخير (ثواني بس)",svc:"الخدمة",cour:"المندوب",com:"ملاحظة (اختياري)",send:"إرسال التقييم",need:"اختر النجوم للخدمة والمندوب",bad:"ما قدرنا نرسل، جرّب مرة ثانية"};
+var E={h:"⭐ Rate your last order",d:"To place a new order, please rate your last one (a few seconds)",svc:"Service",cour:"Courier",com:"Note (optional)",send:"Send rating",need:"Pick stars for service and courier",bad:"Couldn't send, try again"};
+function L(k){try{return (LANG==="en"?E:X)[k]}catch(e){return X[k]}}
+function saved(){try{return JSON.parse(localStorage.getItem("wt")||"null")}catch(e){return null}}
+function stars(){var w=document.createElement("div");w.className="s";w.v=0;for(var i=1;i<=5;i++)(function(n){var s=document.createElement("span");s.textContent="★";s.onclick=function(){w.v=n;[].forEach.call(w.children,function(x,j){x.className=j<n?"on":""})};w.appendChild(s)})(i);return w}
+function show(w){if(document.getElementById("wrate"))return;
+  var o=document.createElement("div");o.id="wrate";var b=document.createElement("div");b.className="bx";o.appendChild(b);
+  var h=document.createElement("h3");h.textContent=L("h");b.appendChild(h);
+  var p=document.createElement("div");p.style.cssText="opacity:.75;font-size:14px";p.textContent=L("d");b.appendChild(p);
+  var l1=document.createElement("div");l1.className="l";l1.textContent=L("svc");b.appendChild(l1);var s1=stars();b.appendChild(s1);
+  var l2=document.createElement("div");l2.className="l";l2.textContent=L("cour");b.appendChild(l2);var s2=stars();b.appendChild(s2);
+  var c=document.createElement("input");c.maxLength=200;c.placeholder=L("com");b.appendChild(c);
+  var go=document.createElement("button");go.textContent=L("send");b.appendChild(go);
+  var er=document.createElement("div");er.className="e";b.appendChild(er);
+  go.onclick=function(){if(!s1.v||!s2.v){er.textContent=L("need");return}go.disabled=true;er.textContent="";
+    google.script.run.withSuccessHandler(function(r){go.disabled=false;if(r&&(r.ok||/سابق|قبل كده|قبل كدة/.test(r.msg||""))){try{localStorage.setItem("wr_done",w.no)}catch(e){}o.remove()}else er.textContent=(r&&r.msg)||L("bad")})
+      .withFailureHandler(function(){go.disabled=false;er.textContent=L("bad")}).trackRate(w.no,w.p4,s1.v,s2.v,c.value,0)};
+  document.body.appendChild(o)}
+function chk(){var w=saved();if(!w||!w.no||!w.p4)return;
+  var dn="";try{dn=localStorage.getItem("wr_done")||""}catch(e){}if(dn===w.no)return;
+  try{google.script.run.withSuccessHandler(function(r){if(!r||!r.ok)return;
+    if(r.code==="delivered"&&!r.rated)show(w);
+    else if(r.code==="delivered"||r.code==="cancelled"||r.status==="ملغي"){try{localStorage.setItem("wr_done",w.no)}catch(e){}}})
+    .withFailureHandler(function(){}).trackOrder(w.no,w.p4)}catch(e){}}
+setTimeout(chk,2500);
+})();
+</script>
+
 </body></html>
