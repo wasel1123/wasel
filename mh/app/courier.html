@@ -536,6 +536,24 @@ function bill(c,o){
   var tt=el("div","row");tt.appendChild(el("b",null,t("billTot")+(o.isCash?t("cashW"):t("trW"))+")"));tt.appendChild(el("span","fee",o.total+t("sar")));b.appendChild(tt);
   tipRow(b,o);
   c.appendChild(b)}
+/* ✏️ تعديل الفاتورة لو اترفعت غلط: متاح لحد ما المندوب يوصل للعميل */
+var INVFIX={};
+function invFix(c,o){
+  if(!o.needInv)return;
+  var en=LANG==="en",w=el("div");w.style.marginTop="6px";
+  var tg=btn(en?"✏️ Fix the invoice (wrong amount or photo)":"✏️ تعديل الفاتورة (لو المبلغ أو الصورة غلط)","sec",function(){INVFIX[o.no]=!INVFIX[o.no];touch();LASTSIG="";try{render(LAST)}catch(e){}});
+  w.appendChild(tg);
+  if(INVFIX[o.no]){
+    var bx=el("div","card");bx.style.background="var(--bg)";
+    var cur=Math.round(Number(o.inv||0)*100)/100;
+    var amt=field(bx,en?"Correct invoice amount":"المبلغ الصحيح للفاتورة","number",cur>0?cur:null);
+    var ph=photo(bx,en?"New invoice photo (optional)":"صورة جديدة للفاتورة (اختياري)");
+    bx.appendChild(el("div","sub",en?"After you reach the customer, editing is locked.":"بعد ما توصل للعميل التعديل بيتقفل."));
+    bx.appendChild(btn(en?"💾 Save the fix":"💾 حفظ التعديل","",function(b){
+      if(!amt.value||!(parseFloat(amt.value)>0)){setMsg(t("needAmt"),1);return}
+      act("courierInvoiceFix",o.no,[amt.value,ph.data||""],b,function(){INVFIX[o.no]=false})}));
+    w.appendChild(bx)}
+  c.appendChild(w)}
 function stars(){
   var w=el("div","stars"),cur=0,sp=[];
   for(var k=1;k<=5;k++)(function(n){var s=el("span",null,"★");s.onclick=function(){cur=n;touch();sp.forEach(function(x,j){x.className=j<n?"on":""})};sp.push(s);w.appendChild(s)})(k);
@@ -722,14 +740,16 @@ function card(o,mine){
       act("courierInvoice",o.no,[amt.value,ph.data],b)}));
   }else if(g==="arrived"||g==="invoiced"){
     if(g==="invoiced"&&!o.kid)bill(c,o);
+    if(g==="invoiced")invFix(c,o);
     step(c,t("pickQ"));
     c.appendChild(btn(t("pickBtn")+place,"",function(b){act("courierPicked",o.no,[],b)}));
   }else if(g==="picked"){
+    invFix(c,o);
     if(o.kid){step(c,t("kidGo")+o.kid)}
     else{bill(c,o);
       c.appendChild(btn(t("goBtn"),"",function(b){act("courierSetStatus",o.no,["في الطريق"],b)}))}
   }else if(g==="ontheway"){
-    bill(c,o);
+    bill(c,o);invFix(c,o);
     var dph=photo(c,t("doorPh"));
     c.appendChild(el("div","sub",t("doorH")));
     c.appendChild(btn(t("dstBtn"),"",function(b){if(!dph.data){setMsg(t("doorNeed"),1);return}act("courierAtDest",o.no,[dph.data],b)}));
@@ -832,7 +852,7 @@ function detDraw(pn,r){
   (r.events||[]).forEach(function(e){var d=el("div","ev");d.appendChild(el("b",null,e.t));d.appendChild(el("span",null,e.x));pn.appendChild(d)});
   pn.appendChild(el("h4",null,t("dChat")));
   if(!r.chat||!r.chat.length)pn.appendChild(el("div","muted",t("dNoChat")));
-  (r.chat||[]).forEach(function(m){var d=el("div","cm "+(m.w==="d"?"d":"c"));d.appendChild(el("small",null,(m.w==="d"?t("dMe"):t("dCu"))+" · "+m.t));d.appendChild(el("span",null,m.x));pn.appendChild(d)});
+  (r.chat||[]).forEach(function(m){var d=el("div","cm "+(m.w==="d"?"d":"c"));d.appendChild(el("small",null,(m.w==="d"?t("dMe"):m.w==="a"?"🛡 "+(LANG==="en"?"Wasel admin":"الإدارة"):t("dCu"))+" · "+m.t));d.appendChild(el("span",null,m.x));pn.appendChild(d)});
   pn.appendChild(el("div","sub",t("dShot")))}
 /* ===== محفظة المندوب (ملف Wallet.gs): الرصيد + كشف الحساب + بيانات حسابه ===== */
 var WAL=null,WALF=false;
