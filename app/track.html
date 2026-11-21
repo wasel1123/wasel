@@ -469,7 +469,13 @@ function mapUi(r){
   if(isFinite(l.dla)&&isFinite(l.dln)){var h=document.createElement("span");h.textContent="🏠";list.push({la:l.dla,ln:l.dln,node:h})}
   CM.set(list,9000);
   var age=l.age<10?t("mapNow"):t("mapAgo1")+l.age+t("mapAgo2");
-  inf.textContent=t("mapUpd")+age+(l.km>=0?" · "+t("mapKm1")+l.km+t("mapKm2"):"")}
+  inf.textContent=t("mapUpd")+age+(l.km>=0?" · "+t("mapKm1")+l.km+t("mapKm2"):"");
+  /* 🕐 وقت الوصول المتوقع + 🛵 المندوب قرّب (رنّة مرة واحدة) */
+  try{var eta=$("etaL");if(!eta){eta=document.createElement("div");eta.id="etaL";eta.style.cssText="font-weight:700;margin-top:6px";inf.parentNode.insertBefore(eta,inf)}
+    if(r.code==="ontheway"&&l.km>=0){var near=l.km<=0.3,mn=Math.max(1,Math.round(l.km*1.4/25*60)+1);
+      eta.textContent=near?(LANG==="en"?"🛵 The courier is almost there, get ready":"🛵 المندوب قرّب منك، خلّك جاهز"):(LANG==="en"?"🕐 Arrives in about "+mn+" min":"🕐 "+"يوصلك خلال {n} دقايق تقريبًا".replace("{n}",mn));
+      eta.style.display="";if(near&&!window.__nr){window.__nr=1;try{if(window.waselRing)waselRing()}catch(e){}}}
+    else eta.style.display="none"}catch(e){}}
 /* شريط التقدم أعلى الصفحة + كارت المندوب (تصميم واصل الجديد) */
 function heroUi(r,done){
   var sg=$("seg"),ks=r.keys||[];sg.textContent="";
@@ -534,7 +540,7 @@ function sKey(){return "wts_"+(cur?cur.no:"")}
 function getSeenS(){try{var v=localStorage.getItem(sKey());if(v!==null)return parseInt(v,10)||0}catch(e){}return SEENS}
 function setSeenS(v){SEENS=v;try{localStorage.setItem(sKey(),String(v))}catch(e){}}
 function unreadS(){var s=getSeenS(),n=0;if(s===null)return 0;supList().forEach(function(x){if(x.w==="a"&&x.t>s)n++});return n}
-function cnt(){return ((LAST&&LAST.chat)||[]).filter(function(m){return m.w==="d"}).length}
+function cnt(){return ((LAST&&LAST.chat)||[]).filter(function(m){return m.w==="d"||m.w==="a"}).length}
 function unreadD(){return (LAST&&LAST.chatOn&&SEEND!==null)?Math.max(0,cnt()-SEEND):0}
 function tabBtn(b,label,n,on){b.textContent=label;if(n){var s=document.createElement("span");s.className="bdg";s.textContent=n;b.appendChild(s)}b.classList.toggle("on",on)}
 function drawUi(){
@@ -885,6 +891,28 @@ bL.onclick=function(){if(!window.cur)return;if(!navigator.geolocation){err.textC
   navigator.geolocation.getCurrentPosition(function(p){
     google.script.run.withSuccessHandler(done).withFailureHandler(fail).trackChatLoc(cur.no,cur.p4,p.coords.latitude,p.coords.longitude)},
     function(){bP.disabled=bL.disabled=false;err.textContent=tx("gps")},{enableHighAccuracy:true,timeout:15000,maximumAge:0})};
+})();
+</script>
+<script>
+/* ===== 🔔 رنّة واهتزاز لما المندوب يبعت رسالة (والعنوان بيومض لحد ما يفتح المحادثة) ===== */
+(function(){
+var AC=null,PV=null,T0=document.title,BL=null;
+function unlock(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume()}catch(e){}}
+["click","touchstart","keydown"].forEach(function(ev){document.addEventListener(ev,unlock,{passive:true})});
+function tone(f,t0,d){var o=AC.createOscillator(),g=AC.createGain();o.type="sine";o.frequency.value=f;o.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(0.0001,t0);g.gain.exponentialRampToValueAtTime(0.35,t0+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t0+d);o.start(t0);o.stop(t0+d+0.05)}
+function ring(){
+  try{unlock();if(AC){var t=AC.currentTime+0.05;tone(988,t,0.18);tone(784,t+0.22,0.3);tone(988,t+0.9,0.18);tone(784,t+1.12,0.3)}}catch(e){}
+  try{if(navigator.vibrate)navigator.vibrate([300,150,300])}catch(e){}
+  if(!BL){var k=0;BL=setInterval(function(){document.title=(k++%2)?T0:"💬 رسالة من المندوب";},1000)}}
+function stop(){if(BL){clearInterval(BL);BL=null;document.title=T0}}
+window.waselRing=function(){try{unlock();if(AC){var t=AC.currentTime+0.05;tone(988,t,0.18);tone(784,t+0.22,0.3)}}catch(e){}try{if(navigator.vibrate)navigator.vibrate([300,150,300])}catch(e){}};
+var _d=window.drawUi;
+if(typeof _d==="function")window.drawUi=function(){
+  var r=_d.apply(this,arguments);
+  try{var n=((window.LAST&&LAST.chat)||[]).filter(function(m){return m.w==="d"||m.w==="a"}).length;
+    if(PV!==null&&n>PV)ring();PV=n;
+    if(window.DW&&DW.open&&DW.tab==="d"&&!document.hidden)stop()}catch(e){}
+  return r};
 })();
 </script>
 
