@@ -80,7 +80,7 @@ try{var G=navigator.geolocation;if(G){var gc=G.getCurrentPosition.bind(G),wp=G.w
 document.addEventListener("DOMContentLoaded",function(){
   if(!g())show(true);
   // زرار «🌍 غيّر المدينة» في القايمة ☰
-  try{var dw=document.getElementById("cdw")||document.getElementById("dw"),ref=dw&&(dw.querySelector('[data-c="lang"]')||dw.querySelector("#shfb"));
+  try{var dw=document.getElementById("cdw")||document.getElementById("mdw"),ref=dw&&(dw.querySelector('[data-c="lang"]')||dw.querySelector("#shfb"));
     if(dw){var b=document.createElement("button");b.type="button";b.textContent="🌍 غيّر المدينة ("+C[ME].n+")";b.onclick=function(){show(false)};
       if(ref&&ref.parentNode)ref.parentNode.insertBefore(b,ref.nextSibling);else dw.appendChild(b)}}catch(e){}
 });
@@ -1980,6 +1980,10 @@ function $x(i){return document.getElementById(i)}
 function mk(t,c,tx){var e=document.createElement(t);if(c)e.className=c;if(tx!=null)e.textContent=tx;return e}
 var items=$x("items"),rc=$x("rcpt1");if(!items||!rc)return;
 var LIMG="",VOICE="",VSEC=0,REC=null,STREAM=null,TMR=0;
+/* 🎙 الصوت لنص: بنحاول نفهم الرسالة ونعرضها للعميل يوافق عليها أو يسجّل تاني (لو المتصفح بيدعم) */
+var VT={"clear": "🎙 اتكلم بوضوح وقريب من الجوال، وقول اسم كل صنف وعدده", "heard": "📝 فهمنا من رسالتك:", "ok": "✅ صح، كمّل", "again": "🔁 سجّل مرة ثانية", "listen": "🎧 اسمع رسالتك، ولو مو واضحة سجّل مرة ثانية", "silent": "ما وصلنا صوت واضح، سجّل مرة ثانية"},VTE={clear:"🎙 Speak clearly, close to the phone, say each item and its quantity",heard:"📝 We understood:",ok:"✅ Correct, continue",again:"🔁 Record again",listen:"🎧 Listen to your message; if unclear, record again",silent:"No clear sound came through, record again"};
+function vt(k){return (LANG==="en"?VTE:VT)[k]}
+var SRC=window.SpeechRecognition||window.webkitSpeechRecognition,SRR=null,TR="",VOK=false,SROFF=false;try{SROFF=localStorage.getItem("wsr_off")==="1"}catch(e){}
 /* ===== 1) صورة ورقة الطلب + رسالة صوتية (في خطوة «وش تبي؟») ===== */
 var tools=mk("div");tools.id="xtools";
 var bP=mk("button","sec");bP.type="button";bP.id="xph";var bR=mk("button","sec");bR.type="button";bR.id="xrec";
@@ -1990,11 +1994,16 @@ rc.parentNode.insertBefore(tools,rc.nextSibling);tools.parentNode.insertBefore(h
 if(!(window.MediaRecorder&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia))bR.classList.add("hide");
 function autoTxt(on,k){var v=items.value.trim();if(on&&!v){items.value=x(k);items.dispatchEvent(new Event("input"))}
   if(!on&&(v===X[k][0]||v===X[k][1])){items.value="";items.dispatchEvent(new Event("input"))}}
-function stUi(){st.textContent="";
+function stUi(){st.textContent="";if(REC){var rn=mk("div","xst");rn.appendChild(mk("b",null,vt("clear")));st.appendChild(rn)}
   if(LIMG){var r=mk("div","xst"),im=mk("img");im.src=LIMG;im.alt="";r.appendChild(im);r.appendChild(mk("span",null,x("phOk")));
     var b=mk("button","lnk",x("rm"));b.type="button";b.onclick=function(){LIMG="";autoTxt(false,"itP");stUi()};r.appendChild(b);st.appendChild(r)}
   if(VOICE){var r2=mk("div","xst"),au=mk("audio");au.controls=true;au.src=VOICE;r2.appendChild(mk("span",null,x("vOk")+" ("+VSEC+(LANG==="en"?" s)":" ث)")));r2.appendChild(au);
-    var b2=mk("button","lnk",x("rm"));b2.type="button";b2.onclick=function(){VOICE="";VSEC=0;autoTxt(false,"itV");stUi()};r2.appendChild(b2);st.appendChild(r2)}
+    var b2=mk("button","lnk",x("rm"));b2.type="button";b2.onclick=function(){VOICE="";VSEC=0;TR="";VOK=false;autoTxt(false,"itV");stUi()};r2.appendChild(b2);st.appendChild(r2);
+    if(!VOK){var r3=mk("div","xst");r3.style.cssText="flex-direction:column;align-items:stretch;gap:6px";
+      if(TR){r3.appendChild(mk("b",null,vt("heard")));var tq=mk("div",null,TR);tq.style.cssText="background:var(--card,#fff);border:1px dashed #94a3b8;border-radius:10px;padding:8px";r3.appendChild(tq);
+        var bo=mk("button","sec",vt("ok"));bo.type="button";bo.onclick=function(){var v=items.value.trim();items.value=(v&&v!==X.itV[0]&&v!==X.itV[1]?v+"\n":"")+TR;items.dispatchEvent(new Event("input"));VOK=true;stUi()};r3.appendChild(bo)}
+      else r3.appendChild(mk("span",null,vt("listen")));
+      var ba=mk("button","sec",vt("again"));ba.type="button";ba.onclick=function(){VOICE="";VSEC=0;TR="";VOK=false;autoTxt(false,"itV");stUi();bR.click()};r3.appendChild(ba);st.appendChild(r3)}}
   bP.textContent=x("ph");bR.textContent=REC?x("stop")+" "+VSEC+"″":x("rec");bR.classList.toggle("on",!!REC);hint.textContent=x("hint")}
 function msg(t){var r=mk("div","xst");r.appendChild(mk("span",null,t));st.appendChild(r)}
 bP.onclick=function(){fP.click()};
@@ -2012,12 +2021,17 @@ bR.onclick=function(){
     STREAM=s;var mt=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg"].filter(function(m){try{return MediaRecorder.isTypeSupported(m)}catch(e){return false}})[0];
     var ch=[];REC=mt?new MediaRecorder(s,{mimeType:mt,audioBitsPerSecond:32000}):new MediaRecorder(s);VSEC=0;
     REC.ondataavailable=function(e){if(e.data&&e.data.size)ch.push(e.data)};
-    REC.onstop=function(){var r=REC;REC=null;stopAll();var base=String((r&&r.mimeType)||mt||"audio/webm").split(";")[0];
+    REC.onstop=function(){var r=REC;REC=null;stopAll();try{SRR&&SRR.stop()}catch(eS){}var usedSR=!!SRR;SRR=null;var base=String((r&&r.mimeType)||mt||"audio/webm").split(";")[0];
       var bl=new Blob(ch,{type:base}),fr=new FileReader();
       fr.onload=function(){var d=String(fr.result||"");d="data:"+base+";base64,"+d.split(",")[1];
-        if(d.length>2000000){VOICE="";stUi();msg(x("long"));return}VOICE=d;autoTxt(true,"itV");stUi()};
+        if(d.length>2000000){VOICE="";stUi();msg(x("long"));return}
+        if(VSEC>=2&&d.length*0.75/VSEC<1200){VOICE="";TR="";if(usedSR){SROFF=true;try{localStorage.setItem("wsr_off","1")}catch(e){}}stUi();msg(vt("silent"));return}
+        VOICE=d;autoTxt(true,"itV");setTimeout(stUi,600);stUi()};
       fr.onerror=function(){stUi();msg(x("bad"))};fr.readAsDataURL(bl)};
-    REC.start(1000);stUi();
+    REC.start(1000);TR="";VOK=false;stUi();
+    if(SRC&&!SROFF){try{SRR=new SRC();SRR.lang=LANG==="en"?"en-US":"ar-SA";SRR.continuous=true;SRR.interimResults=false;
+      SRR.onresult=function(ev){for(var i=ev.resultIndex;i<ev.results.length;i++)if(ev.results[i].isFinal)TR=(TR+" "+ev.results[i][0].transcript).trim()};
+      SRR.onerror=function(){};SRR.start()}catch(eS){SRR=null}}
     TMR=setInterval(function(){VSEC++;if(VSEC>=60){try{REC.stop()}catch(e){}}stUi()},1000);
   }).catch(function(){REC=null;stopAll();stUi();msg(x("noRec"))})};
 stUi();
