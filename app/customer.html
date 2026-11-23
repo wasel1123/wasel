@@ -1981,7 +1981,7 @@ function mk(t,c,tx){var e=document.createElement(t);if(c)e.className=c;if(tx!=nu
 var items=$x("items"),rc=$x("rcpt1");if(!items||!rc)return;
 var LIMG="",VOICE="",VSEC=0,REC=null,STREAM=null,TMR=0;
 /* 🎙 الصوت لنص: بنحاول نفهم الرسالة ونعرضها للعميل يوافق عليها أو يسجّل تاني (لو المتصفح بيدعم) */
-var VT={"clear": "🎙 اتكلم بوضوح وقريب من الجوال، وقول اسم كل صنف وعدده", "heard": "📝 فهمنا من رسالتك:", "ok": "✅ صح، كمّل", "again": "🔁 سجّل مرة ثانية", "listen": "🎧 اسمع رسالتك، ولو مو واضحة سجّل مرة ثانية", "silent": "ما وصلنا صوت واضح، سجّل مرة ثانية"},VTE={clear:"🎙 Speak clearly, close to the phone, say each item and its quantity",heard:"📝 We understood:",ok:"✅ Correct, continue",again:"🔁 Record again",listen:"🎧 Listen to your message; if unclear, record again",silent:"No clear sound came through, record again"};
+var VT={"upd": "🎤 عشان تسجّل صوت: حدّث تطبيق واصل من Google Play واسمح بالميكروفون. أو صوّر الطلب أو اكتبه", "clear": "🎙 اتكلم بوضوح وقريب من الجوال، وقول اسم كل صنف وعدده", "heard": "📝 فهمنا من رسالتك:", "ok": "✅ صح، كمّل", "again": "🔁 سجّل مرة ثانية", "listen": "🎧 اسمع رسالتك، ولو مو واضحة سجّل مرة ثانية", "silent": "ما وصلنا صوت واضح، سجّل مرة ثانية"},VTE={upd:"🎤 To record: update the Wasel app from Google Play and allow the microphone. Or take a photo / type it",clear:"🎙 Speak clearly, close to the phone, say each item and its quantity",heard:"📝 We understood:",ok:"✅ Correct, continue",again:"🔁 Record again",listen:"🎧 Listen to your message; if unclear, record again",silent:"No clear sound came through, record again"};
 function vt(k){return (LANG==="en"?VTE:VT)[k]}
 var SRC=window.SpeechRecognition||window.webkitSpeechRecognition,SRR=null,TR="",VOK=false,SROFF=false;try{SROFF=localStorage.getItem("wsr_off")==="1"}catch(e){}
 /* ===== 1) صورة ورقة الطلب + رسالة صوتية (في خطوة «وش تبي؟») ===== */
@@ -2033,7 +2033,7 @@ bR.onclick=function(){
       SRR.onresult=function(ev){for(var i=ev.resultIndex;i<ev.results.length;i++)if(ev.results[i].isFinal)TR=(TR+" "+ev.results[i][0].transcript).trim()};
       SRR.onerror=function(){};SRR.start()}catch(eS){SRR=null}}
     TMR=setInterval(function(){VSEC++;if(VSEC>=60){try{REC.stop()}catch(e){}}stUi()},1000);
-  }).catch(function(){REC=null;stopAll();stUi();msg(x("noRec"))})};
+  }).catch(function(){REC=null;stopAll();stUi();msg((window.WaselApp||/; wv\)/.test(navigator.userAgent))?vt("upd"):x("noRec"))})};
 stUi();
 /* ===== 2) الطلب لشخص ثاني (في آخر خطوة) ===== */
 var nl=document.querySelector('label[data-i="nt"]'),G=null;
@@ -2109,8 +2109,7 @@ function y(k){return Y[k][LANG==="en"?1:0]}
 function $g(i){return document.getElementById(i)}
 function mk(t,c,tx){var e=document.createElement(t);if(c)e.className=c;if(tx!=null)e.textContent=tx;return e}
 function run(fn,args,ok,bad){try{var r=google.script.run.withSuccessHandler(ok).withFailureHandler(bad||function(){});r[fn].apply(r,args)}catch(e){bad&&bad()}}
-/* زرار 🎤 مش شغّال في تطبيق الأندرويد الحالي (محتاج نسخة 1.4)، فبنخفيه هناك بس */
-try{if(window.WaselApp||/; wv\)/.test(navigator.userAgent)){var rb=$g("xrec");if(rb)rb.classList.add("hide");var hn=$g("xhint");if(hn)hn.classList.add("hide")}}catch(e){}
+/* زرار 🎤 بقى ظاهر في تطبيق الأندرويد كمان (نسخة 1.4 فيها إذن الميكروفون). النسخة القديمة: لو الإذن اترفض بنقول للعميل يحدّث التطبيق */
 /* ---------- صاحب الطلب ---------- */
 var items=$g("items"),anchor=$g("xstat")||$g("rcpt1");
 if(items&&anchor){
