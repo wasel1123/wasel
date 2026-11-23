@@ -80,7 +80,7 @@ try{var G=navigator.geolocation;if(G){var gc=G.getCurrentPosition.bind(G),wp=G.w
 document.addEventListener("DOMContentLoaded",function(){
   if(!g())show(true);
   // زرار «🌍 غيّر المدينة» في القايمة ☰
-  try{var dw=document.getElementById("cdw")||document.getElementById("dw"),ref=dw&&(dw.querySelector('[data-c="lang"]')||dw.querySelector("#shfb"));
+  try{var dw=document.getElementById("cdw")||document.getElementById("mdw"),ref=dw&&(dw.querySelector('[data-c="lang"]')||dw.querySelector("#shfb"));
     if(dw){var b=document.createElement("button");b.type="button";b.textContent="🌍 غيّر المدينة ("+C[ME].n+")";b.onclick=function(){show(false)};
       if(ref&&ref.parentNode)ref.parentNode.insertBefore(b,ref.nextSibling);else dw.appendChild(b)}}catch(e){}
 });
@@ -1491,57 +1491,80 @@ fi.onchange=function(){var o=typeof curOrder==="function"?curOrder():null;if(!o)
 </script>
 
 <style>
-/* ===== 🪜 طلب المندوب خطوة بخطوة: كل خطوة لوحدها وبدون زحمة ===== */
-.wzh{margin:8px 0 6px}.wzd{display:flex;gap:5px;margin-bottom:4px}.wzd i{flex:1;height:6px;border-radius:3px;background:var(--ln,#dfe7e5)}.wzd i.d{background:#15803d}.wzd i.n{background:#f2b544}
-.wzs{font-size:13px;opacity:.75}.wzt{font-size:22px;font-weight:800;margin:2px 0 8px}
-.wzk{background:var(--bg,#eef3f2);border-radius:14px;padding:10px 12px;margin:6px 0 8px}.wzk b{display:block;font-size:18px}
-.wzm{font-size:28px;font-weight:800;color:var(--br,#0e4f4c)}
-.wzf{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.wzf>button{flex:1;min-width:30%;margin:0!important;padding:9px 4px!important;font-size:13px!important}
-details.wzx{margin-top:8px}details.wzx>summary{cursor:pointer;font-weight:700;font-size:14px;padding:6px 0;opacity:.85}
-.oc.wz>h2{display:none}
+/* ===== 🪜 طلب المندوب خطوة بخطوة: كل خطوة لوحدها، وأسهم ‹ › للرجوع للخطوات اللي خلصت. من غير لينكات ولا زحمة ===== */
+.wzh{margin:8px 0 6px}.wzr{display:flex;align-items:center;gap:8px}.wzd{display:flex;gap:5px;flex:1}.wzd i{flex:1;height:7px;border-radius:4px;background:var(--ln,#dfe7e5)}.wzd i.d{background:#15803d}.wzd i.n{background:#f2b544}.wzd i.v{outline:2px solid #1d4ed8;outline-offset:1px}
+.wza{width:44px!important;height:44px;min-width:44px;margin:0!important;padding:0!important;border-radius:50%!important;font-size:24px!important;line-height:1;background:var(--bg,#eef3f2)!important;color:var(--tx,#14211f)!important;border:1.5px solid var(--ln,#dfe7e5)!important}
+.wza:disabled{opacity:.25}
+.wzs{font-size:13px;opacity:.75;margin-top:4px}.wzt{font-size:24px;font-weight:800;margin:2px 0 8px}
+.wzk{background:var(--bg,#eef3f2);border-radius:14px;padding:10px 12px;margin:6px 0 8px}.wzk b{display:block;font-size:19px}
+.wzm{font-size:30px;font-weight:800;color:var(--br,#0e4f4c)}
+.wzf{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.wzf>button{flex:1;min-width:30%;margin:0!important;padding:10px 4px!important;font-size:14px!important}
+.wzb{width:100%;margin:6px 0 0!important;padding:12px!important;font-size:16px!important}
+.wzk audio,.wzk img{width:100%;margin-top:8px;border-radius:10px}
+.wzok{background:#dcfce7;color:#166534;border-radius:12px;padding:10px;font-weight:800;text-align:center;margin:6px 0}
+.oc.wz>h2,.oc.wz>.row,.oc.wz>.ocr,.oc.wz>.ocp{display:none!important}
+.oc.wzv>*:not(.wzh):not(.wzk):not(.wzok):not(.wzback):not(span.tag):not(.tmr){display:none!important}
 </style>
 <script>
 (function(){
 var _c=window.card;if(typeof _c!=="function")return;
-var X={go:"🏪 روح للمحل",inv:"🧾 اطلب وارفع الفاتورة",pick:"📦 استلم الطلب",cust:"🛵 روح للعميل",del:"🤝 سلّم وخد الفلوس",of:"الخطوة {a} من {b}",det:"📄 تفاصيل الطلب كاملة",coll:"هتحصّل من العميل",prepaid:"مدفوع، متحصّلش حاجة"};
-var E={go:"🏪 Go to the store",inv:"🧾 Order and upload the invoice",pick:"📦 Pick up the order",cust:"🛵 Go to the customer",del:"🤝 Hand over and collect",of:"Step {a} of {b}",det:"📄 Full order details",coll:"Collect from customer",prepaid:"Paid, collect nothing"};
+var X={"go": "🏪 روح للمحل", "inv": "🧾 اطلب وارفع الفاتورة", "pick": "📦 استلم الطلب", "cust": "🛵 روح للعميل", "del": "🤝 سلّم وخد الفلوس", "of": "الخطوة {a} من {b}", "coll": "هتحصّل من العميل", "prepaid": "مدفوع، متحصّلش حاجة", "voice": "▶️ اسمع طلب العميل", "photo": "📷 شوف صورة الطلب", "door": "🚪 صورة باب العميل", "loading": "⏳ لحظة…", "bad": "معرفناش نفتحه، جرّب تاني", "done": "✅ الخطوة دي خلصت", "back": "ارجع للخطوة الحالية", "notes": "📝 ملاحظة العميل"};
+var E={go:"🏪 Go to the store",inv:"🧾 Order & upload invoice",pick:"📦 Pick up the order",cust:"🛵 Go to the customer",del:"🤝 Hand over & collect",of:"Step {a} of {b}",coll:"Collect from customer",prepaid:"Paid, collect nothing",
+  voice:"▶️ Listen to the order",photo:"📷 See order photo",door:"🚪 Customer door photo",loading:"⏳ One moment…",bad:"Couldn't open it, try again",done:"✅ This step is done",back:"Back to current step",notes:"📝 Customer note"};
 function L(k){return (LANG==="en"?E:X)[k]}
-function strip(s){return String(s||"").replace(/https?:\/\/\S+/g,"").replace(/\s+/g," ").trim()}
+function strip(s){return String(s||"").replace(/https?:\/\/\S+/g,"").replace(/\s*-\s*(?=\||$)/g,"").replace(/\s+/g," ").replace(/^[\s\-|]+|[\s\-|]+$/g,"").trim()}
+function grab(s,re){var m=re.exec(String(s||""));return m?m[1]:""}
+/* ملاحظة العميل بس (من غير اسمه ولا اللينكات ولا البيانات اللي بتظهر في مكان تاني) */
+function cleanNotes(n){return String(n||"").split("|").map(function(x){return x.trim()}).filter(function(x){return x&&!/^الاسم:|^📷|^🎤|^🚪|^💵|^🎁|^💌|https?:\/\//.test(x)}).join(" · ")}
+var VW={},MED={};
 window.card=function(o,mine){var c=_c.apply(this,arguments);if(!mine)return c;try{wiz(c,o)}catch(e){}return c};
+function media(box,kind,label,o){
+  var b=btn(label,"sec wzb",function(){
+    if(MED[o.no+kind]){show(MED[o.no+kind]);return}
+    b.disabled=true;b.textContent=L("loading");touch();
+    google.script.run.withSuccessHandler(function(r){b.disabled=false;b.textContent=label;if(r&&r.ok&&r.d){MED[o.no+kind]=r.d;show(r.d)}else setMsg(L("bad"),1)})
+      .withFailureHandler(function(){b.disabled=false;b.textContent=label;setMsg(L("bad"),1)}).courierMedia(CODE,o.no,kind)});
+  function show(d){var old=box.querySelector("[data-m='"+kind+"']");if(old)old.remove();var m;
+    if(/^data:audio/.test(d)){m=document.createElement("audio");m.controls=true;m.autoplay=true;m.src=d}else{m=document.createElement("img");m.src=d}
+    m.setAttribute("data-m",kind);b.insertAdjacentElement("afterend",m);touch()}
+  box.appendChild(b)}
 function wiz(c,o){
   var g=o.stage,inv=!!o.needInv&&!o.kid,keys=inv?["go","inv","pick","cust","del"]:["go","pick","cust","del"];
   var k=g==="accepted"?"go":g==="arrived"?(inv?"inv":"pick"):g==="invoiced"?"pick":(g==="picked"||g==="ontheway")?"cust":g==="atdest"?"del":"";
-  if(!k)return;
-  var n=keys.indexOf(k);if(n<0)return;
-  c.classList.add("wz");
-  /* اللي بيروح للتفاصيل: الطريق والسطور والفاتورة المبدئية وشريط التقدم القديم */
-  var det=document.createElement("details");det.className="wzx";var sm=document.createElement("summary");sm.textContent=L("det");det.appendChild(sm);
-  var kids=[].slice.call(c.children),foot=el("div","wzf"),rcpt=null,fix=null;
-  kids.forEach(function(x){
-    if(x.classList.contains("ocr")||x.classList.contains("row")||(x.tagName==="DIV"&&!x.className&&x.querySelector(".ocr"))){det.appendChild(x);return}
-    if(x.tagName==="DIV"&&x.classList.contains("card")&&k!=="go"&&k!=="inv"){det.appendChild(x);return}
+  if(!k)return;var n=keys.indexOf(k);if(n<0)return;
+  var v=VW[o.no];if(v==null||v>n||v<0)v=n;VW[o.no]=v;var vk=keys[v],past=v<n;
+  c.classList.add("wz");if(past)c.classList.add("wzv");
+  var hasV=grab(o.notes,/🎤[^:]*:\s*(https?:\/\/\S+)/),hasP=grab(o.notes,/📷[^:]*:\s*(https?:\/\/\S+)/),hasD=grab(o.dest,/🚪[^:]*:\s*(https?:\/\/\S+)/);
+  /* الأزرار الصغيرة تحت: الشات + مشكلة. والفاتورة المبدئية بنستخدمها في الخطوة */
+  var foot=el("div","wzf"),rcpt=null,fix=null;
+  [].slice.call(c.children).forEach(function(x){
+    if(x.classList.contains("rcpt")){rcpt=x;x.remove();return}
+    if(x.tagName==="DIV"&&!x.className&&x.querySelector(".ocr")){x.remove();return}
+    if(x.tagName==="DIV"&&x.classList.contains("card")&&k!=="go"&&k!=="inv"){x.remove();return}
+    if(x.classList.contains("rsx")&&(k==="cust"||k==="del")&&x.textContent.indexOf(t("kidTag"))<0&&x.textContent!==t("mainK")){x.remove();return}
     if(x.tagName==="DIV"&&!x.className&&x.firstChild&&x.firstChild.tagName==="BUTTON"&&/^✏️/.test(x.firstChild.textContent)){fix=x;return}
-    if(x.classList.contains("rcpt")){rcpt=x;det.appendChild(x);return}
-    if(x.classList.contains("ocp")){x.remove();return}
-    if(x.classList.contains("rsx")&&(k==="cust"||k==="del")&&x.textContent.indexOf(t("kidTag"))<0&&x.textContent!==t("mainK")){det.appendChild(x);return}
     if(x.tagName==="BUTTON"&&(x.classList.contains("occh")||x.textContent===t("rpB"))){foot.appendChild(x);return}});
-  /* راس الخطوة */
-  var h=el("div","wzh"),dt=el("div","wzd");keys.forEach(function(_,i){dt.appendChild(el("i",i<n?"d":i===n?"n":null))});
-  h.appendChild(dt);h.appendChild(el("div","wzs",L("of").replace("{a}",n+1).replace("{b}",keys.length)));h.appendChild(el("div","wzt",L(k)));
+  /* الراس: ‹ الخطوات › */
+  var h=el("div","wzh"),r=el("div","wzr"),dt=el("div","wzd");
+  keys.forEach(function(_,i){dt.appendChild(el("i",(i<n?"d":i===n?"n":"")+(i===v&&past?" v":"")))});
+  var bPrev=btn("›","wza",function(){VW[o.no]=v-1;touch();LASTSIG="";try{render(LAST)}catch(e){}});bPrev.disabled=v<=0;bPrev.setAttribute("aria-label","previous");
+  var bNext=btn("‹","wza",function(){VW[o.no]=v+1;touch();LASTSIG="";try{render(LAST)}catch(e){}});bNext.disabled=!past;bNext.setAttribute("aria-label","next");
+  r.appendChild(bPrev);r.appendChild(dt);r.appendChild(bNext);h.appendChild(r);
+  h.appendChild(el("div","wzs",L("of").replace("{a}",v+1).replace("{b}",keys.length)));h.appendChild(el("div","wzt",L(vk)));
   /* أهم معلومة للخطوة دي بس */
   var box=el("div","wzk");
-  if(k==="go"){box.appendChild(el("b",null,o.pickupName||strip(o.pickup)));if(rcpt)box.appendChild(rcpt.cloneNode(true))}
-  else if(k==="inv"){if(rcpt)box.appendChild(rcpt.cloneNode(true));else box.appendChild(el("div",null,strip(o.items)))}
-  else if(k==="pick"||k==="del"){box.appendChild(el("div",null,o.isCash?L("coll"):"💳"));box.appendChild(el("div","wzm",o.isCash?(o.total+t("sar")+" 💵"):L("prepaid")))}
-  else if(k==="cust"){box.appendChild(el("b",null,strip(o.dest)||"—"));if(o.notes)box.appendChild(el("div",null,strip(o.notes)));box.appendChild(el("div",null,o.isCash?L("coll")+": "+o.total+t("sar")+" 💵":L("prepaid")))}
-  /* الترتيب: الراس فوق، بعده المعلومة، بعده أزرار الخطوة، وتحت: التفاصيل + الشات + مشكلة */
+  if(vk==="go"||vk==="inv"){if(vk==="go")box.appendChild(el("b",null,o.pickupName||strip(o.pickup)));if(rcpt)box.appendChild(rcpt);else if(!/^(📷|🎤)/.test(o.items))box.appendChild(el("div",null,strip(o.items)));
+    if(hasV)media(box,"voice",L("voice"),o);if(hasP)media(box,"photo",L("photo"),o)}
+  else if(vk==="pick"||vk==="del"){box.appendChild(el("div",null,o.isCash?L("coll"):"💳"));box.appendChild(el("div","wzm",o.isCash?(o.total+t("sar")+" 💵"):L("prepaid")))}
+  else if(vk==="cust"){box.appendChild(el("b",null,strip(String(o.dest).split("🚪")[0])||"—"));var cn=cleanNotes(o.notes);if(cn)box.appendChild(el("div",null,L("notes")+": "+cn));
+    box.appendChild(el("div",null,o.isCash?L("coll")+": "+o.total+t("sar")+" 💵":L("prepaid")));if(hasD)media(box,"door",L("door"),o)}
   var first=null;[].slice.call(c.children).some(function(x){if(x.tagName!=="SPAN"&&x.nodeType===1&&!x.classList.contains("rsx")&&!x.classList.contains("tmr")){first=x;return true}return false});
   c.insertBefore(h,first);c.insertBefore(box,first);
+  if(past){c.insertBefore(el("div","wzok",L("done")),box.nextSibling);if(vk==="inv"&&fix)box.appendChild(fix);
+    var bb=btn(L("back")+" ‹","wzback wzb",function(){VW[o.no]=n;touch();LASTSIG="";try{render(LAST)}catch(e){}});c.appendChild(bb);return}
   if(fix)c.appendChild(fix);
   if(foot.children.length)c.appendChild(foot);
-  /* صندوق البلاغ المخفي يفضل بعد الأزرار */
-  [].slice.call(c.children).forEach(function(x){if(x.tagName==="DIV"&&x.classList.contains("hide")&&x.querySelector&&x.querySelector("select"))c.appendChild(x)});
-  c.appendChild(det)}
+  [].slice.call(c.children).forEach(function(x){if(x.tagName==="DIV"&&x.classList.contains("hide")&&x.querySelector&&x.querySelector("select"))c.appendChild(x)})}
 })();
 </script>
 
