@@ -27,8 +27,8 @@
   /* ⚡ الدوال السريعة (المتاجر والمنيو والعروض) من سيرفر Supabase، ولو وقع نرجع لـ Apps Script على طول */
   var SUPA = API.indexOf("AKfycbwmS0DX") >= 0 ? "https://ozrxprkzkezpybxivjfc.supabase.co/functions/v1/api-" : "";
   var SUPA_FN = {"storeList":1,"offersList":1,"getMenu":1,"getOffer":1,"legalLinks":1};
-  var SUPA_T = {"submitOrder":1,"trackOrder":1,"trackCancel":1}, TEST = false;
-  try { var tq = new URLSearchParams(location.search).get("supa"); if (tq === "1") localStorage.setItem("wsupa", "1"); if (tq === "0") localStorage.removeItem("wsupa"); TEST = !!SUPA && localStorage.getItem("wsupa") === "1"; } catch (e) {}
+  var SUPA_T = {"submitOrder":1,"trackOrder":1,"trackCancel":1,"trackRate":1,"courierList":1,"courierAccept":1,"courierReject":1,"courierArrived":1,"courierInvoice":1,"courierInvoiceFix":1,"courierPicked":1,"courierSetStatus":1,"courierAtDest":1,"courierDeliver":1,"courierDeliverUnpaid":1,"courierRateCustomer":1,"courierMedia":1,"courierOrderDetail":1,"courierReport":1,"courierChatSend":1,"courierChatPhoto":1,"courierTakenNotice":1}, TEST = false;
+  try { var tq = new URLSearchParams(location.search).get("supa"); if (tq === "1") localStorage.setItem("wsupa", "1"); if (tq === "0") { localStorage.removeItem("wsupa"); try { var w0 = JSON.parse(localStorage.getItem("wt") || "null"); if (w0 && /^orderwasel-9\d{4,}$/i.test(String(w0.no || ""))) localStorage.removeItem("wt"); } catch (e) {} } TEST = !!SUPA && localStorage.getItem("wsupa") === "1"; } catch (e) {}
   if (TEST) document.addEventListener("DOMContentLoaded", function () { var d = document.createElement("div"); d.textContent = "🧪 وضع التجربة (Supabase) · للخروج افتح الرابط وآخره ?supa=0"; d.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#f2b544;color:#0b3f3d;font:700 13px system-ui;text-align:center;padding:5px"; document.body.appendChild(d); });
   function call(fn, args, ok, bad, uo) {
     if (SUPA && (SUPA_FN[fn] || (TEST && SUPA_T[fn]))) {
