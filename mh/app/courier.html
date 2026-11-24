@@ -1532,7 +1532,7 @@ function wiz(c,o){
   var g=o.stage,inv=!!o.needInv&&!o.kid,keys=inv?["go","inv","pick","cust","del"]:["go","pick","cust","del"];
   var k=g==="accepted"?"go":g==="arrived"?(inv?"inv":"pick"):g==="invoiced"?"pick":(g==="picked"||g==="ontheway")?"cust":g==="atdest"?"del":"";
   if(!k)return;var n=keys.indexOf(k);if(n<0)return;
-  var v=VW[o.no];if(v==null||v>n||v<0)v=n;VW[o.no]=v;var vk=keys[v],past=v<n;
+  var w=VW[o.no],v=(w&&w.n===n&&w.v>=0&&w.v<n)?w.v:n;if(v===n)delete VW[o.no];var vk=keys[v],past=v<n;
   c.classList.add("wz");if(past)c.classList.add("wzv");
   var hasV=grab(o.notes,/🎤[^:]*:\s*(https?:\/\/\S+)/),hasP=grab(o.notes,/📷[^:]*:\s*(https?:\/\/\S+)/),hasD=grab(o.dest,/🚪[^:]*:\s*(https?:\/\/\S+)/);
   /* الأزرار الصغيرة تحت: الشات + مشكلة. والفاتورة المبدئية بنستخدمها في الخطوة */
@@ -1547,8 +1547,8 @@ function wiz(c,o){
   /* الراس: ‹ الخطوات › */
   var h=el("div","wzh"),r=el("div","wzr"),dt=el("div","wzd");
   keys.forEach(function(_,i){dt.appendChild(el("i",(i<n?"d":i===n?"n":"")+(i===v&&past?" v":"")))});
-  var bPrev=btn("›","wza",function(){VW[o.no]=v-1;touch();LASTSIG="";try{render(LAST)}catch(e){}});bPrev.disabled=v<=0;bPrev.setAttribute("aria-label","previous");
-  var bNext=btn("‹","wza",function(){VW[o.no]=v+1;touch();LASTSIG="";try{render(LAST)}catch(e){}});bNext.disabled=!past;bNext.setAttribute("aria-label","next");
+  var bPrev=btn("›","wza",function(){VW[o.no]={v:v-1,n:n};touch();LASTSIG="";try{render(LAST)}catch(e){}});bPrev.disabled=v<=0;bPrev.setAttribute("aria-label","previous");
+  var bNext=btn("‹","wza",function(){VW[o.no]={v:v+1,n:n};touch();LASTSIG="";try{render(LAST)}catch(e){}});bNext.disabled=!past;bNext.setAttribute("aria-label","next");
   r.appendChild(bPrev);r.appendChild(dt);r.appendChild(bNext);h.appendChild(r);
   h.appendChild(el("div","wzs",L("of").replace("{a}",v+1).replace("{b}",keys.length)));h.appendChild(el("div","wzt",L(vk)));
   /* أهم معلومة للخطوة دي بس */
@@ -1561,7 +1561,7 @@ function wiz(c,o){
   var first=null;[].slice.call(c.children).some(function(x){if(x.tagName!=="SPAN"&&x.nodeType===1&&!x.classList.contains("rsx")&&!x.classList.contains("tmr")){first=x;return true}return false});
   c.insertBefore(h,first);c.insertBefore(box,first);
   if(past){c.insertBefore(el("div","wzok",L("done")),box.nextSibling);if(vk==="inv"&&fix)box.appendChild(fix);
-    var bb=btn(L("back")+" ‹","wzback wzb",function(){VW[o.no]=n;touch();LASTSIG="";try{render(LAST)}catch(e){}});c.appendChild(bb);return}
+    var bb=btn(L("back")+" ‹","wzback wzb",function(){delete VW[o.no];touch();LASTSIG="";try{render(LAST)}catch(e){}});c.appendChild(bb);return}
   if(fix)c.appendChild(fix);
   if(foot.children.length)c.appendChild(foot);
   [].slice.call(c.children).forEach(function(x){if(x.tagName==="DIV"&&x.classList.contains("hide")&&x.querySelector&&x.querySelector("select"))c.appendChild(x)})}
