@@ -2439,7 +2439,8 @@ function chk(){var w=saved();if(!w||!w.no||!w.p4)return;
   var dn="";try{dn=localStorage.getItem("wr_done")||""}catch(e){}if(dn===w.no)return;
   try{google.script.run.withSuccessHandler(function(r){if(!r||!r.ok)return;
     if(r.code==="delivered"&&!r.rated)show(w);
-    else if(r.code==="delivered"||r.code==="cancelled"||r.status==="ملغي"){try{localStorage.setItem("wr_done",w.no)}catch(e){}}})
+    else if(r.code==="delivered"){try{localStorage.setItem("wr_done",w.no)}catch(e){}}
+    else if(r.code==="cancelled"||r.status==="ملغي"){try{localStorage.setItem("wr_done",w.no);localStorage.removeItem("wt")}catch(e){}var ck=document.getElementById("ctrk");if(ck)ck.classList.add("hide")}})
     .withFailureHandler(function(){}).trackOrder(w.no,w.p4)}catch(e){}}
 setTimeout(chk,2500);
 })();
