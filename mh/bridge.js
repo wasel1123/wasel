@@ -27,8 +27,11 @@
   /* ⚡ الدوال السريعة (المتاجر والمنيو والعروض) من سيرفر Supabase، ولو وقع نرجع لـ Apps Script على طول */
   var SUPA = API.indexOf("AKfycbwmS0DX") >= 0 ? "https://ozrxprkzkezpybxivjfc.supabase.co/functions/v1/api-" : "";
   var SUPA_FN = {"storeList":1,"offersList":1,"getMenu":1,"getOffer":1,"legalLinks":1};
+  var SUPA_T = {"submitOrder":1,"trackOrder":1,"trackCancel":1}, TEST = false;
+  try { var tq = new URLSearchParams(location.search).get("supa"); if (tq === "1") localStorage.setItem("wsupa", "1"); if (tq === "0") localStorage.removeItem("wsupa"); TEST = !!SUPA && localStorage.getItem("wsupa") === "1"; } catch (e) {}
+  if (TEST) document.addEventListener("DOMContentLoaded", function () { var d = document.createElement("div"); d.textContent = "🧪 وضع التجربة (Supabase) · للخروج افتح الرابط وآخره ?supa=0"; d.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#f2b544;color:#0b3f3d;font:700 13px system-ui;text-align:center;padding:5px"; document.body.appendChild(d); });
   function call(fn, args, ok, bad, uo) {
-    if (SUPA && SUPA_FN[fn]) {
+    if (SUPA && (SUPA_FN[fn] || (TEST && SUPA_T[fn]))) {
       fetch(SUPA, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ fn: fn, args: args }), cache: "no-store" })
         .then(function (r) { if (!r.ok) throw 0; return r.json(); })
         .then(function (d) { if (!d || d.r === undefined) throw 0; if (ok) ok(d.r, uo); })
