@@ -41,8 +41,9 @@ function draw(){box.textContent="";Object.keys(C).forEach(function(k){var x=C[k]
   b.onclick=function(){cur=k;try{localStorage.setItem("wadm_city",k)}catch(e){}draw()};box.appendChild(b)});
   document.getElementById("sA").textContent="الطلبات والمناديب والعروض · "+C[cur].n;document.getElementById("sL").textContent="الخريطة الحية لحظة بلحظة · "+C[cur].n}
 draw();
-document.getElementById("gA").onclick=function(){location.href=C[cur].u+"?page=admin"};
-document.getElementById("gL").onclick=function(){location.href=C[cur].u+"?page=live"};
+document.getElementById("gA").onclick=function(){location.href=(cur==="unz"?"app/":"mh/app/")+"admin-panel.html"};
+document.getElementById("gL").onclick=function(){location.href=(cur==="unz"?"app/":"mh/app/")+"ops.html"};
+/* ⚡ HUB */try{var bk=document.createElement("div");bk.className="note";bk.style.textAlign="center";var a1=document.createElement("a"),a2=document.createElement("a");a1.textContent="الإدارة (الرابط القديم)";a2.textContent="غرفة العمليات (الرابط القديم)";a1.onclick=function(){location.href=C[cur].u+"?page=admin"};a2.onclick=function(){location.href=C[cur].u+"?page=live"};a1.href="#";a2.href="#";bk.appendChild(document.createTextNode("لو حاجة مش شغالة: "));bk.appendChild(a1);bk.appendChild(document.createTextNode(" · "));bk.appendChild(a2);var nt=document.querySelector(".note");if(nt&&nt.parentNode)nt.parentNode.insertBefore(bk,nt.nextSibling)}catch(e){}
 })();
 </script>
 </body></html>
