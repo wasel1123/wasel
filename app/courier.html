@@ -375,7 +375,7 @@ feeK:["أجر المندوب","Your fee"],sar:[" ريال"," SAR"],phoneK:["جو
 accept:["قبول الطلب","Accept order"],place:["المطعم/المتجر","the restaurant/store"],
 arrQ1:["وصلت إلى ","Have you arrived at "],arrQ2:["؟","?"],arrBtn:["وصلت موقع الاستلام","I arrived at the pickup location"],
 rejectB:["رفض الطلب","Reject order"],pinL:["🔐 كود التسليم من العميل","🔐 Delivery code from the customer"],pinP:["4 أرقام","4 digits"],pinNeed:["اكتب كود التسليم (4 أرقام) اللي مع العميل","Enter the 4-digit delivery code the customer has"],rjPick:["اختر سبب الرفض","Choose a reason"],rjNote:["اكتب السبب (إجباري لو اخترت أخرى)","Write the reason (required for Other)"],rjGo:["تأكيد الرفض","Confirm rejection"],rjNeed:["اختر سبب الرفض","Choose a reason for rejecting"],rjNeedN:["اكتب سبب الرفض","Write the reason for rejecting"],confRej:["رفض هذا الطلب؟ سيختفي من قائمتك ويُحسب من رفضك اليومي.","Reject this order? It will disappear from your list and count toward your daily rejections."],rejInfo:["قبل أن تقبل: يمكنك رفض طلبين فقط يوميًا. المتبقي لك اليوم: ","Decide before accepting: you can reject only 2 orders per day. Left today: "],
-invH:["فاتورة الطلب","Order invoice"],invAmt:["قيمة الطلب (ريال)","Order amount (SAR)"],invEx:["مثال: 45.50","e.g. 45.50"],photoInv:["صوّر الفاتورة","Take invoice photo"],
+invH:["فاتورة الطلب","Order invoice"],invAmt:["قيمة الطلب (ريال)","Order amount (SAR)"],invEx:["مثال: 45.50 · لو الطلب مدفوع اكتب 0","e.g. 45.50 · prepaid order: 0"],photoInv:["صوّر الفاتورة","Take invoice photo"],
 upInv:["رفع الفاتورة","Upload invoice"],needAmt:["اكتب قيمة الطلب","Enter the order amount"],needPhoto:["صوّر الفاتورة أولًا","Take the invoice photo first"],
 pickQ:["استلمت الطلب؟","Did you pick up the order?"],pickBtn:["تم استلام الطلب من ","Order picked up from "],
 goBtn:["في الطريق للتسليم","On the way to deliver"],kidTag:["📍 المكان الثاني للطلب ","📍 Second place of order "],mainK:["🍱 طلب من مكانين: لازم تستلم المكانين قبل التوصيل (المكان الثاني ظاهر لك كطلب تابع)","🍱 Two-place order: pick up both places before delivering (the second place shows as a linked order)"],kidGo:["تم استلام هذا المكان ✓ ابدأ التوصيل من الطلب الرئيسي ","This place is picked up ✓ start delivery from the main order "],doorPh:["صوّر باب العميل (إجباري)","Photo of the customer's door (required)"],doorH:["الصورة بتظهر للعميل علشان يتأكد إنك عند بابه.","The customer sees this photo to confirm you are at the right door."],doorNeed:["صوّر باب العميل الأول","Take a photo of the customer's door first"],tmrT:["وقت التوصيل من ساعة ما قبلت الطلب","Delivery time since you accepted"],doneIn:["✅ اتسلّم في ","✅ Delivered in "],mins:[" دقيقة"," min"],dstBtn:["وصلت موقع التسليم","I arrived at the delivery location"],gdeC1:["📌 استلم المبلغ كاملًا (","📌 Collect the full amount ("],gdeC2:[") وكود التسليم من العميل، ثم سلّمه الطلب",") and the delivery code from the customer, then hand over the order"],gdeT:["📌 خذ كود التسليم من العميل، ثم سلّمه الطلب","📌 Get the delivery code from the customer, then hand over the order"],
@@ -532,11 +532,11 @@ function invFix(c,o){
   if(INVFIX[o.no]){
     var bx=el("div","card");bx.style.background="var(--bg)";
     var cur=Math.round(Number(o.inv||0)*100)/100;
-    var amt=field(bx,en?"Correct invoice amount":"المبلغ الصحيح للفاتورة","number",cur>0?cur:null);
+    var amt=field(bx,en?"Correct invoice amount":"المبلغ الصحيح للفاتورة","number",cur>=0?cur:null);
     var ph=photo(bx,en?"New invoice photo (optional)":"صورة جديدة للفاتورة (اختياري)");
     bx.appendChild(el("div","sub",en?"After you reach the customer, editing is locked.":"بعد ما توصل للعميل التعديل بيتقفل."));
     bx.appendChild(btn(en?"💾 Save the fix":"💾 حفظ التعديل","",function(b){
-      if(!amt.value||!(parseFloat(amt.value)>0)){setMsg(t("needAmt"),1);return}
+      if(amt.value===""||!(parseFloat(amt.value)>=0)){setMsg(t("needAmt"),1);return}
       act("courierInvoiceFix",o.no,[amt.value,ph.data||""],b,function(){INVFIX[o.no]=false})}));
     w.appendChild(bx)}
   c.appendChild(w)}
@@ -721,7 +721,7 @@ function card(o,mine){
     var amt=field(c,t("invAmt"),"number",null,t("invEx"));
     var ph=photo(c,t("photoInv"));
     c.appendChild(btn(t("upInv"),"",function(b){
-      if(!amt.value||!(parseFloat(amt.value)>0)){setMsg(t("needAmt"),1);return}
+      if(amt.value===""||!(parseFloat(amt.value)>=0)){setMsg(t("needAmt"),1);return}
       if(!ph.data){setMsg(t("needPhoto"),1);return}
       act("courierInvoice",o.no,[amt.value,ph.data],b)}));
   }else if(g==="arrived"||g==="invoiced"){
