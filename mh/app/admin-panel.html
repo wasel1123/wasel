@@ -339,7 +339,7 @@ function attention(){
 function tabs(){
   var att=attention().filter(function(x){return x.lvl==="red"}).length;
   var nb=D.chat.filter(function(m){return m.blocked&&m.t>=D.now-86400000}).length;
-  var T=[["ov","نظرة عامة",att],["or","الطلبات",0],["co","المناديب",0],["ch","المحادثات",nb],["in","الرسائل",pendingIn()],["rg","طلبات المناديب",REG?REG.pending:0],["rs","المطاعم",RST?RST.pending:0],["st","المتاجر",0],["of","العروض 🔥",OFL&&OFL.list?OFL.list.filter(function(x){return x.st==="مقترح"}).length:0],["vf","📱 فودافون كاش",VFL&&VFL.list?VFL.list.filter(function(x){return /بانتظار/.test(x.st)}).length:0],["pa","التسويات",0],["ac","المحاسبة",0]];
+  var T=[["ov","نظرة عامة",att],["or","الطلبات",0],["co","المناديب",0],["ch","المحادثات",nb],["in","الرسائل",pendingIn()],["rg","طلبات المناديب",REG?REG.pending:0],["rs","المطاعم",RST?RST.pending:0],["st","المتاجر",0],["of","العروض 🔥",OFL&&OFL.list?OFL.list.filter(function(x){return x.st==="مقترح"}).length:0],["vf","📱 فودافون كاش",VFL&&VFL.list?VFL.list.filter(function(x){return /بانتظار/.test(x.st)}).length:0],["pa","التسويات",0],["ac","المحاسبة",0],["pl","📘 دراسة المشروع",0]];
   var n=$("tabs");n.textContent="";
   T.forEach(function(t){var b=el("button",TAB===t[0]?"on":"",t[1]);if(t[2]){b.appendChild(el("span","n",String(t[2])))}b.onclick=function(){TAB=t[0];render();if(t[0]==="ac")loadAcc();if(t[0]==="st")loadSt();if(t[0]==="of")loadOf();if(t[0]==="vf")loadVf()};n.appendChild(b)})}
 function render(){
@@ -349,7 +349,7 @@ function render(){
   var ae=document.activeElement;
   if(ae&&$("panel").contains(ae)&&/INPUT|SELECT|TEXTAREA/.test(ae.tagName))return;   // لا نقاطع من يكتب
   var p=$("panel");p.textContent="";
-  ({ov:vOv,or:vOr,co:vCo,ch:vCh,in:vIn,rg:vRg,rs:vRs,st:vSt,of:vOf,vf:vVf,pa:vPa,ac:vAc})[TAB](p);
+  ({ov:vOv,or:vOr,co:vCo,ch:vCh,in:vIn,rg:vRg,rs:vRs,st:vSt,of:vOf,vf:vVf,pa:vPa,ac:vAc,pl:vPl})[TAB](p);
   if(OPEN)refreshModalBasics()}
 
 /* --- نظرة عامة --- */
@@ -925,6 +925,48 @@ function accAfter(){EXF=newEx();MJ=newMj();ACCL=false;loadAcc()}
 function trow(t,label,val,cls,sub){var r=el("tr",cls||"");var a=el("td",null,label);if(sub)a.style.paddingInlineStart="22px";r.appendChild(a);var b=el("td",null,val);b.style.cssText="text-align:end;font-weight:"+(cls?"700":"400");r.appendChild(b);t.appendChild(r)}
 function accDate(label,val,fn,lk){var d=el("div");d.appendChild(el("label",null,label));var i=el("input");i.type="date";i.value=val;i.max=todayK();if(lk&&ACC&&ACC.lock){i.min=addDays(ACC.lock,1);if(i.value<i.min){i.value=i.min;fn(i.value)}}i.onchange=function(){fn(i.value)};d.appendChild(i);return d}
 function accMsg(){var m=el("div");m.style.cssText="font-weight:700;margin-top:8px";return m}
+/* --- 📘 دراسة المشروع: الأرقام الفعلية + حاسبة الشركاء + التوسع (القيم بتتحفظ على الجهاز ده بس) --- */
+var PLV=null;
+function vPl(p){
+  var EG=WA_CC==="20",CUR=EG?"جنيه":"ريال",DEF=EG?{d:192,fee:25,rate:20,cost:14333,ps:[["علي",60],["شريك ممول",25],["صاحب السجل التجاري",15]]}:{d:150,fee:12,rate:20,cost:3294,ps:[["علي",60],["شريك ممول",25],["صاحب السجل التجاري",15]]};
+  if(!PLV){PLV=JSON.parse(JSON.stringify(DEF));try{var sv=JSON.parse(localStorage.getItem("wpl")||"null");if(sv&&sv.ps)PLV=sv}catch(e){}}
+  function save(){try{localStorage.setItem("wpl",JSON.stringify(PLV))}catch(e){}}
+  function r2(n){return Math.round(n*100)/100}
+  function nf(n){return (Math.round(n)).toLocaleString("en-US")}
+  /* 1) الأرقام الفعلية من الطلبات: آخر 30 يوم */
+  var c1=el("div","card");c1.appendChild(el("h3",null,"📊 واصل دلوقتي (آخر 30 يوم)"));
+  var del=D.orders.filter(function(o){return o.status==="تم التسليم"&&inRange(o.tu||o.t0,"30")&&!o.test});
+  var plat=0,fees=0;del.forEach(function(o){plat+=Number(o.plat)||0;fees+=(Number(o.fee)||0)+(Number(o.plat)||0)});
+  var first=del.reduce(function(m,o){var t=o.t0||o.tu;return t&&t<m?t:m},D.now),days=Math.max(1,Math.min(30,Math.ceil((D.now-first)/86400000)));
+  var perDay=r2(del.length/days),need=EG?96:46,pct=Math.min(100,Math.round(perDay/need*100));
+  var k=el("div","kpis");k.appendChild(kpi(del.length,"طلب اتسلّم"));k.appendChild(kpi(perDay,"طلب في اليوم"));k.appendChild(kpi(nf(plat)+" "+CUR,"ربح التطبيق"));k.appendChild(kpi(need,"طلب يوميًا للتعادل مع الدعاية"));c1.appendChild(k);
+  var bar=el("div");bar.style.cssText="height:12px;border-radius:99px;background:var(--ln);overflow:hidden;margin:4px 0 6px";var bi=el("i");bi.style.cssText="display:block;height:100%;width:"+pct+"%;background:"+(pct>=100?"#15803d":"#f2b544");bar.appendChild(bi);c1.appendChild(bar);
+  c1.appendChild(el("div","mu",pct>=100?"✅ واصل بيغطي مصاريفه مع الدعاية.":"وصلنا "+pct+"% من نقطة التعادل. "+(perDay*30>=(EG?200:123)?"بيغطي المصاريف الثابتة من غير دعاية.":"لسه أقل من المصاريف الثابتة نفسها.")));
+  p.appendChild(c1);
+  /* 2) الحاسبة */
+  var c2=el("div","card");c2.appendChild(el("h3",null,"🧮 حاسبة الأرباح والشركاء"));
+  var out=el("div");
+  function inp(lbl,key,step){var w=el("label");w.style.cssText="display:flex;justify-content:space-between;align-items:center;gap:10px;margin:6px 0";w.appendChild(el("span",null,lbl));var i=el("input");i.type="number";i.inputMode="decimal";i.step=step||"1";i.value=PLV[key];i.style.cssText="width:110px;padding:8px;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:inherit;font:inherit";i.oninput=function(){PLV[key]=Number(i.value)||0;save();calc()};w.appendChild(i);c2.appendChild(w)}
+  inp("طلبات في اليوم","d");inp("متوسط رسوم التوصيل ("+CUR+")","fee","0.5");inp("نسبة التطبيق من الرسوم %","rate");inp("المصاريف الشهرية ("+CUR+")","cost","50");
+  c2.appendChild(el("div","mu","الشركاء ونسبهم من صافي الربح:"));
+  PLV.ps.forEach(function(ps,ix){var w=el("div");w.style.cssText="display:flex;gap:8px;margin:6px 0";var a=el("input");a.value=ps[0];a.style.cssText="flex:1;padding:8px;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:inherit;font:inherit";a.oninput=function(){ps[0]=a.value;save();calc()};var b=el("input");b.type="number";b.value=ps[1];b.style.cssText="width:80px;padding:8px;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:inherit;font:inherit";b.oninput=function(){ps[1]=Number(b.value)||0;save();calc()};w.appendChild(a);w.appendChild(b);w.appendChild(el("span",null,"%"));c2.appendChild(w)});
+  var rs=el("button","sec","↺ رجّع الأرقام الافتراضية");rs.onclick=function(){PLV=JSON.parse(JSON.stringify(DEF));save();render()};c2.appendChild(rs);
+  c2.appendChild(out);
+  function calc(){out.textContent="";
+    var mon=PLV.d*30,rev=mon*PLV.fee*PLV.rate/100,net=rev-PLV.cost,per=PLV.fee*PLV.rate/100,be=per>0?Math.ceil(PLV.cost/per):0;
+    var k2=el("div","kpis");k2.style.marginTop="10px";k2.appendChild(kpi(nf(mon),"طلب في الشهر"));k2.appendChild(kpi(nf(rev)+" "+CUR,"إيراد التطبيق شهريًا"));k2.appendChild(kpi((net<0?"− ":"")+nf(Math.abs(net))+" "+CUR,"صافي شهري",net<0?"bad":"ok"));k2.appendChild(kpi(nf(be),"طلب شهريًا للتعادل"));out.appendChild(k2);
+    var tot=PLV.ps.reduce(function(s,x){return s+(Number(x[1])||0)},0);
+    if(tot!==100)out.appendChild(el("div","err","⚠️ مجموع النسب "+tot+"% ولازم يكون 100%"));
+    PLV.ps.forEach(function(x){var row=el("div");row.style.cssText="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--ln)";row.appendChild(el("span",null,(x[0]||"—")+" ("+x[1]+"%)"));row.appendChild(el("b",null,net>0?nf(net*x[1]/100)+" "+CUR+" شهريًا":"مفيش أرباح لسه"));out.appendChild(row)});
+    out.appendChild(el("div","mu",net>0?"في السنة: "+nf(net*12)+" "+CUR+" صافي للكل.":"الشهر بيخسر "+nf(-net)+" "+CUR+"، وعادةً الخسارة بتطلع من فلوس الشريك الممول لحد ما الشركة تكسب."))}
+  calc();p.appendChild(c2);
+  /* 3) التوسع والتحذير */
+  var c3=el("div","card");c3.appendChild(el("h3",null,"🗺 التوسع مدينة مدينة"));
+  [["1) قبل الإطلاق (4 أسابيع)","8 مناديب نشطين، 150 متجر بمواقعهم، السجل والتراخيص."],["2) إطلاق هادي (أول شهر)","رسوم ثابتة مخفضة + دعاية بسيطة. الهدف: 10 طلبات يوميًا وتقييم 4.5+."],["3) النمو (شهر 2 لـ 6)","الأسعار بالمسافة + الدعاية كاملة. الهدف: نقطة التعادل."],["4) الانتقال","4 أسابيع ورا بعض فوق التعادل ← نبدأ المدينة الجاية."]].forEach(function(x){var r=el("div");r.style.margin="8px 0";r.appendChild(el("b",null,x[0]));r.appendChild(el("div","mu",x[1]));c3.appendChild(r)});
+  c3.appendChild(el("div","mu","الترتيب المقترح: عنيزة ← الرس والبكيرية ← بريدة. المحلة تفضل تجريبية لحد ما عنيزة تعدي المرحلة 3."));
+  var wr=el("div");wr.style.cssText="margin-top:10px;padding:10px 12px;border-radius:12px;background:#fff7e6;color:#7a4b00;font-size:14px";wr.textContent="⚠️ السجل التجاري: الشريك صاحب السجل لازم يكون شريك حقيقي مسجّل في العقد. تسجيل مشروع غير السعودي باسم سعودي مقابل نسبة اسمه «تستر تجاري» وعقوبته شديدة. راجع محامي قبل أي توقيع.";c3.appendChild(wr);
+  var ln=el("a","btn","📘 افتح الدراسة كاملة");ln.href="https://claude.ai/artifact/RdWBbto7p2h82cAuKjXV3V";ln.target="_blank";ln.rel="noopener";ln.style.cssText="display:inline-block;margin-top:10px;padding:10px 16px;border-radius:12px;background:var(--br);color:#fff;text-decoration:none;font-weight:700";c3.appendChild(ln);
+  p.appendChild(c3)}
 function vAc(p){
   if(!ACC){p.appendChild(el("div",ACCERR?"bad":"mu",ACCERR||"جارٍ التحميل..."));if(!ACCL&&!ACCERR)loadAcc();return}
   if(ACCERR)p.appendChild(el("div","bad",ACCERR));
