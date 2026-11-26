@@ -717,4 +717,16 @@ if(typeof window.beepA==="function")window.beepA=ring;
   var ms=m&&m.closest(".side"),cs=c&&c.closest(".side");if(ms)ms.id="mapside";if(cs)cs.id="crsside";
   setTimeout(function(){try{window.dispatchEvent(new Event("resize"))}catch(e){}},300)}catch(e){}})();
 </script>
+<script>
+/* ===== وضع «جوه الإدارة» (ops.html?embed=1&v=1..4): من غير الهيدر والتبويبات، والدخول بنفس رمز الإدارة اللي في الصفحة ===== */
+(function(){try{var q=new URLSearchParams(location.search);if(q.get("embed")!=="1")return;
+  document.documentElement.classList.add("emb");
+  var v=parseInt(q.get("v")||"1",10);if(!(v>=1&&v<=4))v=1;
+  var st=document.createElement("style");
+  st.textContent="html.emb body>header,html.emb #app>nav{display:none!important}html.emb main{padding-top:6px!important}"+
+    "@media(max-width:1099px){html.emb #v1:not(.hide){display:flex;flex-direction:column}html.emb #mapside{order:-1;margin-top:0!important}html.emb #mapside .mm{height:58vh!important}}";
+  document.head.appendChild(st);
+  var n=0,iv=setInterval(function(){n++;var a=document.getElementById("app");if(a&&!a.classList.contains("hide")){clearInterval(iv);try{tab(v)}catch(e){}}else if(n>120)clearInterval(iv)},250);
+}catch(e){}})();
+</script>
 </body></html>
