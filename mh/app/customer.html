@@ -10,6 +10,8 @@ var C={unz:{n:"عنيزة",s:"السعودية · بالريال",f:"🇸🇦",l
 function g(){try{return localStorage.getItem(K)}catch(e){return null}}
 function sv(v){try{localStorage.setItem(K,v)}catch(e){}}
 var page=location.pathname.split("/").pop()||"customer.html",c=g();
+// لينك الستيكر أو الإعلان بيحدد المدينة: customer.html?city=mhl أو ?city=unz (من غير ما نسأل العميل)
+try{var qc=new URLSearchParams(location.search).get("city");if(qc&&C[qc]){c=qc;sv(qc)}}catch(e){}
 // آخر صفحة اتفتحت (عميل/مندوب): علشان لو النت فصل ورجع، التطبيق يرجع لنفس الصفحة
 try{localStorage.setItem("wlast",page)}catch(e){}
 // اللي كان بيستخدم واصل عنيزة قبل كده: يفضل على عنيزة من غير ما نسأله
@@ -62,6 +64,12 @@ function show(first){
   if(first)perm();else pick("اختار المدينة");
   document.body.appendChild(o)}
 window.WCITY={open:function(){show(false)}};
+/* شريط المدينة للعميل الجديد: مش بيقفل الصفحة، وبيختفي بـ ✕ */
+function hint(){if(!document.body)return;var o=el("div","display:flex;align-items:center;gap:8px;background:#f2b544;color:#1b1200;padding:8px 12px;direction:rtl;font-family:inherit;font-size:14px;font-weight:700");o.id="wcity_hint";
+  o.appendChild(el("span","flex:1","📍 واصل "+C[ME].n));
+  var a=el("button","border:0;border-radius:10px;padding:6px 12px;background:#0e4f4c;color:#fff;font:inherit;font-size:13px;width:auto;margin:0","غيّر المدينة");a.type="button";a.onclick=function(){o.remove();show(false)};
+  var x=el("button","border:0;border-radius:10px;padding:6px 10px;background:rgba(0,0,0,.08);color:#1b1200;font:inherit;width:auto;margin:0","✕");x.type="button";x.setAttribute("aria-label","إخفاء");x.onclick=function(){o.remove()};
+  o.appendChild(a);o.appendChild(x);document.body.insertBefore(o,document.body.firstChild)}
 /* تصحيح المدينة: أول ما العميل يحدد موقعه (أو موقع المندوب يشتغل) ويطلع في المدينة التانية، يظهرله شريط يتنقل بيه */
 var WARNED=false;
 function banner(k){if(WARNED||!document.body)return;try{if(sessionStorage.getItem("wcity_nb")===k)return}catch(e){}WARNED=true;
@@ -78,7 +86,8 @@ try{var G=navigator.geolocation;if(G){var gc=G.getCurrentPosition.bind(G),wp=G.w
   G.getCurrentPosition=function(s,e,o){return gc(function(p){chk(p);if(s)s(p)},e,o)};
   G.watchPosition=function(s,e,o){return wp(function(p){chk(p);if(s)s(p)},e,o)}}}catch(e){}
 document.addEventListener("DOMContentLoaded",function(){
-  if(!g())show(true);
+  // العميل الجديد بيفتح على الطلب على طول بمدينة الصفحة، وشريط صغير فوق لو عاوز يغيّرها. المندوب زي ما هو
+  if(!g()){if(page==="customer.html"){sv(ME);hint()}else show(true)}
   // زرار «🌍 غيّر المدينة» في القايمة ☰
   try{var dw=document.getElementById("cdw")||document.getElementById("mdw"),ref=dw&&(dw.querySelector('[data-c="lang"]')||dw.querySelector("#shfb"));
     if(dw){var b=document.createElement("button");b.type="button";b.textContent="🌍 غيّر المدينة ("+C[ME].n+")";b.onclick=function(){show(false)};
@@ -191,6 +200,11 @@ button.lnk{width:auto;background:none;color:var(--mu);font-size:13px;font-weight
 .mit .mp{width:84px;height:84px;border-radius:12px;object-fit:cover;flex:none}
 .mit .mn{flex:none;width:84px;height:84px;border-radius:12px;background:var(--br2);color:var(--br);display:grid;place-items:center;text-align:center;font-weight:700;font-size:13px;padding:6px}
 .mit .mt{flex:1;min-width:0}.mit .nm{font-weight:700}
+.mit .mn.mil{padding:12px}.mit .mn.mil svg{width:100%;height:100%;display:block}
+.mban{border-radius:12px;padding:10px 12px;margin:0 0 10px;font-size:14px;font-weight:700;line-height:1.5}
+.mban small{display:block;font-weight:400;font-size:12.5px;opacity:.9}
+.mban.g{background:#dcfce7;color:#166534}.mban0 small{display:block;font-size:12.5px;margin:0 0 8px}
+.mv b.ap{color:var(--mu)}
 .mb{position:absolute;inset-inline-start:12px;top:68px;width:84px;height:28px;border-radius:0 0 12px 12px;background:rgba(11,107,58,.92);color:#fff;font-size:17px;line-height:28px;text-align:center;display:none}.mb.on{display:block}
 .mm{display:flex;gap:6px;margin-top:8px}.mm button{flex:1;width:auto;margin:0;padding:6px 4px;border-radius:99px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font-size:13px;font-weight:700}.mm button.on{background:var(--br);border-color:var(--br);color:#fff}
 .mv{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px}
@@ -222,8 +236,8 @@ button.lnk{width:auto;background:none;color:var(--mu);font-size:13px;font-weight
 .hi .dt .cm.c{background:#d1fae5;color:#064e3b;margin-inline-start:auto}.hi .dt .cm.d{background:var(--ln);color:var(--tx)}
 .hi .dt .cm small{display:block;color:var(--mu);font-size:11.5px}
 .hi .ha a{background:var(--br);color:#fff}.hi .ha button{background:var(--br2);color:var(--br)}
-.cats{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 2px}.cats.hide{display:none}
-.cats button{width:auto;margin:0;padding:7px 14px;border-radius:99px;font-size:14px;font-weight:700;background:var(--br2);color:var(--tx)}
+.cats{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:8px;margin:10px 0 2px;padding-bottom:2px}.cats::-webkit-scrollbar{display:none}.cats.hide{display:none}
+.cats button{flex:none;white-space:nowrap;width:auto;margin:0;padding:7px 14px;border-radius:99px;font-size:14px;font-weight:700;background:var(--br2);color:var(--tx)}
 .cats button.on{background:var(--br);color:#fff}
 :where(html.dk) .cats button.on{color:#06201d}:where(html.dk) button,:where(html.dk) .menubtn,:where(html.dk) .mm button.on,:where(html.dk) .hi .ha a{color:#06201d}
 .pks{margin:8px 0 4px}.pkm{display:block;margin:0 0 6px}
@@ -456,7 +470,7 @@ body.haslb main{padding-bottom:70px}
 <input id="pko" class="hide" data-ph="pko" style="margin-top:8px">
 <input id="pkl" type="url" inputmode="url" data-ph="pkl" style="margin-top:8px">
 <small data-i="partner"></small>
-<label data-i="items"></label><textarea id="items" rows="3"></textarea><div id="rcpt1"></div>
+<label data-i="items"></label><textarea id="items" rows="3" data-ph="itemsPh"></textarea><div id="rcpt1"></div>
 <button id="add2" type="button" class="sec hide" data-i="add2"></button>
 <div id="sec2" class="sec2 hide">
 <label data-i="pk2l"></label><select id="pk2"></select>
@@ -532,7 +546,7 @@ loyFree:["🎁 التوصيل ببلاش بنقطك — هتدفع للمندو�
 outA:["معلش، واصل شغالة في المحلة الكبرى بس دلوقتي 💚 وقريب إن شاء الله هنوصل لمنطقتك.","Sorry, Wasel is currently available in El-Mahalla only 💚 We will be in your area soon, God willing."],
 locNeed2:["حدّد مكانك (زرار «موقعي الحالي») أو الصق لينك من خرايط جوجل.","Please set your location on the map (My location button) or paste a Google Maps location link."],
 partner:["وجود المطعم في القايمة مش معناه إنه شريك رسمي لواصل.","Being listed does not mean the restaurant is an official partner of Wasel."],
-items:["مكونات الطلب","Order details"],add2:["➕ زوّد مكان تاني (طلب من مكانين)","➕ Add a second place (order from two places)"],pk2l:["المكان التاني","Second place"],items2l:["مكونات الطلب من المكان التاني","Order details from the second place"],rm2:["إلغاء المكان التاني","Remove the second place"],ex2:["رسوم توصيل المكان التاني: +","Second place delivery fee: +"],cold:["بنوصّل الطلبين مع بعض. لو أكل سخن، الأحسن تختار مكانين قريبين من بعض.","We deliver both together. For hot food, pick two places close to each other."],hood:["حي التسليم","Delivery district"],dt:["وصف موقع التسليم (اختياري)","Delivery location description (optional)"],door:["صورة باب البيت (اختياري)","Photo of your door (optional)"],doorPick:["📷 ضيف صورة باب البيت","📷 Add a photo of your door"],doorChg:["🔄 غيّر الصورة","🔄 Change photo"],doorReady:["✅ الصورة جاهزة، هتوصل للمندوب","✅ Photo ready, it will reach the courier"],doorBad:["الصورة مقريتش، جرّب صورة تانية","Couldn’t read the photo, try another"],
+items:["مكونات الطلب","Order details"],itemsPh:["مثال:\n2 وجبة برجر وسط، واحدة من غير بصل\n1 بيبسي كبير","Example:\n2 medium burger meals, one without onion\n1 large Pepsi"],add2:["➕ زوّد مكان تاني (طلب من مكانين)","➕ Add a second place (order from two places)"],pk2l:["المكان التاني","Second place"],items2l:["مكونات الطلب من المكان التاني","Order details from the second place"],rm2:["إلغاء المكان التاني","Remove the second place"],ex2:["رسوم توصيل المكان التاني: +","Second place delivery fee: +"],cold:["بنوصّل الطلبين مع بعض. لو أكل سخن، الأحسن تختار مكانين قريبين من بعض.","We deliver both together. For hot food, pick two places close to each other."],hood:["حي التسليم","Delivery district"],dt:["وصف موقع التسليم (اختياري)","Delivery location description (optional)"],door:["صورة باب البيت (اختياري)","Photo of your door (optional)"],doorPick:["📷 ضيف صورة باب البيت","📷 Add a photo of your door"],doorChg:["🔄 غيّر الصورة","🔄 Change photo"],doorReady:["✅ الصورة جاهزة، هتوصل للمندوب","✅ Photo ready, it will reach the courier"],doorBad:["الصورة مقريتش، جرّب صورة تانية","Couldn’t read the photo, try another"],
 dtp:["الشارع أو أقرب علامة","Street or nearest landmark"],dm:["موقع التسليم","Delivery location"],dmHere:["موقعي الحالي (يُحدَّد تلقائيًا)","My current location (detected automatically)"],dmOther:["مكان تاني (هكتبه بنفسي)","Another location (I will add it)"],
 locBtn:["📍 حدّد مكاني دلوقتي","📍 Detect my location now"],locing:["بنحدد مكانك... وافق لما يسألك عن الموقع","Detecting your location... please allow location access"],
 locOk:["✓ تم تحديد موقعك","✓ Your location was detected"],locFail:["معرفناش نحدد مكانك. اختار «مكان تاني» وحط اللينك أو اكتب وصف المكان.","Could not detect your location. Choose \"Another location\" and add a link or describe the place."],
@@ -589,7 +603,7 @@ function fill(id,a,x){var s=$(id),i=s.selectedIndex,cv=s.value,q="";
   if(id==="pk"){if((cv==="x"&&!(q&&a.length))||(cv&&a.some(function(v){return v[0]===cv})))s.value=cv}
   else if(i>0&&i<s.options.length)s.selectedIndex=i}
 var OFFER=null,COORD=null,LOCACC=0;
-var CLOSED={},PART={},MR=[],MC={},MCART={},MCUR="",MM={};
+var CLOSED={},PART={},MR=[],MC={},MCART={},MCUR="",MM={},REALM={};
 // تصنيفات المطاعم: [المفتاح (نفس اسم التصنيف في الشيت), العربي, English]
 var CATS=[["البرجر والوجبات السريعة", "🍔 برجر ووجبات سريعة", "🍔 Burgers & fast food"], ["البيتزا والباستا", "🍕 بيتزا وباستا", "🍕 Pizza & pasta"], ["المطاعم الشعبية والسعودية", "🍛 أكل شعبي ومصري", "🍛 Egyptian & traditional"], ["المشويات والمأكولات الشرقية", "🍢 مشويات وشرقي", "🍢 Grills & Middle Eastern"], ["الشاورما والسندويتشات", "🌯 شاورما وسندويتشات", "🌯 Shawarma & sandwiches"], ["المطاعم التركية والآسيوية", "🍜 تركي وآسيوي", "🍜 Turkish & Asian"], ["المطاعم والمخابز المتخصصة في الإفطار", "🍳 فطور", "🍳 Breakfast"], ["الحلويات والآيس كريم", "🍰 حلويات وآيس كريم", "🍰 Sweets & ice cream"], ["الكافيهات والقهوة المختصة", "☕ كافيهات وقهوة مختصة", "☕ Cafés & specialty coffee"], ["العصائر والمشروبات", "🥤 عصائر ومشروبات", "🥤 Juices & drinks"], ["الصيدليات", "💊 صيدليات", "💊 Pharmacies"], ["المتاجر العامة والسوبرماركت", "🛒 سوبرماركت ومتاجر", "🛒 Supermarkets & stores"]].concat([["مطاعم","🍽 مطاعم","🍽 Restaurants"],["كافيهات","☕ كافيهات","☕ Cafés"],["فطاير وموالح","🥧 فطاير وموالح","🥧 Pies & savories"],["حلويات","🍰 حلويات","🍰 Sweets"],["مخبوزات","🥖 مخبوزات","🥖 Bakery"],["مشروبات وعصائر","🥤 مشروبات وعصائر","🥤 Drinks & juices"],["أكل بيتي","🍲 أكل بيتي","🍲 Home-cooked"]]);
 var SLOC={};
@@ -993,8 +1007,35 @@ function mPaint(){var r=mTotal(),b=$("mok");
   document.querySelectorAll("#mbody [data-mi]").forEach(function(e){e.classList.toggle("on",(MM[e.getAttribute("data-mi")]?"1":"0")===e.getAttribute("data-mv"))})}
 function mKey(k,i){return k+(MM[i]?"m":"")}
 function mChg(k,name,price,d){var c=MCART[MCUR]=MCART[MCUR]||{},o=c[k]||{q:0,name:name,p:price};o.q+=d;if(o.q<=0)delete c[k];else c[k]=o;$("mmsg").textContent="";mPaint()}
+/* صور توضيحية مرسومة للأصناف اللي مفيهاش صورة من المطعم (من غير أي صور ليها حقوق). بتتختار من اسم القسم والصنف */
+var MILL=[
+ [/آيس ?كريم|ايسكريم|ice ?cream|جيلاتو|سكوب|باسكن/i,'<svg viewBox="0 0 64 64"><path d="M22 30h20L32 60z" fill="#e0a53a"/><circle cx="26" cy="25" r="10" fill="#f4c2d0"/><circle cx="38" cy="25" r="10" fill="#fff3c4"/><circle cx="32" cy="15" r="9" fill="#8a5a3b"/></svg>'],
+ [/برجر|برغر|burger|وبر|whopper/i,'<svg viewBox="0 0 64 64"><path d="M12 30c0-10 9-17 20-17s20 7 20 17z" fill="#f2b544"/><rect x="10" y="31" width="44" height="5" rx="2.5" fill="#4caf50"/><rect x="11" y="37" width="42" height="7" rx="3.5" fill="#7a3e1d"/><path d="M12 46h40v3c0 3-3 5-6 5H18c-3 0-6-2-6-5z" fill="#e0a53a"/><circle cx="24" cy="21" r="1.3" fill="#fff"/><circle cx="32" cy="18" r="1.3" fill="#fff"/><circle cx="40" cy="22" r="1.3" fill="#fff"/></svg>'],
+ [/بيتزا|pizza/i,'<svg viewBox="0 0 64 64"><path d="M32 8 55 50a42 42 0 0 1-46 0z" fill="#f2b544"/><path d="M9 50a42 42 0 0 0 46 0l2 4a46 46 0 0 1-50 0z" fill="#c9822b"/><circle cx="32" cy="27" r="4" fill="#d9472b"/><circle cx="24" cy="41" r="4" fill="#d9472b"/><circle cx="40" cy="42" r="4" fill="#d9472b"/></svg>'],
+ [/بارد|مثلج|آيس|ايس |iced|cold|فراب|frapp|سموذي|smoothie|ميلك ?شيك|shake/i,'<svg viewBox="0 0 64 64"><path d="M18 16h28l-4 42H22z" fill="#cfe9f3"/><path d="M20 30h24l-2 26H22z" fill="#8a5a3b"/><rect x="15" y="12" width="34" height="6" rx="3" fill="#0e4f4c"/><path d="M36 12 42 2" stroke="#0e4f4c" stroke-width="3" stroke-linecap="round"/></svg>'],
+ [/قهوة|لاتيه|لاتي|كابتشينو|كابوتشينو|اسبريسو|إسبريسو|موكا|امريكانو|أمريكانو|ماكياتو|كورتادو|فلات|coffee|latte|espresso|cappuccino|mocha|شاي|tea|شوكولاتة ساخنة|هوت/i,'<svg viewBox="0 0 64 64"><path d="M14 24h30v16a12 12 0 0 1-12 12h-6a12 12 0 0 1-12-12z" fill="#0e4f4c"/><path d="M44 28h4a6 6 0 0 1 0 12h-4" fill="none" stroke="#0e4f4c" stroke-width="4"/><path d="M22 8c-3 4 3 6 0 10M30 8c-3 4 3 6 0 10M38 8c-3 4 3 6 0 10" fill="none" stroke="#99b5b2" stroke-width="2.5" stroke-linecap="round"/><rect x="10" y="54" width="40" height="4" rx="2" fill="#c9a46a"/></svg>'],
+ [/دونات|donut|سينابون|سينا|رول|roll|بايتس/i,'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="23" fill="#d9a066"/><circle cx="32" cy="32" r="19" fill="#e9a0b6"/><circle cx="32" cy="32" r="7" fill="#e1eeec"/><g fill="#fff"><rect x="19" y="21" width="6" height="2.4" rx="1.2"/><rect x="39" y="20" width="6" height="2.4" rx="1.2"/><rect x="40" y="41" width="6" height="2.4" rx="1.2"/><rect x="18" y="40" width="6" height="2.4" rx="1.2"/></g></svg>'],
+ [/كيك|cake|تشيز|حلا|حلويات|حلى|تيراميسو|كنافة|بقلاوة|بسبوسة|كوكيز|cookie|dessert|براونيز/i,'<svg viewBox="0 0 64 64"><path d="M10 40l34-20 10 10v18H10z" fill="#f6d7b0"/><path d="M10 40l34-20 10 10-44 10z" fill="#e9a0b6"/><path d="M10 44h44v4H10z" fill="#e9a0b6"/><circle cx="44" cy="16" r="4" fill="#d9472b"/></svg>'],
+ [/كرواسون|croissant|مخبوز|معجنات|فطائر|فطيرة|خبز|bakery|صامولي/i,'<svg viewBox="0 0 64 64"><path d="M8 42c4-15 16-23 24-23s20 8 24 23c-6-4-10-4-14-2-4-6-16-6-20 0-4-2-8-2-14 2z" fill="#e0a53a"/><path d="M24 25l4 14M40 25l-4 14M32 21v18" stroke="#b97a26" stroke-width="2"/></svg>'],
+ [/عصير|juice|بيبسي|pepsi|كولا|cola|سفن|ميرندا|مشروب|drink|مياه|ماء|water|ليمون|soda|غازي/i,'<svg viewBox="0 0 64 64"><rect x="20" y="10" width="24" height="46" rx="6" fill="#f28c28"/><rect x="20" y="25" width="24" height="15" fill="#fff" opacity=".85"/><rect x="24" y="6" width="16" height="6" rx="2" fill="#b8c2c1"/></svg>'],
+ [/بطاطس|بطاطا|فرايز|fries|جانبي|sides|مقبلات|ودجز/i,'<svg viewBox="0 0 64 64"><g fill="#f2b544"><rect x="20" y="10" width="5" height="26" rx="2"/><rect x="27" y="6" width="5" height="30" rx="2"/><rect x="34" y="9" width="5" height="27" rx="2"/><rect x="41" y="12" width="5" height="24" rx="2"/></g><path d="M16 26h32l-4 30H20z" fill="#d9472b"/></svg>'],
+ [/دجاج|بروستد|chicken|فرايد|مسحب|نجت|nugget|ستربس|strips|جناح|wings/i,'<svg viewBox="0 0 64 64"><ellipse cx="25" cy="26" rx="17" ry="14" fill="#d08a3a" transform="rotate(-35 25 26)"/><path d="M36 36l12 12" stroke="#f5e6c8" stroke-width="6" stroke-linecap="round"/><circle cx="51" cy="46" r="4.5" fill="#f5e6c8"/><circle cx="46" cy="52" r="4.5" fill="#f5e6c8"/></svg>'],
+ [/شاورما|ساندو|سندو|ساندويتش|سندويتش|sandwich|تورتيلا|tortilla|wrap|راب|بانيني|panini|زاكي|صب/i,'<svg viewBox="0 0 64 64"><path d="M10 46 42 10l14 10-32 38z" fill="#f3d9a4"/><path d="M42 10l14 10-5 6-14-10z" fill="#4caf50"/><path d="M37 16l14 10-4 5-14-10z" fill="#d9472b"/><path d="M33 21l14 10-4 5-14-10z" fill="#8a4b2a"/></svg>'],
+ [/رز|أرز|ارز|كبسة|مندي|مضغوط|بخاري|برياني|مقلوبة|rice/i,'<svg viewBox="0 0 64 64"><ellipse cx="32" cy="45" rx="26" ry="8" fill="#0e4f4c"/><path d="M10 43c2-12 12-20 22-20s20 8 22 20z" fill="#f6e3b4"/><circle cx="26" cy="31" r="5" fill="#c9822b"/><circle cx="38" cy="33" r="4" fill="#c9822b"/></svg>'],
+ [/مشوي|مشويات|كباب|شيش|تكا|grill|kebab|kabab|لحم|ريش|كفتة/i,'<svg viewBox="0 0 64 64"><path d="M8 56 56 8" stroke="#8f9a99" stroke-width="3" stroke-linecap="round"/><rect x="16" y="36" width="12" height="10" rx="4" fill="#8a4b2a" transform="rotate(-45 22 41)"/><rect x="28" y="24" width="12" height="10" rx="4" fill="#8a4b2a" transform="rotate(-45 34 29)"/><rect x="22" y="31" width="8" height="8" rx="3" fill="#4caf50" transform="rotate(-45 26 35)"/><rect x="34" y="19" width="8" height="8" rx="3" fill="#d9472b" transform="rotate(-45 38 23)"/></svg>'],
+ [/سلط|salad|فتوش|تبولة/i,'<svg viewBox="0 0 64 64"><path d="M8 32h48a24 24 0 0 1-48 0z" fill="#0e4f4c"/><circle cx="22" cy="28" r="8" fill="#4caf50"/><circle cx="34" cy="24" r="9" fill="#7cc35a"/><circle cx="44" cy="29" r="6" fill="#d9472b"/></svg>']];
+var MILL0='<svg viewBox="0 0 64 64"><circle cx="32" cy="34" r="20" fill="#fff" stroke="#0e4f4c" stroke-width="3"/><circle cx="32" cy="34" r="12" fill="none" stroke="#cfe0de" stroke-width="2"/><path d="M6 14v14M10 14v14M8 28v26M56 14c-4 4-4 12 0 14v26" stroke="#0e4f4c" stroke-width="3" stroke-linecap="round" fill="none"/></svg>';
+function mIll(sec,name){var s=String(name||"")+" "+String(sec||""),svg=MILL0;
+  for(var i=0;i<MILL.length;i++){if(MILL[i][0].test(s)){svg=MILL[i][1];break}}
+  var d=mEl("div","mn mil");d.innerHTML=svg;d.title=LANG==="en"?"Illustration":"صورة توضيحية";d.setAttribute("aria-hidden","true");return d}
 function mRender(rest,data){
   MM={};var body=$("mbody");body.innerHTML="";$("mtitle").textContent=rest+rTx(rest);
+  /* سعر المطعم الحقيقي (مطعم شريك بيحدّث منيوه بنفسه، أو منيو اتأكد من المصدر الرسمي): شريط أخضر.
+     غير كده الأسعار بتظهر بعلامة ~ والملاحظة اللي تحت («منيو مطعم مش شريك») بتوضح إنها تقريبية */
+  var real=!!data.real,ill=false,ban=mEl("div",real?"mban g":"mban0");
+  if(real){ban.appendChild(document.createTextNode(LANG==="en"?"✓ The restaurant's real price, no markup":"✓ سعر المطعم الحقيقي، من غير أي زيادة"));
+    if(data.upd)ban.appendChild(mEl("small","",(LANG==="en"?"Last updated: ":"آخر تحديث: ")+data.upd))}
+  body.appendChild(ban);
   var tabs=mEl("div","mtabs");body.appendChild(tabs);
   (data.sections||[]).forEach(function(s,si){
     var a=mEl("a","",s.sec);a.href="#ms"+si;a.onclick=function(e){e.preventDefault();var h=$("ms"+si);if(h)h.scrollIntoView({behavior:"smooth"})};tabs.appendChild(a);
@@ -1002,7 +1043,7 @@ function mRender(rest,data){
     s.items.forEach(function(it,ii){
       var row=mEl("div","mit");
       if(it.img&&/^data:image\/(webp|jpeg);base64,[A-Za-z0-9+\/=]+$/.test(it.img)){var im=mEl("img","mp");im.src=it.img;im.alt=it.n;row.appendChild(im)}
-      else row.appendChild(mEl("div","mn",it.n));
+      else{row.appendChild(mIll(s.sec,it.n));ill=true}
       var tx=mEl("div","mt");tx.appendChild(mEl("div","nm",it.n));if(it.sub)tx.appendChild(mEl("small","",it.sub));
       var iid=si+"_"+ii;
       if(it.meal){var bg=mEl("div","mb","🍟🥤");bg.setAttribute("data-mb",iid);row.appendChild(bg)}
@@ -1012,7 +1053,7 @@ function mRender(rest,data){
         if(it.meal[1])tx.appendChild(mEl("small","mu",it.meal[1]))}
       it.v.forEach(function(v,vi){
         var k=iid+"_"+vi,line=mEl("div","mv");
-        var l=mEl("div","");if(v[0])l.appendChild(mEl("span","mu",v[0]+"  "));var pr=mEl("b","",v[1]+t("menuSar"));l.appendChild(pr);if(v[2]>v[1]){l.appendChild(mEl("s","",v[2]+t("menuSar")));l.appendChild(mEl("span","hot","🔥 "+(LANG==="en"?"Offer":"عرض")))}line.appendChild(l);
+        var l=mEl("div","");if(v[0])l.appendChild(mEl("span","mu",v[0]+"  "));var pr=mEl("b",real?"":"ap",(real?"":"~ ")+v[1]+t("menuSar"));l.appendChild(pr);if(v[2]>v[1]){l.appendChild(mEl("s","",v[2]+t("menuSar")));l.appendChild(mEl("span","hot","🔥 "+(LANG==="en"?"Offer":"عرض")))}line.appendChild(l);
         var q=mEl("div","mq"),mi=mEl("button","","−"),pl=mEl("button","","+"),cn=mEl("span","","0");
         function ml(){return MM[iid]&&it.meal?1:0}
         function nm(){return it.n+(v[0]?" - "+v[0]:"")+(ml()?t("mealTag"):"")}
@@ -1022,6 +1063,7 @@ function mRender(rest,data){
         mi.onclick=function(){mChg(mKey(k,iid),nm(),pc(),-1)};pl.onclick=function(){mChg(mKey(k,iid),nm(),pc(),1)};
         q.appendChild(mi);q.appendChild(cn);q.appendChild(pl);line.appendChild(q);tx.appendChild(line)});
       row.appendChild(tx);body.appendChild(row)})});
+  if(ill)ban.appendChild(mEl("small","mu",LANG==="en"?"Pictures are illustrations, not the restaurant's photos.":"الصور توضيحية، ومش صور المطعم."));
   mPaint()}
 function mOpen(rest){
   MCUR=rest;$("msheet").classList.remove("hide");$("mmsg").textContent="";
@@ -1044,7 +1086,7 @@ $("mok").onclick=function(){
   $(MTGT).value=txt;mClose();try{$(MTGT).scrollIntoView({block:"center"})}catch(e){}};
 function menuInit(){google.script.run.withSuccessHandler(function(r){
   if(!r||!r.ok||!r.rests)return;
-  MR=r.rests;RATE=(r.rate&&typeof r.rate==="object")?r.rate:{};BUSY={};(r.busy||[]).forEach(function(n){BUSY[n]=1});CLOSED={};(r.closed||[]).forEach(function(n){CLOSED[n]=1});CAT=(r.cat&&typeof r.cat==="object")?r.cat:{};
+  MR=r.rests;REALM={};(r.real||[]).forEach(function(n){REALM[n]=1});RATE=(r.rate&&typeof r.rate==="object")?r.rate:{};BUSY={};(r.busy||[]).forEach(function(n){BUSY[n]=1});CLOSED={};(r.closed||[]).forEach(function(n){CLOSED[n]=1});CAT=(r.cat&&typeof r.cat==="object")?r.cat:{};
   // المطاعم الشريكة المسجّلة معنا تظهر في أول القائمة (وما كان منها غير موجود في القائمة الثابتة يُضاف)
   var have={};R.forEach(function(x){have[x[0]]=1});
   var all=(r.partner||[]).slice();   // كل المطاعم الشريكة تظهر، حتى اللي لسه ما ضافتش منيو (يكتب العميل طلبه بيده)
@@ -1088,8 +1130,8 @@ try{google.script.url.getLocation(function(l){var g=l&&l.parameter&&l.parameter.
   var sp=$("spl");if(!sp)return;
   function fin(){try{document.body.style.overflow=""}catch(e){}sp.parentNode&&sp.parentNode.removeChild(sp)}
   var seen=false;try{seen=sessionStorage.getItem("wsp")==="1"||localStorage.getItem("wsp1")==="1"||!!localStorage.getItem("wp")}catch(e){}   // المقدمة تظهر لأول مرة بس (للعميل الجديد)
-  var rm=false;try{rm=window.matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){}
-  if(rm){fin();return}
+  /* ديسمبر 2026: المقدمة اتلغت. العميل الجديد (من ستيكر أو إعلان) بيفتح على الطلب على طول */
+  fin();return;
   function wLogo(sp,hide,then){var L=document.createElement("div");L.className="wlg";var I=document.createElement("i");I.innerHTML="<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"24 24 60 60\" aria-hidden=\"true\"><g transform=\"translate(24 18.45) scale(0.3)\"><path fill=\"#0E4F4C\" d=\"M13.26,54.00 L42.97,158.00 L85.58,158.00 L100.00,131.44 L114.42,158.00 L157.03,158.00 L186.74,54.00 L155.54,54.00 L133.66,130.57 L100.00,68.56 L66.34,130.57 L44.46,54.00 Z\"/><path fill=\"#0E4F4C\" d=\"M67.315185546875 188.0H64.409912109375L62.824462890625 181.23486328125Q62.533935546875 180.03955078125 62.334716796875 178.736328125Q62.135498046875 179.82373046875 62.010986328125 180.392333984375Q61.886474609375 180.9609375 60.242919921875 188.0H57.337646484375L54.324462890625 176.30419921875H56.806396484375L58.499755859375 183.85791015625L58.881591796875 185.68408203125Q59.114013671875 184.5302734375 59.333984375 183.480224609375Q59.553955078125 182.43017578125 60.989990234375 176.30419921875H63.729248046875L65.206787109375 182.52978515625Q65.381103515625 183.22705078125 65.796142578125 185.68408203125L66.003662109375 184.72119140625L66.443603515625 182.81201171875L67.854736328125 176.30419921875H70.336669921875Z M85.758056640625 188.0 84.720458984375 185.01171875H80.262939453125L79.225341796875 188.0H76.776611328125L81.043212890625 176.30419921875H83.931884765625L88.181884765625 188.0ZM82.487548828125 178.10546875 82.437744140625 178.2880859375Q82.354736328125 178.5869140625 82.238525390625 178.96875Q82.122314453125 179.3505859375 80.810791015625 183.1689453125H84.172607421875L83.018798828125 179.80712890625L82.661865234375 178.67822265625Z M105.304931640625 184.6298828125Q105.304931640625 186.34814453125 104.03076171875 187.257080078125Q102.756591796875 188.166015625 100.291259765625 188.166015625Q98.041748046875 188.166015625 96.763427734375 187.369140625Q95.485107421875 186.572265625 95.119873046875 184.95361328125L97.485595703125 184.5634765625Q97.726318359375 185.4931640625 98.423583984375 185.912353515625Q99.120849609375 186.33154296875 100.357666015625 186.33154296875Q102.922607421875 186.33154296875 102.922607421875 184.77099609375Q102.922607421875 184.27294921875 102.6279296875 183.94921875Q102.333251953125 183.62548828125 101.7978515625 183.40966796875Q101.262451171875 183.19384765625 99.743408203125 182.88671875Q98.431884765625 182.57958984375 97.917236328125 182.392822265625Q97.402587890625 182.2060546875 96.987548828125 181.952880859375Q96.572509765625 181.69970703125 96.281982421875 181.3427734375Q95.991455078125 180.98583984375 95.82958984375 180.50439453125Q95.667724609375 180.02294921875 95.667724609375 179.400390625Q95.667724609375 177.81494140625 96.85888671875 176.972412109375Q98.050048828125 176.1298828125 100.324462890625 176.1298828125Q102.499267578125 176.1298828125 103.5908203125 176.810546875Q104.682373046875 177.4912109375 104.997802734375 179.06005859375L102.623779296875 179.3837890625Q102.441162109375 178.62841796875 101.880859375 178.24658203125Q101.320556640625 177.86474609375 100.274658203125 177.86474609375Q98.050048828125 177.86474609375 98.050048828125 179.25927734375Q98.050048828125 179.7158203125 98.28662109375 180.00634765625Q98.523193359375 180.296875 98.988037109375 180.500244140625Q99.452880859375 180.70361328125 100.872314453125 181.0107421875Q102.557373046875 181.36767578125 103.28369140625 181.670654296875Q104.010009765625 181.9736328125 104.433349609375 182.376220703125Q104.856689453125 182.77880859375 105.080810546875 183.339111328125Q105.304931640625 183.8994140625 105.304931640625 184.6298828125Z M113.106201171875 188.0V176.30419921875H122.303466796875V178.19677734375H115.554931640625V181.13525390625H121.797119140625V183.02783203125H115.554931640625V186.107421875H122.643798828125V188.0Z M130.445068359375 188.0V176.30419921875H132.893798828125V186.107421875H139.169189453125V188.0Z\"/><g transform=\"translate(62.8 42.25) scale(3.1)\"><path fill=\"#fff\" stroke=\"#fff\" stroke-width=\"3\" d=\"M12,1.5c-4.4,0 -8,3.5 -8,7.9 0,5.9 8,13.1 8,13.1s8,-7.2 8,-13.1c0,-4.4 -3.6,-7.9 -8,-7.9z\"/><path fill=\"#F2B544\" d=\"M12,1.5c-4.4,0 -8,3.5 -8,7.9 0,5.9 8,13.1 8,13.1s8,-7.2 8,-13.1c0,-4.4 -3.6,-7.9 -8,-7.9z\"/><circle cx=\"12\" cy=\"9.4\" r=\"3.2\" fill=\"#fff\"/></g></g></svg>";L.appendChild(I);sp.appendChild(L);(hide||[]).forEach(function(x){if(x)x.classList.add("wfade")});setTimeout(function(){L.classList.add("on")},30);setTimeout(then,3000)}
   if(!seen){try{sessionStorage.setItem("wsp","1");localStorage.setItem("wsp1","1")}catch(e){}}
   document.body.style.overflow="hidden";
@@ -1695,6 +1737,7 @@ lbl();setTimeout(function(){load(function(){lbl();feat()})},300);
 #pkBox .pkt small{display:block;color:var(--mu);font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #pkBox .pkm2{flex:none;font-size:11px;font-weight:800;padding:2px 7px;border-radius:99px;background:var(--br2,rgba(14,79,76,.1));color:var(--br)}
 #pkBox .pkm2.cl{background:#fee2e2;color:#991b1b}
+#pkBox .pkm2.ok{background:#dcfce7;color:#166534}
 /* السهم بتاع كل القوايم (الاختيارات) أكبر وأوضح */
 select{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%230e7c75'/%3E%3Cpath d='M7 10l5 5 5-5' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-size:26px 26px!important;background-position:left 10px center!important;padding-left:46px!important}
 [dir=ltr] select,select[dir=ltr]{background-position:right 10px center!important;padding-left:12px!important;padding-right:46px!important}
@@ -1718,7 +1761,8 @@ function logo(v){var u="";try{u=(window.SLOGO||{})[v]||""}catch(e){}
 function rowHtml(o,isCur){var v=o.value,mn=false,cl=false;try{mn=MR.indexOf(v)>=0;cl=!!CLOSED[v]}catch(e){}
   var nm=o.textContent.replace(/^📋\s*/,"").replace(/\s*\((مغلق 🔴|قافل 🔴|closed)\)\s*$/,"");
   var sub=v==="x"?(en()?"Type the place name below":"اكتب اسم المكان تحت"):catTxt(v);
-  var tag=cl?'<span class="pkm2 cl">'+(en()?"Closed":"قافل")+'</span>':mn?'<span class="pkm2">📋 '+(en()?"Menu":"منيو")+'</span>':"";
+  var rl=false;try{rl=!!REALM[v]}catch(e){}
+  var tag=cl?'<span class="pkm2 cl">'+(en()?"Closed":"قافل")+'</span>':mn&&rl?'<span class="pkm2 ok">✓ '+(en()?"Real price":"سعر المطعم")+'</span>':mn?'<span class="pkm2">📋 '+(en()?"Menu · approx.":"منيو · تقريبي")+'</span>':"";
   return logo(v)+'<span class="pkt"><b>'+esc(nm)+'</b><small>'+esc(sub)+'</small></span>'+tag+
     (isCur?'<span class="pkv">'+(en()?"Change":"تغيير")+' <i>▾</i></span>':"")}
 function draw(){if(busy)return;busy=true;
@@ -2322,7 +2366,7 @@ var n=0,iv=setInterval(function(){var was=MULTI;multiOk();if(was!==MULTI&&card.c
 <script>
 /* ===== منيو مطعم مش شريك: ملاحظة واضحة فوق المنيو ===== */
 (function(){var _m=window.mRender;if(typeof _m!=="function")return;
-window.mRender=function(rest){var x=_m.apply(this,arguments);try{if(!PART[rest]){var b=document.getElementById("mbody"),p=document.createElement("p");p.className="mnp";
+window.mRender=function(rest){var x=_m.apply(this,arguments);try{if(!PART[rest]&&!(arguments[1]&&arguments[1].real)){var b=document.getElementById("mbody"),p=document.createElement("p");p.className="mnp";
   p.textContent=LANG==="en"?"ℹ️ This restaurant isn't a Wasel partner. Prices are from its menu and may differ slightly; the courier pays the real price on the invoice.":"ℹ️ المطعم ده مش شريك لواصل. الأسعار من منيو المطعم وممكن تختلف شوية، والمندوب بيدفع السعر الحقيقي اللي في الفاتورة.";b.insertBefore(p,b.firstChild)}}catch(e){}return x}})();
 </script>
 <style>
@@ -2414,6 +2458,8 @@ setInterval(function(){if(!TOUCH&&!box.classList.contains("on")&&filled()){box.c
 body.wfocus header .lane{display:none!important}
 body.wfocus header{padding-top:10px!important;padding-bottom:10px!important}
 body.wfocus #hfeat,body.wfocus #offer{display:none!important}
+/* الصفحة بقت بتختار نوع الطلب لوحدها، فـ«وضع الطلب» شغال من أول ثانية. العروض ترجع تظهر في الخطوة الأولى (القسم) */
+body.wfocus.wstep1 #hfeat:not(.hide){display:block!important}
 </style>
 <script>
 (function(){
@@ -2524,7 +2570,8 @@ function relabel(){if(busy)return;busy=true;try{var n=step(),b=wzh.querySelector
   if(b&&b.textContent!==LB[n][en()?1:0])b.textContent=LB[n][en()?1:0];
   var st=(en()?"Step {n} of 4":"خطوة {n} من 4").replace("{n}",n);if(s&&s.textContent!==st)s.textContent=st;
   if(bb){while(bb.children.length<4)bb.appendChild(document.createElement("i"));for(var i=0;i<4;i++){var c=i<n?"on":"";if(bb.children[i].className!==c)bb.children[i].className=c}}
-  var sm=wzh.querySelector(".wzs");if(sm&&n<=2&&!sm.classList.contains("hide"))sm.classList.add("hide")}catch(e){}busy=false}
+  var sm=wzh.querySelector(".wzs");if(sm&&n<=2&&!sm.classList.contains("hide"))sm.classList.add("hide");
+  document.body.classList.toggle("wstep1",n===1)}catch(e){}busy=false}   // عروض المطاعم بتظهر في الخطوة الأولى بس
 try{new MutationObserver(relabel).observe(wzh,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:["class"]})}catch(e){}
 [document.getElementById("wz2"),document.getElementById("wz3"),w1].forEach(function(d){if(d)try{new MutationObserver(relabel).observe(d,{attributes:true,attributeFilter:["class"]})}catch(e){}});
 /* «رجوع» من خطوة الطلب بيرجّع لقايمة الأماكن، و«تعديل» بيرجّع للمكان */
