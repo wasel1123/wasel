@@ -1283,7 +1283,7 @@ var AT={wh:["نوصّل فين؟","Deliver to"],other:["📍 مكان تاني",
  ph:["اكتب اسم المكان (مثلاً: بيت أهلي)","Place name (e.g. Parents' house)"],done:["✓ العنوان اتحفظ، المرة الجاية بدوسة واحدة","✓ Address saved, next time it's one tap"]};
 function at(k){return AT[k][LANG==="en"?1:0]}
 function $a(i){return document.getElementById(i)}
-return;   // العناوين المحفوظة اتشالت (الموقع بقى من الخريطة: موقعي الحالي أو موقع آخر)
+return;   // العناوين المحفوظة اتشالت (الموقع بالطريقة القديمة: موقعي الحالي أو موقع آخر)
 if(!$a("dm")||!$a("dt")||!$a("doorb"))return;
 function rd(){try{var o=JSON.parse(localStorage.getItem(AK)||"null");if(o&&Array.isArray(o.l))return o}catch(e){}return {l:[],last:""}}
 function wr(o){try{localStorage.setItem(AK,JSON.stringify(o));return true}catch(e){return false}}
@@ -2486,17 +2486,6 @@ setTimeout(chk,2500);
 .card.v2pick:not(.v2x) #wz1 #pkBox .pkc{display:none!important}
 .card.v2pick #wz1 #pkBox .pkl,.card.v2pick #wz1 #pkBox .pkw{display:block!important}
 .card.v2pick #wz1 #pkBox .pkl{max-height:56vh;margin-top:0}
-.lseg{display:flex;gap:8px;margin:6px 0 8px}
-.lseg button{flex:1;margin:0;padding:10px 6px;border-radius:14px;font-weight:800;font-size:14px;background:var(--br2);color:var(--br);border:1.5px solid transparent;cursor:pointer}
-.lseg button.on{background:var(--br);color:#fff}
-#lmapw{position:relative;height:270px;border-radius:16px;overflow:hidden;border:1px solid var(--ln);background:#dfe7e4;direction:ltr}
-#lmap{position:absolute;inset:0}
-#lmapw .lpin{position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);font-size:40px;line-height:1;pointer-events:none;z-index:500;filter:drop-shadow(0 3px 3px rgba(0,0,0,.35))}
-#lmapw .lhint{position:absolute;top:8px;left:8px;right:8px;z-index:500;background:rgba(14,79,76,.92);color:#fff;border-radius:12px;padding:6px 10px;font-size:12.5px;text-align:center;direction:rtl;pointer-events:none}
-#lmapw .lgps{position:absolute;bottom:10px;left:10px;z-index:500;width:auto;margin:0;padding:8px 12px;border-radius:12px;background:#fff;color:#0e4f4c;font-weight:800;font-size:13px;border:0;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer}
-.lwarn{margin-top:6px;padding:6px 10px;border-radius:10px;background:rgba(242,181,68,.16);border:1px solid #f2b544;font-size:12.5px;font-weight:700}
-.llnk{display:block;width:auto;margin:6px auto 0;padding:2px 6px;background:transparent;border:0;color:var(--mu);font-size:12.5px;text-decoration:underline;cursor:pointer}
-.wl-hide{display:none!important}
 </style>
 <script>
 /* ===== 1) الطلب خطوات واضحة: القسم (مطاعم/كافيهات…) ← المكان ← الطلب ← بياناتك وموقعك ===== */
@@ -2545,91 +2534,5 @@ var lb=document.getElementById("lang");if(lb)lb.addEventListener("click",functio
 self();drawMore();setSub("cat");try{window.scrollTo(0,0)}catch(e){}
 })();
 
-/* خريطة صغيرة من غير أي مكتبة خارجية: سحب بإصبع واحد، تكبير بإصبعين أو بالأزرار، والدبوس ثابت في النص */
-function PickMap(box,onEnd){
-  var z=15,c={la:26.0875,ln:43.9942},tiles={},alt=false,P={},pinch=0,moved=false,raf=0;
-  var tl=document.createElement("div");tl.style.cssText="position:absolute;inset:0;overflow:hidden";box.appendChild(tl);
-  var zc=document.createElement("div");zc.style.cssText="position:absolute;top:44px;right:8px;z-index:510;display:flex;flex-direction:column;gap:6px";box.appendChild(zc);
-  [["+",1],["−",-1]].forEach(function(b){var e=document.createElement("button");e.type="button";e.textContent=b[0];e.style.cssText="width:36px;height:36px;margin:0;padding:0;border-radius:10px;border:0;background:#fff;color:#0e4f4c;font-size:20px;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.2);cursor:pointer";e.onclick=function(ev){ev.stopPropagation();zoom(b[1]);end(true)};zc.appendChild(e)});
-  function X(l,zz){return (l+180)/360*Math.pow(2,zz)*256}
-  function Y(a,zz){var r=a*Math.PI/180;return (1-Math.log(Math.tan(r)+1/Math.cos(r))/Math.PI)/2*Math.pow(2,zz)*256}
-  function LN(x,zz){return x/256/Math.pow(2,zz)*360-180}
-  function LA(y,zz){var n=Math.PI-2*Math.PI*y/256/Math.pow(2,zz);return 180/Math.PI*Math.atan(0.5*(Math.exp(n)-Math.exp(-n)))}
-  function url(zz,x,y){return alt?"https://tile.openstreetmap.org/"+zz+"/"+x+"/"+y+".png":"https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/"+zz+"/"+y+"/"+x}
-  function draw(){raf=0;var W=box.clientWidth||300,H=box.clientHeight||260,n=Math.pow(2,z),cx=X(c.ln,z),cy=Y(c.la,z),keep={};
-    for(var y=Math.floor((cy-H/2)/256);y<=Math.floor((cy+H/2)/256);y++){if(y<0||y>=n)continue;
-      for(var x=Math.floor((cx-W/2)/256);x<=Math.floor((cx+W/2)/256);x++){var wx=((x%n)+n)%n,k=z+"/"+x+"/"+y+(alt?"o":"e"),im=tiles[k];keep[k]=1;
-        if(!im){im=new Image();im.alt="";im.draggable=false;im.style.cssText="position:absolute;width:256px;height:256px;max-width:none;user-select:none;pointer-events:none";
-          im.onerror=function(){if(!alt){alt=true;for(var q in tiles){if(tiles[q].parentNode)tiles[q].parentNode.removeChild(tiles[q])}tiles={};sch()}};
-          im.src=url(z,wx,y);tl.appendChild(im);tiles[k]=im}
-        im.style.left=Math.round(x*256-cx+W/2)+"px";im.style.top=Math.round(y*256-cy+H/2)+"px"}}
-    for(var q in tiles)if(!keep[q]){if(tiles[q].parentNode)tiles[q].parentNode.removeChild(tiles[q]);delete tiles[q]}}
-  function sch(){if(!raf)raf=requestAnimationFrame(draw)}
-  function zoom(d){var z2=Math.max(11,Math.min(19,z+d));if(z2!==z){z=z2;sch()}}
-  function pan(dx,dy){c={la:LA(Y(c.la,z)-dy,z),ln:LN(X(c.ln,z)-dx,z)};sch()}
-  function end(user){if(user)moved=true;onEnd&&onEnd({la:c.la,ln:c.ln,user:!!user})}
-  function two(){var k=Object.keys(P);return k.length>=2?[P[k[0]],P[k[1]]]:null}
-  box.style.touchAction="none";
-  box.addEventListener("pointerdown",function(e){if(e.target.closest("button"))return;P[e.pointerId]={x:e.clientX,y:e.clientY};try{box.setPointerCapture(e.pointerId)}catch(x){}var q=two();if(q)pinch=Math.hypot(q[0].x-q[1].x,q[0].y-q[1].y)});
-  box.addEventListener("pointermove",function(e){var p=P[e.pointerId];if(!p)return;var q=two();
-    if(q){p.x=e.clientX;p.y=e.clientY;var d=Math.hypot(q[0].x-q[1].x,q[0].y-q[1].y);if(pinch&&d/pinch>1.35){zoom(1);pinch=d}else if(pinch&&d/pinch<0.74){zoom(-1);pinch=d}return}
-    pan(e.clientX-p.x,e.clientY-p.y);p.x=e.clientX;p.y=e.clientY});
-  function up(e){if(!P[e.pointerId])return;delete P[e.pointerId];if(!Object.keys(P).length){pinch=0;end(true)}}
-  box.addEventListener("pointerup",up);box.addEventListener("pointercancel",up);
-  box.addEventListener("wheel",function(e){e.preventDefault();zoom(e.deltaY<0?1:-1);end(true)},{passive:false});
-  this.setView=function(la,ln,zz){c={la:la,ln:ln};if(zz)z=zz;sch();end(false)};
-  this.center=function(){return {la:c.la,ln:c.ln}};
-  this.resize=sch;
-  sch()}
-/* ===== 2) الموقع على الخريطة: الدبوس ثابت في النص والعميل بيحرّك الخريطة. «موقعي الحالي» أو «موقع آخر» بس ===== */
-(function(){
-var dm=document.getElementById("dm"),here=document.getElementById("here"),lst=document.getElementById("lst"),dlbox=document.getElementById("dlbox"),w3=document.getElementById("wz3");
-if(!dm||!here||!lst||!dlbox||!w3)return;
-var T={me:["📍 موقعي الحالي","📍 My location"],ot:["🗺 موقع آخر","🗺 Another place"],
- h1:["حرّك الخريطة لين الدبوس يكون على باب البيت بالضبط","Move the map until the pin is exactly on the door"],
- h2:["حرّك الخريطة وقرّب على المكان اللي نوصّل له","Move and zoom the map to the delivery place"],
- gps:["🎯 موقعي","🎯 Me"],lnk:["أو الصق رابط موقع من خرائط جوجل","Or paste a Google Maps link"],back:["رجوع للخريطة","Back to the map"],
- acc:["⚠️ الـ GPS تقريبي (±{m} م). حرّك الخريطة على البيت عشان المندوب ما يتوه.","⚠️ GPS is approximate (±{m} m). Move the map onto the house so the courier finds it."],
- pick:["حرّك الخريطة على المكان أول","Move the map to the place first"]};
-function en(){try{return LANG==="en"}catch(e){return false}}
-function tt(k){return T[k][en()?1:0]}
-var CEN=(typeof SVC_C!=="undefined"&&SVC_C)?[SVC_C[0],SVC_C[1]]:[26.0875,43.9942];
-var MODE="me",MOVED=false,map=null;
-/* الواجهة الجديدة */
-var seg=document.createElement("div");seg.className="lseg";
-var b1=document.createElement("button"),b2=document.createElement("button");b1.type=b2.type="button";seg.appendChild(b1);seg.appendChild(b2);
-var mw=document.createElement("div");mw.id="lmapw";mw.innerHTML='<div id="lmap"></div><div class="lpin">📍</div><div class="lhint"></div><button type="button" class="lgps"></button>';
-var warn=document.createElement("div");warn.className="lwarn wl-hide";
-var ln=document.createElement("button");ln.type="button";ln.className="llnk";
-here.parentNode.insertBefore(seg,here);here.parentNode.insertBefore(mw,here);
-lst.parentNode.insertBefore(warn,lst.nextSibling);dlbox.parentNode.insertBefore(ln,dlbox.nextSibling);
-function txt(){b1.textContent=tt("me");b2.textContent=tt("ot");mw.querySelector(".lgps").textContent=tt("gps");
-  mw.querySelector(".lhint").textContent=tt(MODE==="ot"?"h2":"h1");ln.textContent=dm.value==="other"?tt("back"):tt("lnk")}
-function oldUi(on){dm.classList.toggle("wl-hide",!on);here.classList.toggle("wl-hide",!on)}
-function ui(){b1.classList.toggle("on",MODE==="me"&&dm.value!=="other");b2.classList.toggle("on",MODE==="ot"&&dm.value!=="other");
-  mw.classList.toggle("wl-hide",dm.value==="other");txt()}
-function setC(){if(!map)return;var c0=map.center(),c={lat:c0.la,lng:c0.ln};
-  if(MODE==="ot"&&!MOVED){COORD=null}else{COORD=c.lat.toFixed(6)+","+c.lng.toFixed(6)}
-  dm.value="here";try{locUi()}catch(e){}try{feeUpd()}catch(e){}
-  if(COORD&&typeof farC==="function"&&farC([c.lat,c.lng])){lst.className="mu bad";try{lst.textContent=window.t("outA")}catch(e){}}
-  else if(MODE==="ot"&&!MOVED){lst.className="mu";lst.textContent=tt("pick")}}
-function accWarn(){var a=Math.round(typeof LOCACC!=="undefined"?LOCACC:0);warn.classList.toggle("wl-hide",!(MODE==="me"&&a>50));warn.textContent=tt("acc").replace("{m}",a)}
-function gps(){MODE="me";MOVED=true;dm.value="here";ui();
-  locate(function(ok){if(ok&&COORD&&map){var p=COORD.split(",");map.setView(+p[0],+p[1],18)}accWarn()})}
-function other(){MODE="ot";MOVED=false;dm.value="here";ui();warn.classList.add("wl-hide");if(map)map.setView(CEN[0],CEN[1],14);setC()}
-b1.onclick=gps;b2.onclick=other;mw.querySelector(".lgps").onclick=gps;
-ln.onclick=function(){if(dm.value==="other"){dm.value="here";dm.dispatchEvent(new Event("change"));ui();setC()}else{dm.value="other";dm.dispatchEvent(new Event("change"));ui()}};
-/* «موقع آخر» ولسه ما حرّكش الخريطة: منبعتش الطلب بموقع غلط */
-var card=w3.closest(".card"),go=document.getElementById("go");
-if(card&&go)card.addEventListener("click",function(e){if(e.target!==go&&!go.contains(e.target))return;if(map&&dm.value==="here"&&MODE==="ot"&&!MOVED){e.stopPropagation();e.preventDefault();lst.className="mu bad";lst.textContent=tt("pick");try{mw.scrollIntoView({behavior:"smooth",block:"center"})}catch(x){}}},true);
-function init(){if(map)return;
-  map=new PickMap(document.getElementById("lmap"),function(ev){if(ev.user)MOVED=true;setC()});
-  if(COORD){var p=COORD.split(",");map.setView(+p[0],+p[1],18)}else{map.setView(CEN[0],CEN[1],14);gps()}}
-oldUi(false);ui();
-function onShow(){if(w3.classList.contains("hide"))return;init();setTimeout(function(){if(map)map.resize()},60)}
-try{new MutationObserver(onShow).observe(w3,{attributes:true,attributeFilter:["class"]})}catch(e){}
-onShow();
-var lb=document.getElementById("lang");if(lb)lb.addEventListener("click",function(){setTimeout(txt,0)});
-})();
 </script>
 </body></html>
