@@ -10,6 +10,8 @@ var C={unz:{n:"عنيزة",s:"السعودية · بالريال",f:"🇸🇦",l
 function g(){try{return localStorage.getItem(K)}catch(e){return null}}
 function sv(v){try{localStorage.setItem(K,v)}catch(e){}}
 var page=location.pathname.split("/").pop()||"customer.html",c=g();
+// لينك الستيكر أو الإعلان بيحدد المدينة: customer.html?city=mhl أو ?city=unz (من غير ما نسأل العميل)
+try{var qc=new URLSearchParams(location.search).get("city");if(qc&&C[qc]){c=qc;sv(qc)}}catch(e){}
 // آخر صفحة اتفتحت (عميل/مندوب): علشان لو النت فصل ورجع، التطبيق يرجع لنفس الصفحة
 try{localStorage.setItem("wlast",page)}catch(e){}
 // اللي كان بيستخدم واصل عنيزة قبل كده: يفضل على عنيزة من غير ما نسأله
@@ -62,6 +64,12 @@ function show(first){
   if(first)perm();else pick("اختار المدينة");
   document.body.appendChild(o)}
 window.WCITY={open:function(){show(false)}};
+/* شريط المدينة للعميل الجديد: مش بيقفل الصفحة، وبيختفي بـ ✕ */
+function hint(){if(!document.body)return;var o=el("div","display:flex;align-items:center;gap:8px;background:#f2b544;color:#1b1200;padding:8px 12px;direction:rtl;font-family:inherit;font-size:14px;font-weight:700");o.id="wcity_hint";
+  o.appendChild(el("span","flex:1","📍 واصل "+C[ME].n));
+  var a=el("button","border:0;border-radius:10px;padding:6px 12px;background:#0e4f4c;color:#fff;font:inherit;font-size:13px;width:auto;margin:0","غيّر المدينة");a.type="button";a.onclick=function(){o.remove();show(false)};
+  var x=el("button","border:0;border-radius:10px;padding:6px 10px;background:rgba(0,0,0,.08);color:#1b1200;font:inherit;width:auto;margin:0","✕");x.type="button";x.setAttribute("aria-label","إخفاء");x.onclick=function(){o.remove()};
+  o.appendChild(a);o.appendChild(x);document.body.insertBefore(o,document.body.firstChild)}
 /* تصحيح المدينة: أول ما العميل يحدد موقعه (أو موقع المندوب يشتغل) ويطلع في المدينة التانية، يظهرله شريط يتنقل بيه */
 var WARNED=false;
 function banner(k){if(WARNED||!document.body)return;try{if(sessionStorage.getItem("wcity_nb")===k)return}catch(e){}WARNED=true;
@@ -78,7 +86,8 @@ try{var G=navigator.geolocation;if(G){var gc=G.getCurrentPosition.bind(G),wp=G.w
   G.getCurrentPosition=function(s,e,o){return gc(function(p){chk(p);if(s)s(p)},e,o)};
   G.watchPosition=function(s,e,o){return wp(function(p){chk(p);if(s)s(p)},e,o)}}}catch(e){}
 document.addEventListener("DOMContentLoaded",function(){
-  if(!g())show(true);
+  // العميل الجديد بيفتح على الطلب على طول بمدينة الصفحة، وشريط صغير فوق لو عاوز يغيّرها. المندوب زي ما هو
+  if(!g()){if(page==="customer.html"){sv(ME);hint()}else show(true)}
   // زرار «🌍 غيّر المدينة» في القايمة ☰
   try{var dw=document.getElementById("cdw")||document.getElementById("mdw"),ref=dw&&(dw.querySelector('[data-c="lang"]')||dw.querySelector("#shfb"));
     if(dw){var b=document.createElement("button");b.type="button";b.textContent="🌍 غيّر المدينة ("+C[ME].n+")";b.onclick=function(){show(false)};
